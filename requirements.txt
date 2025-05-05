@@ -1,0 +1,18 @@
+timm==0.4.5
+tlt==0.1.0
+pyyaml
+mmcv==1.7.0
+numpy
+torch
+triton
+ninja
+transformers
+packaging
+setuptools>=61.0.0
+nvidia-cudnn-cu11
+wheel
+einops
+# mamba_ssm # installing as package doesn't work -> install manually from repo with --no-build-isolation
+
+
+

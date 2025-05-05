@@ -1,0 +1,8 @@
+env
+dataset
+__pycache__
+.vscode
+
+*.tar
+
+Python-3.11.9
