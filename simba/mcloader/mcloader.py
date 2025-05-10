@@ -1,10 +1,12 @@
 # code from PVT(https://github.com/whai362/PVT)
 
 import io
+
 from PIL import Image
+
 try:
     import mc
-except ImportError as E:
+except ImportError:
     pass
 
 
@@ -16,14 +18,11 @@ def pil_loader(img_str):
 class McLoader(object):
 
     def __init__(self, mclient_path):
-        assert mclient_path is not None, \
-            "Please specify 'data_mclient_path' in the config."
+        assert mclient_path is not None, "Please specify 'data_mclient_path' in the config."
         self.mclient_path = mclient_path
-        server_list_config_file = "{}/server_list.conf".format(
-            self.mclient_path)
+        server_list_config_file = "{}/server_list.conf".format(self.mclient_path)
         client_config_file = "{}/client.conf".format(self.mclient_path)
-        self.mclient = mc.MemcachedClient.GetInstance(server_list_config_file,
-                                                      client_config_file)
+        self.mclient = mc.MemcachedClient.GetInstance(server_list_config_file, client_config_file)
 
     def __call__(self, fn):
         try:
@@ -32,7 +31,7 @@ class McLoader(object):
             img_value_str = mc.ConvertBuffer(img_value)
             img = pil_loader(img_value_str)
         except:
-            print('Read image failed ({})'.format(fn))
+            print("Read image failed ({})".format(fn))
             return None
         else:
             return img

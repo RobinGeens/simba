@@ -1,5 +1,6 @@
 # code from PVT(https://github.com/whai362/PVT)
 import os
+
 from PIL import Image
 
 from .mcloader import McLoader
@@ -8,7 +9,7 @@ from .mcloader import McLoader
 class ImageList(object):
 
     def __init__(self, root, list_file, memcached=False, mclient_path=None):
-        with open(list_file, 'r') as f:
+        with open(list_file, "r") as f:
             lines = f.readlines()
         self.has_labels = len(lines[0].split()) == 2
         if self.has_labels:
@@ -37,7 +38,7 @@ class ImageList(object):
             img = self.mc_loader(self.fns[idx])
         else:
             img = Image.open(self.fns[idx])
-        img = img.convert('RGB')
+        img = img.convert("RGB")
         if self.has_labels:
             target = self.labels[idx]
             return img, target

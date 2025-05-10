@@ -1,16 +1,16 @@
+import math
+from functools import partial
+
+import numpy as np
 import torch
+import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
-from functools import partial
-import torch.fft
-
-from timm.models.layers import DropPath, to_2tuple, trunc_normal_
+from einops import einsum, rearrange, repeat
+from mamba_ssm import Mamba
+from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
-import math
-import numpy as np
-from mamba_ssm import Mamba
-from einops import rearrange, repeat, einsum
 
 
 class EinFFT(nn.Module):
@@ -44,12 +44,10 @@ class EinFFT(nn.Module):
             * self.scale
         )
         self.complex_bias_1 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=torch.float32)
-            * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=torch.float32) * self.scale
         )
         self.complex_bias_2 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=torch.float32)
-            * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=torch.float32) * self.scale
         )
 
     def multiply(self, input, weights):
@@ -83,11 +81,7 @@ class EinFFT(nn.Module):
         )
 
         x = torch.stack([x_real_2, x_imag_2], dim=-1).float()
-        x = (
-            F.softshrink(x, lambd=self.sparsity_threshold)
-            if self.sparsity_threshold
-            else x
-        )
+        x = F.softshrink(x, lambd=self.sparsity_threshold) if self.sparsity_threshold else x
         x = torch.view_as_complex(x)
 
         x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
@@ -101,9 +95,7 @@ class EinFFT(nn.Module):
 # For Fast Implementation use MambaLayer,# This implementation is slow, only for checking GFLOPS and other paramater,
 # For more details please refer to https://github.com/johnma2006/mamba-minimal/blob/master/model.py
 class MambaBlock(nn.Module):
-    def __init__(
-        self, d_model, d_state=64, expand=2, d_conv=4, conv_bias=True, bias=False
-    ):
+    def __init__(self, d_model, d_state=64, expand=2, d_conv=4, conv_bias=True, bias=False):
         """A single Mamba block, as described in Figure 3 in Section 3.4 in the Mamba paper [1]."""
         super().__init__()
         self.d_model = d_model  # Model dimension d_model
@@ -127,9 +119,7 @@ class MambaBlock(nn.Module):
         )
 
         # x_proj takes in `x` and outputs the input-specific Δ, B, C
-        self.x_proj = nn.Linear(
-            self.d_inner, self.dt_rank + self.d_state * 2, bias=False
-        )
+        self.x_proj = nn.Linear(self.d_inner, self.dt_rank + self.d_state * 2, bias=False)
 
         # dt_proj projects Δ from dt_rank to d_in
         self.dt_proj = nn.Linear(self.dt_rank, self.d_inner, bias=True)
@@ -199,14 +189,10 @@ class MambaBlock(nn.Module):
 
         x_dbl = self.x_proj(x)  # (b, l, dt_rank + 2*n)
 
-        (delta, B, C) = x_dbl.split(
-            split_size=[self.dt_rank, n, n], dim=-1
-        )  # delta: (b, l, dt_rank). B, C: (b, l, n)
+        (delta, B, C) = x_dbl.split(split_size=[self.dt_rank, n, n], dim=-1)  # delta: (b, l, dt_rank). B, C: (b, l, n)
         delta = F.softplus(self.dt_proj(delta))  # (b, l, d_in)
 
-        y = self.selective_scan(
-            x, delta, A, B, C, D
-        )  # This is similar to run_SSM(A, B, C, u) in The Annotated S4 [2]
+        y = self.selective_scan(x, delta, A, B, C, D)  # This is similar to run_SSM(A, B, C, u) in The Annotated S4 [2]
 
         return y
 
@@ -443,9 +429,7 @@ class Block_mamba(nn.Module):
 class DownSamples(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.proj = nn.Conv2d(
-            in_channels, out_channels, kernel_size=3, stride=2, padding=1
-        )
+        self.proj = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=2, padding=1)
         self.norm = nn.LayerNorm(out_channels)
         self.apply(self._init_weights)
 
@@ -477,25 +461,17 @@ class Stem(nn.Module):
         super().__init__()
         hidden_dim = stem_hidden_dim
         self.conv = nn.Sequential(
-            nn.Conv2d(
-                in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False
-            ),  # 112x112
+            nn.Conv2d(in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
-            nn.Conv2d(
-                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False
-            ),  # 112x112
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
-            nn.Conv2d(
-                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False
-            ),  # 112x112
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
         )
-        self.proj = nn.Conv2d(
-            hidden_dim, out_channels, kernel_size=3, stride=2, padding=1
-        )
+        self.proj = nn.Conv2d(hidden_dim, out_channels, kernel_size=3, stride=2, padding=1)
         self.norm = nn.LayerNorm(out_channels)
 
         self.apply(self._init_weights)
@@ -538,6 +514,7 @@ class SiMBA(nn.Module):
         sr_ratios=[4, 2, 1, 1],
         num_stages=4,
         token_label=True,
+        cm_type="mlp",
         **kwargs,
     ):
         super().__init__()
@@ -545,9 +522,7 @@ class SiMBA(nn.Module):
         self.depths = depths
         self.num_stages = num_stages
 
-        dpr = [
-            x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))
-        ]  # stochastic depth decay rule
+        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
         alpha = 5  #
         for i in range(num_stages):
@@ -564,8 +539,8 @@ class SiMBA(nn.Module):
                         drop_path=dpr[cur + j],
                         norm_layer=norm_layer,
                         sr_ratio=sr_ratios[i],
-                        cm_type="mlp",
-                    )  # Change this to run EinFFT based Channel Mixer, cm_type='EinFFT'
+                        cm_type=cm_type,
+                    )
                     for j in range(depths[i])
                 ]
             )
@@ -584,27 +559,21 @@ class SiMBA(nn.Module):
                     dim=embed_dims[-1],
                     mlp_ratio=mlp_ratios[-1],
                     norm_layer=norm_layer,
-                    cm_type="mlp",
-                )  # Change this to run EinFFT based Channel Mixer, cm_type='EinFFT'
+                    cm_type=cm_type,
+                )
                 for _ in range(len(post_layers))
             ]
         )
 
         # classification head
-        self.head = (
-            nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
-        )
+        self.head = nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
         ##################################### token_label #####################################
         self.return_dense = token_label
         self.mix_token = token_label
         self.beta = 1.0
         self.pooling_scale = 8
         if self.return_dense:
-            self.aux_head = (
-                nn.Linear(embed_dims[-1], num_classes)
-                if num_classes > 0
-                else nn.Identity()
-            )
+            self.aux_head = nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
         ##################################### token_label #####################################
 
         self.apply(self._init_weights)
@@ -665,9 +634,7 @@ class SiMBA(nn.Module):
                     x.shape[1] // self.pooling_scale,
                     x.shape[2] // self.pooling_scale,
                 )
-                bbx1, bby1, bbx2, bby2 = rand_bbox(
-                    x.size(), lam, scale=self.pooling_scale
-                )
+                bbx1, bby1, bbx2, bby2 = rand_bbox(x.size(), lam, scale=self.pooling_scale)
                 temp_x = x.clone()
                 sbbx1, sbby1, sbbx2, sbby2 = (
                     self.pooling_scale * bbx1,
@@ -675,35 +642,25 @@ class SiMBA(nn.Module):
                     self.pooling_scale * bbx2,
                     self.pooling_scale * bby2,
                 )
-                temp_x[:, sbbx1:sbbx2, sbby1:sbby2, :] = x.flip(0)[
-                    :, sbbx1:sbbx2, sbby1:sbby2, :
-                ]
+                temp_x[:, sbbx1:sbbx2, sbby1:sbby2, :] = x.flip(0)[:, sbbx1:sbbx2, sbby1:sbby2, :]
                 x = temp_x
             else:
                 bbx1, bby1, bbx2, bby2 = 0, 0, 0, 0
             x = self.forward_tokens(x, H, W)
             x_cls = self.head(x[:, 0])
-            x_aux = self.aux_head(
-                x[:, 1:]
-            )  # generate classes in all feature tokens, see token labeling
+            x_aux = self.aux_head(x[:, 1:])  # generate classes in all feature tokens, see token labeling
 
             if not self.training:
                 return x_cls + 0.5 * x_aux.max(1)[0]
 
-            if (
-                self.mix_token and self.training
-            ):  # reverse "mix token", see token labeling for details.
+            if self.mix_token and self.training:  # reverse "mix token", see token labeling for details.
                 x_aux = x_aux.reshape(x_aux.shape[0], patch_h, patch_w, x_aux.shape[-1])
 
                 temp_x = x_aux.clone()
-                temp_x[:, bbx1:bbx2, bby1:bby2, :] = x_aux.flip(0)[
-                    :, bbx1:bbx2, bby1:bby2, :
-                ]
+                temp_x[:, bbx1:bbx2, bby1:bby2, :] = x_aux.flip(0)[:, bbx1:bbx2, bby1:bby2, :]
                 x_aux = temp_x
 
-                x_aux = x_aux.reshape(
-                    x_aux.shape[0], patch_h * patch_w, x_aux.shape[-1]
-                )
+                x_aux = x_aux.reshape(x_aux.shape[0], patch_h * patch_w, x_aux.shape[-1])
 
             return x_cls, x_aux, (bbx1, bby1, bbx2, bby2)
 
@@ -756,6 +713,7 @@ def simba_s(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 6, 3],
         sr_ratios=[4, 2, 1, 1],
+        cm_type="mlp",
         **kwargs,
     )
     model.default_cfg = _cfg()
@@ -771,6 +729,7 @@ def simba_b(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 12, 3],
         sr_ratios=[4, 2, 1, 1],
+        cm_type="mlp",
         **kwargs,
     )
     model.default_cfg = _cfg()
@@ -786,6 +745,7 @@ def simba_l(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 6, 18, 3],
         sr_ratios=[4, 2, 1, 1],
+        cm_type="EinFFT",
         **kwargs,
     )
     model.default_cfg = _cfg()

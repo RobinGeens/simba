@@ -7,63 +7,51 @@ It was started from an early version of the PyTorch ImageNet example
 
 import argparse
 import datetime
-import numpy as np
-import time
 import logging
-from PIL import Image
+import time
+
+import numpy as np
 from PIL import ImageFile
+import wandb  # Add wandb import
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+import json
+import warnings
+from pathlib import Path
+
+import timm
 import torch
 import torch.backends.cudnn as cudnn
-import json
-
-from pathlib import Path
-import timm
-from timm.data import Mixup
-from timm.models import create_model
-from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
-from timm.scheduler import create_scheduler
-from timm.optim import create_optimizer
-from timm.utils import NativeScaler, get_state_dict, ModelEma, distribute_bn
-
-from datasets import build_dataset
-from engine import train_one_epoch, evaluate
-from losses import DistillationLoss
-from samplers import RASampler
+import torch.serialization
 
 # import models
-import simba
 import utils
-import collections
-
-from tlt.data import (
-    create_token_label_target,
-    TokenLabelMixup,
-    FastCollateTokenLabelMixup,
-    create_token_label_loader,
-    create_token_label_dataset,
-)
+from datasets import build_dataset
+from engine import evaluate, train_one_epoch
 from loss import (
-    TokenLabelGTCrossEntropy,
     TokenLabelCrossEntropy,
-    TokenLabelSoftTargetCrossEntropy,
 )
-
-from util.flops_counter import get_model_complexity_info
+from losses import DistillationLoss
+from samplers import RASampler
+from timm.data import Mixup
+from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
+from timm.models import create_model
+from timm.optim import create_optimizer
+from timm.scheduler import create_scheduler
+from timm.utils import NativeScaler, distribute_bn
+from tlt.data import (
+    create_token_label_dataset,
+    create_token_label_loader,
+)
 from util.checkpoint_saver import CheckpointSaver2
-
-
-import warnings
+from util.flops_counter import get_model_complexity_info
 
 warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
 
 
 def get_args_parser():
-    parser = argparse.ArgumentParser(
-        "PVT training and evaluation script", add_help=False
-    )
+    parser = argparse.ArgumentParser("PVT training and evaluation script", add_help=False)
     parser.add_argument("--fp32-resume", action="store_true", default=False)
     parser.add_argument("--batch-size", default=128, type=int)
     parser.add_argument("--epochs", default=300, type=int)
@@ -131,9 +119,7 @@ def get_args_parser():
         metavar="M",
         help="SGD momentum (default: 0.9)",
     )
-    parser.add_argument(
-        "--weight-decay", type=float, default=0.05, help="weight decay (default: 0.05)"
-    )
+    parser.add_argument("--weight-decay", type=float, default=0.05, help="weight decay (default: 0.05)")
     # Learning rate schedule parameters
     parser.add_argument(
         "--sched",
@@ -239,9 +225,7 @@ def get_args_parser():
         help='Use AutoAugment policy. "v0" or "original". " + \
                              "(default: rand-m9-mstd0.5-inc1)',
     ),
-    parser.add_argument(
-        "--smoothing", type=float, default=0.1, help="Label smoothing (default: 0.1)"
-    )
+    parser.add_argument("--smoothing", type=float, default=0.1, help="Label smoothing (default: 0.1)")
     parser.add_argument(
         "--train-interpolation",
         type=str,
@@ -267,9 +251,7 @@ def get_args_parser():
         default="pixel",
         help='Random erase mode (default: "pixel")',
     )
-    parser.add_argument(
-        "--recount", type=int, default=1, help="Random erase count (default: 1)"
-    )
+    parser.add_argument("--recount", type=int, default=1, help="Random erase count (default: 1)")
     parser.add_argument(
         "--resplit",
         action="store_true",
@@ -333,9 +315,7 @@ def get_args_parser():
         type=str,
         help="Image Net dataset path",
     )
-    parser.add_argument(
-        "--use-mcloader", action="store_true", default=False, help="Use mcloader"
-    )
+    parser.add_argument("--use-mcloader", action="store_true", default=False, help="Use mcloader")
     parser.add_argument(
         "--inat-category",
         default="name",
@@ -353,17 +333,11 @@ def get_args_parser():
         help="semantic granularity",
     )
 
-    parser.add_argument(
-        "--output_dir", default="", help="path where to save, empty for no saving"
-    )
-    parser.add_argument(
-        "--device", default="cuda", help="device to use for training / testing"
-    )
+    parser.add_argument("--output_dir", default="", help="path where to save, empty for no saving")
+    parser.add_argument("--device", default="cuda", help="device to use for training / testing")
     parser.add_argument("--seed", default=0, type=int)
     parser.add_argument("--resume", default="", help="resume from checkpoint")
-    parser.add_argument(
-        "--start_epoch", default=0, type=int, metavar="N", help="start epoch"
-    )
+    parser.add_argument("--start_epoch", default=0, type=int, metavar="N", help="start epoch")
     parser.add_argument("--eval", action="store_true", help="Perform evaluation only")
     parser.add_argument(
         "--dist-eval",
@@ -381,12 +355,8 @@ def get_args_parser():
     parser.set_defaults(pin_mem=True)
 
     # distributed training parameters
-    parser.add_argument(
-        "--world_size", default=1, type=int, help="number of distributed processes"
-    )
-    parser.add_argument(
-        "--dist_url", default="env://", help="url used to set up distributed training"
-    )
+    parser.add_argument("--world_size", default=1, type=int, help="number of distributed processes")
+    parser.add_argument("--dist_url", default="env://", help="url used to set up distributed training")
 
     ###############################################################################################################
     # Token labeling
@@ -471,13 +441,11 @@ def build_no_token_label(args):
     dataset_train, args.nb_classes = build_dataset(is_train=True, args=args)
     dataset_val, _ = build_dataset(is_train=False, args=args)
 
-    if True:  # args.distributed:
+    if args.distributed:
         num_tasks = utils.get_world_size()
         global_rank = utils.get_rank()
         if args.repeated_aug:
-            sampler_train = RASampler(
-                dataset_train, num_replicas=num_tasks, rank=global_rank, shuffle=True
-            )
+            sampler_train = RASampler(dataset_train, num_replicas=num_tasks, rank=global_rank, shuffle=True)
         else:
             sampler_train = torch.utils.data.DistributedSampler(
                 dataset_train,
@@ -548,9 +516,7 @@ def build_no_token_label(args):
 
 
 def build_token_label(args):
-    dataset_train = create_token_label_dataset(
-        "", root=args.data_path, label_root=args.token_label_data
-    )
+    dataset_train = create_token_label_dataset("", root=args.data_path, label_root=args.token_label_data)
     dataset_eval = timm.data.create_dataset(
         "",
         root=args.data_path,
@@ -626,6 +592,7 @@ def build_token_label(args):
 
 
 def build_imagenet_dataset(args):
+    args.prefetcher = args.token_label
 
     if args.token_label_data:
         return build_token_label(args)
@@ -637,8 +604,11 @@ def main(args):
     timm.utils.setup_default_logging()
     utils.init_distributed_mode(args)
 
-    # if args.distillation_type != 'none' and args.finetune and not args.eval:
-    #     raise NotImplementedError("Finetuning with distillation not yet supported")
+    # Initialize wandb
+    if utils.is_main_process():
+        wandb.init(
+            project="simba", config=vars(args), name=f"simba_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
 
     device = torch.device(args.device)
 
@@ -676,9 +646,7 @@ def main(args):
 
     if args.finetune:
         if args.finetune.startswith("https"):
-            checkpoint = torch.hub.load_state_dict_from_url(
-                args.finetune, map_location="cpu", check_hash=True
-            )
+            checkpoint = torch.hub.load_state_dict_from_url(args.finetune, map_location="cpu", check_hash=True)
         else:
             checkpoint = torch.load(args.finetune, map_location="cpu")
 
@@ -688,10 +656,7 @@ def main(args):
             checkpoint_model = checkpoint["state_dict"]
         state_dict = model.state_dict()
         for k in ["head.weight", "head.bias", "head_dist.weight", "head_dist.bias"]:
-            if (
-                k in checkpoint_model
-                and checkpoint_model[k].shape != state_dict[k].shape
-            ):
+            if k in checkpoint_model and checkpoint_model[k].shape != state_dict[k].shape:
                 _logger.info(f"Removing key {k} from pretrained checkpoint")
                 del checkpoint_model[k]
 
@@ -700,7 +665,7 @@ def main(args):
     model.to(device)
     print(model)
 
-    with torch.cuda.amp.autocast(enabled=True):
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16):  # enabled=True):
         flops_count, params_count = get_model_complexity_info(
             model,
             (3, 224, 224),
@@ -708,10 +673,7 @@ def main(args):
             print_per_layer_stat=False,
             verbose=False,
         )
-    print(
-        f"Model %s created, flops_count: %s, param count: %s"
-        % (args.model, flops_count, params_count)
-    )
+    print("Model %s created, flops_count: %s, param count: %s" % (args.model, flops_count, params_count))
 
     model_ema = None
     model_without_ddp = model
@@ -766,11 +728,11 @@ def main(args):
     output_dir = Path(args.output_dir)
     if args.resume:
         if args.resume.startswith("https"):
-            checkpoint = torch.hub.load_state_dict_from_url(
-                args.resume, map_location="cpu", check_hash=True
-            )
+            checkpoint = torch.hub.load_state_dict_from_url(args.resume, map_location="cpu", check_hash=True)
         else:
-            checkpoint = torch.load(args.resume, map_location="cpu")
+            # Tells Pytorch that the checkpoint is safe to load
+            torch.serialization.add_safe_globals([argparse.Namespace])
+            checkpoint = torch.load(args.resume, map_location="cpu", weights_only=False)
         if "model" in checkpoint:
             msg = model_without_ddp.load_state_dict(checkpoint["model"]["state_dict"])
         else:
@@ -787,9 +749,7 @@ def main(args):
 
     if args.eval:
         test_stats = evaluate(data_loader_val, model, device)
-        _logger.info(
-            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
-        )
+        _logger.info(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
         return
 
     _logger.info(f"Start training for {args.epochs} epochs")
@@ -800,7 +760,7 @@ def main(args):
     for epoch in range(args.start_epoch, (args.epochs + extra_epoch)):
         if args.fp32_resume and epoch > args.start_epoch + 1:
             args.fp32_resume = False
-        loss_scaler._scaler = torch.cuda.amp.GradScaler(enabled=not args.fp32_resume)
+        loss_scaler._scaler = torch.amp.GradScaler("cuda", enabled=not args.fp32_resume)
 
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
@@ -816,8 +776,7 @@ def main(args):
             args.clip_grad,
             model_ema,
             mixup_fn,
-            set_training_mode=args.finetune
-            == "",  # keep in eval mode during finetuning
+            set_training_mode=args.finetune == "",  # keep in eval mode during finetuning
             fp32=args.fp32_resume,
             args=args,
         )
@@ -835,13 +794,9 @@ def main(args):
             save_metric = test_stats["acc1"]
             best_metric, best_epoch = saver.save_checkpoint(epoch, metric=save_metric)
         if best_metric is not None:
-            _logger.info(
-                "*** Best metric: {0} (epoch {1})".format(best_metric, best_epoch)
-            )
+            _logger.info("*** Best metric: {0} (epoch {1})".format(best_metric, best_epoch))
 
-        _logger.info(
-            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
-        )
+        _logger.info(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
         max_accuracy = max(max_accuracy, test_stats["acc1"])
         _logger.info(f"Max accuracy: {max_accuracy:.2f}%")
 
@@ -855,20 +810,23 @@ def main(args):
         if args.output_dir and utils.is_main_process():
             with (output_dir / "tlog.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
+            # Log metrics to wandb
+            wandb.log(log_stats)
         _logger.info(log_stats)
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     _logger.info("Training time {}".format(total_time_str))
 
+    # Close wandb
+    if utils.is_main_process():
+        wandb.finish()
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        "DeiT training and evaluation script", parents=[get_args_parser()]
-    )
+    parser = argparse.ArgumentParser("DeiT training and evaluation script", parents=[get_args_parser()])
     args = parser.parse_args()
     args = utils.update_from_config(args)
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     main(args)
-

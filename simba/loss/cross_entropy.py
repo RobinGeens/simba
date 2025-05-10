@@ -17,12 +17,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class SoftTargetCrossEntropy(nn.Module):
     """
     The native CE loss with soft target
     input: x is output of model, target is ground truth
     return: loss
     """
+
     def __init__(self):
         super(SoftTargetCrossEntropy, self).__init__()
 
@@ -41,12 +43,8 @@ class TokenLabelGTCrossEntropy(nn.Module):
     input: x is output of model, target is ground truth
     return: loss
     """
-    def __init__(self,
-                 dense_weight=1.0,
-                 cls_weight=1.0,
-                 mixup_active=True,
-                 smoothing=0.1,
-                 classes=1000):
+
+    def __init__(self, dense_weight=1.0, cls_weight=1.0, mixup_active=True, smoothing=0.1, classes=1000):
         super(TokenLabelGTCrossEntropy, self).__init__()
 
         self.CE = SoftTargetCrossEntropy()
@@ -70,9 +68,7 @@ class TokenLabelGTCrossEntropy(nn.Module):
         else:
             ground_truth = target[:, :, 0]
             target_cls = target[:, :, 1]
-            ratio = (0.9 - 0.4 *
-                     (ground_truth.max(-1)[1] == target_cls.max(-1)[1])
-                     ).unsqueeze(-1)
+            ratio = (0.9 - 0.4 * (ground_truth.max(-1)[1] == target_cls.max(-1)[1])).unsqueeze(-1)
             target_cls = target_cls * ratio + ground_truth * (1 - ratio)
             target_aux = target[:, :, 2:]
             target_aux = target_aux.transpose(1, 2).reshape(-1, C)
@@ -94,6 +90,7 @@ class TokenLabelSoftTargetCrossEntropy(nn.Module):
     input: x is output of model, target is ground truth
     return: loss
     """
+
     def __init__(self):
         super(TokenLabelSoftTargetCrossEntropy, self).__init__()
 
@@ -114,11 +111,8 @@ class TokenLabelCrossEntropy(nn.Module):
     input: x is output of model, target is ground truth
     return: loss
     """
-    def __init__(self,
-                 dense_weight=1.0,
-                 cls_weight=1.0,
-                 mixup_active=True,
-                 classes=1000):
+
+    def __init__(self, dense_weight=1.0, cls_weight=1.0, mixup_active=True, classes=1000):
         """
         Constructor Token labeling loss.
         """

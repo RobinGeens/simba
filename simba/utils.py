@@ -5,17 +5,18 @@ Misc functions, including distributed helpers.
 
 Mostly copy-paste from torchvision references.
 """
+import datetime
+import functools
 import io
+import logging
 import os
 import sys
 import time
 from collections import defaultdict, deque
-import datetime
-import logging
-import functools
+
+import mmcv
 import torch
 import torch.distributed as dist
-import mmcv
 
 _logger = logging.getLogger("train")
 
@@ -100,9 +101,7 @@ class MetricLogger(object):
             return self.meters[attr]
         if attr in self.__dict__:
             return self.__dict__[attr]
-        raise AttributeError(
-            "'{}' object has no attribute '{}'".format(type(self).__name__, attr)
-        )
+        raise AttributeError("'{}' object has no attribute '{}'".format(type(self).__name__, attr))
 
     def __str__(self):
         loss_str = []
@@ -175,11 +174,7 @@ class MetricLogger(object):
         total_time = time.time() - start_time
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
         # print
-        _logger.info(
-            "{} Total time: {} ({:.4f} s / it)".format(
-                header, total_time_str, total_time / len(iterable)
-            )
-        )
+        _logger.info("{} Total time: {} ({:.4f} s / it)".format(header, total_time_str, total_time / len(iterable)))
 
 
 def _load_checkpoint_for_ema(model_ema, checkpoint):
@@ -248,15 +243,14 @@ def init_distributed_mode(args):
     else:
         print("Not using distributed mode")
         args.distributed = False
+        args.rank = 0
+        args.gpu = 0
         return
 
     args.distributed = True
-
     torch.cuda.set_device(args.gpu)
     args.dist_backend = "nccl"
-    print(
-        "| distributed init (rank {}): {}".format(args.rank, args.dist_url), flush=True
-    )
+    print(f"| distributed init (rank {args.rank}): {args.dist_url}", flush=True)
     torch.distributed.init_process_group(
         backend=args.dist_backend,
         init_method=args.dist_url,
@@ -276,9 +270,7 @@ def update_from_config(args):
 
 
 @functools.lru_cache()
-def setup_logger(
-    output=None, distributed_rank=0, *, color=True, name="train", abbrev_name=None
-):
+def setup_logger(output=None, distributed_rank=0, *, color=True, name="train", abbrev_name=None):
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     logger.propagate = False
@@ -286,9 +278,7 @@ def setup_logger(
     if abbrev_name is None:
         abbrev_name = "xl" if name == "train" else name
 
-    plain_formatter = logging.Formatter(
-        "[%(asctime)s] %(name)s %(levelname)s: %(message)s", datefmt="%m/%d %H:%M:%S"
-    )
+    plain_formatter = logging.Formatter("[%(asctime)s] %(name)s %(levelname)s: %(message)s", datefmt="%m/%d %H:%M:%S")
     # stdout logging: master only
     if distributed_rank == 0:
         ch = logging.StreamHandler(stream=sys.stdout)
