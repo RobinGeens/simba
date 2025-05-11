@@ -5,6 +5,12 @@ echo "Running"
 nvidia-smi
 echo $CUDA_VISIBLE_DEVICES
 
+# Activate the Python environment
+source env/bin/activate
+
+# Find latest checkpoint and store in variable
+LATEST_CHECKPOINT=$(ls -v checkpoints/simba_l/checkpoint-*.pth.tar | tail -n1)
+echo "Resuming from checkpoint: $LATEST_CHECKPOINT"
 
 DATA_PATH="dataset/ILSVRC2012"
 # LABEL_PATH="dataset/Image_net/imagenet_efficientnet_l2_sz475_top5/"
@@ -23,7 +29,7 @@ CUDA_VISIBLE_DEVICES=1 torchrun  \
    --lr 2e-3 \
    --num_workers 12\
    --pin-mem \
-   --resume /volume1/users/rgeens/simba/checkpoints/simba_l/checkpoint-2.pth.tar \
+   --resume $LATEST_CHECKPOINT \
    # --token-label \
    # --master_port=12346 \
    # --nnodes=1 \

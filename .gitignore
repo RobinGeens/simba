@@ -5,6 +5,8 @@ __pycache__
 
 *.tar
 *.out
+*.log
 
 Python-3.11.9
 checkpoints
+wandb

@@ -12,6 +12,7 @@ import time
 
 import numpy as np
 from PIL import ImageFile
+
 import wandb  # Add wandb import
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -536,7 +537,7 @@ def build_token_label(args):
     num_aug_splits = 0
     args.pin_mem = False
 
-    mixup_active = args.mixup > 0 or args.cutmix > 0.0 or args.cutmix_minmax is not None
+    # mixup_active = args.mixup > 0 or args.cutmix > 0.0 or args.cutmix_minmax is not None
     # create data loaders w/ augmentation pipeiine
     train_interpolation = args.train_interpolation
     if args.token_label and args.token_label_data:
