@@ -7,8 +7,11 @@ It was started from an early version of the PyTorch ImageNet example
 
 import argparse
 import datetime
+import json
 import logging
 import time
+import warnings
+from pathlib import Path
 
 import numpy as np
 from PIL import ImageFile
@@ -16,10 +19,6 @@ from PIL import ImageFile
 import wandb  # Add wandb import
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-
-import json
-import warnings
-from pathlib import Path
 
 import timm
 import torch
@@ -30,9 +29,7 @@ import torch.serialization
 import utils
 from datasets import build_dataset
 from engine import evaluate, train_one_epoch
-from loss import (
-    TokenLabelCrossEntropy,
-)
+from loss import TokenLabelCrossEntropy
 from losses import DistillationLoss
 from samplers import RASampler
 from timm.data import Mixup
@@ -41,14 +38,17 @@ from timm.models import create_model
 from timm.optim import create_optimizer
 from timm.scheduler import create_scheduler
 from timm.utils import NativeScaler, distribute_bn
-from tlt.data import (
-    create_token_label_dataset,
-    create_token_label_loader,
-)
+from tlt.data import create_token_label_dataset, create_token_label_loader
 from util.checkpoint_saver import CheckpointSaver2
 from util.flops_counter import get_model_complexity_info
 
 warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
+
+
+def load_config(config_path):
+    with open(config_path, "r") as f:
+        config = json.load(f)
+    return config
 
 
 def get_args_parser():
@@ -434,7 +434,7 @@ def get_args_parser():
         default=False,
         help="use the multi-epochs-loader to save time at the beginning of every epoch",
     )
-    ###############################################################################################################
+
     return parser
 
 
@@ -625,6 +625,8 @@ def main(args):
     _logger = logging.getLogger("train")
     _logger.info(args)
 
+    config = load_config(args.config)
+
     (
         dataset_train,
         data_loader_train,
@@ -666,7 +668,11 @@ def main(args):
     model.to(device)
     print(model)
 
-    with torch.amp.autocast("cuda", dtype=torch.bfloat16):  # enabled=True):
+    # Set model to use the specified datatype for weights
+    dtype_map = {"float32": torch.float32, "float16": torch.float16, "bfloat16": torch.bfloat16}
+    model = model.to(dtype=dtype_map[config["train_weight_dtype"]])
+
+    with torch.amp.autocast("cuda", dtype=dtype_map[config["train_activation_dtype"]]):  # enabled=True):
         flops_count, params_count = get_model_complexity_info(
             model,
             (3, 224, 224),

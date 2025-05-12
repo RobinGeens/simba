@@ -234,3 +234,1129 @@ Start training for extra_epoch20 epochs
 [05/11 11:26:36] train INFO: Epoch: [30]  [ 410/5004]  eta: 2:37:30  lr: 0.000979  loss: 4.5205 (4.3481)  time: 2.0484  data: 0.0001  max mem: 52718
 [05/11 11:26:56] train INFO: Epoch: [30]  [ 420/5004]  eta: 2:37:08  lr: 0.000979  loss: 4.4519 (4.3466)  time: 2.0483  data: 0.0001  max mem: 52718
 [05/11 11:27:17] train INFO: Epoch: [30]  [ 430/5004]  eta: 2:36:47  lr: 0.000979  loss: 4.6610 (4.3552)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 11:27:37] train INFO: Epoch: [30]  [ 440/5004]  eta: 2:36:26  lr: 0.000979  loss: 4.6757 (4.3597)  time: 2.0488  data: 0.0002  max mem: 52718
+[05/11 11:27:58] train INFO: Epoch: [30]  [ 450/5004]  eta: 2:36:04  lr: 0.000979  loss: 4.4060 (4.3596)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 11:28:18] train INFO: Epoch: [30]  [ 460/5004]  eta: 2:35:43  lr: 0.000979  loss: 4.3382 (4.3548)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 11:28:39] train INFO: Epoch: [30]  [ 470/5004]  eta: 2:35:22  lr: 0.000979  loss: 3.8905 (4.3439)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 11:28:59] train INFO: Epoch: [30]  [ 480/5004]  eta: 2:35:00  lr: 0.000979  loss: 4.1171 (4.3440)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 11:29:20] train INFO: Epoch: [30]  [ 490/5004]  eta: 2:34:39  lr: 0.000979  loss: 4.3488 (4.3472)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:29:40] train INFO: Epoch: [30]  [ 500/5004]  eta: 2:34:18  lr: 0.000979  loss: 4.4882 (4.3468)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 11:30:01] train INFO: Epoch: [30]  [ 510/5004]  eta: 2:33:56  lr: 0.000979  loss: 4.5464 (4.3514)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:30:21] train INFO: Epoch: [30]  [ 520/5004]  eta: 2:33:35  lr: 0.000979  loss: 4.5261 (4.3545)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 11:30:41] train INFO: Epoch: [30]  [ 530/5004]  eta: 2:33:14  lr: 0.000979  loss: 4.4954 (4.3484)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 11:31:02] train INFO: Epoch: [30]  [ 540/5004]  eta: 2:32:53  lr: 0.000979  loss: 4.4302 (4.3481)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 11:31:22] train INFO: Epoch: [30]  [ 550/5004]  eta: 2:32:32  lr: 0.000979  loss: 4.4302 (4.3482)  time: 2.0486  data: 0.0001  max mem: 52718
+[05/11 11:31:43] train INFO: Epoch: [30]  [ 560/5004]  eta: 2:32:11  lr: 0.000979  loss: 4.7853 (4.3546)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 11:32:03] train INFO: Epoch: [30]  [ 570/5004]  eta: 2:31:50  lr: 0.000979  loss: 4.7034 (4.3570)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 11:32:24] train INFO: Epoch: [30]  [ 580/5004]  eta: 2:31:29  lr: 0.000979  loss: 4.5127 (4.3586)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 11:32:44] train INFO: Epoch: [30]  [ 590/5004]  eta: 2:31:08  lr: 0.000979  loss: 4.6415 (4.3606)  time: 2.0488  data: 0.0001  max mem: 52718
+[05/11 11:33:05] train INFO: Epoch: [30]  [ 600/5004]  eta: 2:30:47  lr: 0.000979  loss: 4.4921 (4.3584)  time: 2.0490  data: 0.0001  max mem: 52718
+[05/11 11:33:25] train INFO: Epoch: [30]  [ 610/5004]  eta: 2:30:26  lr: 0.000979  loss: 4.4057 (4.3598)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 11:33:46] train INFO: Epoch: [30]  [ 620/5004]  eta: 2:30:05  lr: 0.000979  loss: 4.4769 (4.3609)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 11:34:06] train INFO: Epoch: [30]  [ 630/5004]  eta: 2:29:44  lr: 0.000979  loss: 4.5131 (4.3637)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 11:34:27] train INFO: Epoch: [30]  [ 640/5004]  eta: 2:29:23  lr: 0.000979  loss: 4.3880 (4.3615)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 11:34:47] train INFO: Epoch: [30]  [ 650/5004]  eta: 2:29:02  lr: 0.000979  loss: 4.1868 (4.3603)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 11:35:08] train INFO: Epoch: [30]  [ 660/5004]  eta: 2:28:41  lr: 0.000979  loss: 4.0534 (4.3533)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 11:35:28] train INFO: Epoch: [30]  [ 670/5004]  eta: 2:28:20  lr: 0.000979  loss: 4.5056 (4.3591)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 11:35:49] train INFO: Epoch: [30]  [ 680/5004]  eta: 2:27:59  lr: 0.000979  loss: 4.6105 (4.3601)  time: 2.0491  data: 0.0001  max mem: 52718
+[05/11 11:36:09] train INFO: Epoch: [30]  [ 690/5004]  eta: 2:27:39  lr: 0.000979  loss: 4.2201 (4.3558)  time: 2.0490  data: 0.0001  max mem: 52718
+[05/11 11:36:30] train INFO: Epoch: [30]  [ 700/5004]  eta: 2:27:18  lr: 0.000979  loss: 4.0953 (4.3539)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 11:36:50] train INFO: Epoch: [30]  [ 710/5004]  eta: 2:26:57  lr: 0.000979  loss: 4.5031 (4.3530)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 11:37:11] train INFO: Epoch: [30]  [ 720/5004]  eta: 2:26:36  lr: 0.000979  loss: 4.5031 (4.3507)  time: 2.0490  data: 0.0001  max mem: 52718
+[05/11 11:37:31] train INFO: Epoch: [30]  [ 730/5004]  eta: 2:26:15  lr: 0.000979  loss: 4.4426 (4.3522)  time: 2.0487  data: 0.0001  max mem: 52718
+[05/11 11:37:52] train INFO: Epoch: [30]  [ 740/5004]  eta: 2:25:54  lr: 0.000979  loss: 4.5788 (4.3576)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 11:38:12] train INFO: Epoch: [30]  [ 750/5004]  eta: 2:25:34  lr: 0.000979  loss: 4.5788 (4.3566)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 11:38:33] train INFO: Epoch: [30]  [ 760/5004]  eta: 2:25:13  lr: 0.000979  loss: 4.4486 (4.3572)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:38:53] train INFO: Epoch: [30]  [ 770/5004]  eta: 2:24:52  lr: 0.000979  loss: 4.5758 (4.3585)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 11:39:14] train INFO: Epoch: [30]  [ 780/5004]  eta: 2:24:31  lr: 0.000979  loss: 4.5758 (4.3598)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 11:39:34] train INFO: Epoch: [30]  [ 790/5004]  eta: 2:24:10  lr: 0.000979  loss: 4.5953 (4.3584)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:39:55] train INFO: Epoch: [30]  [ 800/5004]  eta: 2:23:50  lr: 0.000979  loss: 4.3934 (4.3591)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 11:40:15] train INFO: Epoch: [30]  [ 810/5004]  eta: 2:23:29  lr: 0.000979  loss: 4.1529 (4.3516)  time: 2.0486  data: 0.0001  max mem: 52718
+[05/11 11:40:36] train INFO: Epoch: [30]  [ 820/5004]  eta: 2:23:08  lr: 0.000979  loss: 4.1529 (4.3537)  time: 2.0488  data: 0.0002  max mem: 52718
+[05/11 11:40:56] train INFO: Epoch: [30]  [ 830/5004]  eta: 2:22:47  lr: 0.000979  loss: 4.5210 (4.3500)  time: 2.0491  data: 0.0002  max mem: 52718
+[05/11 11:41:17] train INFO: Epoch: [30]  [ 840/5004]  eta: 2:22:27  lr: 0.000979  loss: 4.0989 (4.3494)  time: 2.0492  data: 0.0002  max mem: 52718
+[05/11 11:41:37] train INFO: Epoch: [30]  [ 850/5004]  eta: 2:22:06  lr: 0.000979  loss: 4.2704 (4.3478)  time: 2.0499  data: 0.0002  max mem: 52718
+[05/11 11:41:58] train INFO: Epoch: [30]  [ 860/5004]  eta: 2:21:45  lr: 0.000979  loss: 4.2704 (4.3472)  time: 2.0494  data: 0.0002  max mem: 52718
+[05/11 11:42:18] train INFO: Epoch: [30]  [ 870/5004]  eta: 2:21:25  lr: 0.000979  loss: 4.2939 (4.3482)  time: 2.0487  data: 0.0002  max mem: 52718
+[05/11 11:42:38] train INFO: Epoch: [30]  [ 880/5004]  eta: 2:21:04  lr: 0.000979  loss: 4.2867 (4.3455)  time: 2.0494  data: 0.0002  max mem: 52718
+[05/11 11:42:59] train INFO: Epoch: [30]  [ 890/5004]  eta: 2:20:43  lr: 0.000979  loss: 4.2153 (4.3431)  time: 2.0494  data: 0.0001  max mem: 52718
+[05/11 11:43:19] train INFO: Epoch: [30]  [ 900/5004]  eta: 2:20:23  lr: 0.000979  loss: 4.3433 (4.3432)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 11:43:40] train INFO: Epoch: [30]  [ 910/5004]  eta: 2:20:02  lr: 0.000979  loss: 4.4363 (4.3441)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 11:44:00] train INFO: Epoch: [30]  [ 920/5004]  eta: 2:19:41  lr: 0.000979  loss: 4.7698 (4.3468)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 11:44:21] train INFO: Epoch: [30]  [ 930/5004]  eta: 2:19:20  lr: 0.000979  loss: 4.5760 (4.3504)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 11:44:41] train INFO: Epoch: [30]  [ 940/5004]  eta: 2:19:00  lr: 0.000979  loss: 4.5687 (4.3487)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 11:45:02] train INFO: Epoch: [30]  [ 950/5004]  eta: 2:18:39  lr: 0.000979  loss: 3.7207 (4.3435)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:45:22] train INFO: Epoch: [30]  [ 960/5004]  eta: 2:18:18  lr: 0.000979  loss: 4.2162 (4.3452)  time: 2.0491  data: 0.0001  max mem: 52718
+[05/11 11:45:43] train INFO: Epoch: [30]  [ 970/5004]  eta: 2:17:58  lr: 0.000979  loss: 4.6004 (4.3457)  time: 2.0487  data: 0.0001  max mem: 52718
+[05/11 11:46:03] train INFO: Epoch: [30]  [ 980/5004]  eta: 2:17:37  lr: 0.000979  loss: 4.5908 (4.3467)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 11:46:24] train INFO: Epoch: [30]  [ 990/5004]  eta: 2:17:16  lr: 0.000979  loss: 4.5954 (4.3471)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 11:46:44] train INFO: Epoch: [30]  [1000/5004]  eta: 2:16:56  lr: 0.000979  loss: 4.5424 (4.3467)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:47:05] train INFO: Epoch: [30]  [1010/5004]  eta: 2:16:35  lr: 0.000979  loss: 4.5259 (4.3492)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 11:47:25] train INFO: Epoch: [30]  [1020/5004]  eta: 2:16:14  lr: 0.000979  loss: 4.6305 (4.3487)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 11:47:46] train INFO: Epoch: [30]  [1030/5004]  eta: 2:15:54  lr: 0.000979  loss: 4.1461 (4.3447)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:48:06] train INFO: Epoch: [30]  [1040/5004]  eta: 2:15:33  lr: 0.000979  loss: 4.3284 (4.3472)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 11:48:27] train INFO: Epoch: [30]  [1050/5004]  eta: 2:15:12  lr: 0.000979  loss: 4.4963 (4.3468)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:48:47] train INFO: Epoch: [30]  [1060/5004]  eta: 2:14:52  lr: 0.000979  loss: 4.4725 (4.3484)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:49:08] train INFO: Epoch: [30]  [1070/5004]  eta: 2:14:31  lr: 0.000979  loss: 4.6026 (4.3478)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:49:28] train INFO: Epoch: [30]  [1080/5004]  eta: 2:14:10  lr: 0.000979  loss: 4.6026 (4.3471)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:49:49] train INFO: Epoch: [30]  [1090/5004]  eta: 2:13:50  lr: 0.000979  loss: 4.3753 (4.3468)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 11:50:09] train INFO: Epoch: [30]  [1100/5004]  eta: 2:13:29  lr: 0.000979  loss: 4.3753 (4.3464)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:50:30] train INFO: Epoch: [30]  [1110/5004]  eta: 2:13:08  lr: 0.000979  loss: 4.1801 (4.3467)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 11:50:50] train INFO: Epoch: [30]  [1120/5004]  eta: 2:12:48  lr: 0.000979  loss: 4.6067 (4.3483)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:51:10] train INFO: Epoch: [30]  [1130/5004]  eta: 2:12:27  lr: 0.000979  loss: 4.6067 (4.3502)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 11:51:31] train INFO: Epoch: [30]  [1140/5004]  eta: 2:12:06  lr: 0.000979  loss: 4.3620 (4.3480)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 11:51:51] train INFO: Epoch: [30]  [1150/5004]  eta: 2:11:46  lr: 0.000979  loss: 4.2904 (4.3482)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 11:52:12] train INFO: Epoch: [30]  [1160/5004]  eta: 2:11:25  lr: 0.000979  loss: 4.5393 (4.3478)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 11:52:32] train INFO: Epoch: [30]  [1170/5004]  eta: 2:11:04  lr: 0.000979  loss: 4.4188 (4.3479)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 11:52:53] train INFO: Epoch: [30]  [1180/5004]  eta: 2:10:44  lr: 0.000979  loss: 4.7062 (4.3516)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 11:53:13] train INFO: Epoch: [30]  [1190/5004]  eta: 2:10:23  lr: 0.000979  loss: 4.7772 (4.3536)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 11:53:34] train INFO: Epoch: [30]  [1200/5004]  eta: 2:10:02  lr: 0.000979  loss: 4.4814 (4.3549)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 11:53:54] train INFO: Epoch: [30]  [1210/5004]  eta: 2:09:42  lr: 0.000979  loss: 4.4432 (4.3542)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:54:15] train INFO: Epoch: [30]  [1220/5004]  eta: 2:09:21  lr: 0.000979  loss: 4.3115 (4.3534)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:54:35] train INFO: Epoch: [30]  [1230/5004]  eta: 2:09:01  lr: 0.000979  loss: 4.3115 (4.3530)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 11:54:56] train INFO: Epoch: [30]  [1240/5004]  eta: 2:08:40  lr: 0.000979  loss: 4.5078 (4.3529)  time: 2.0466  data: 0.0001  max mem: 52718
+[05/11 11:55:16] train INFO: Epoch: [30]  [1250/5004]  eta: 2:08:19  lr: 0.000979  loss: 4.3238 (4.3512)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 11:55:37] train INFO: Epoch: [30]  [1260/5004]  eta: 2:07:59  lr: 0.000979  loss: 4.4285 (4.3523)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 11:55:57] train INFO: Epoch: [30]  [1270/5004]  eta: 2:07:38  lr: 0.000979  loss: 4.5703 (4.3534)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 11:56:18] train INFO: Epoch: [30]  [1280/5004]  eta: 2:07:17  lr: 0.000979  loss: 4.6725 (4.3564)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 11:56:38] train INFO: Epoch: [30]  [1290/5004]  eta: 2:06:57  lr: 0.000979  loss: 4.6651 (4.3579)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 11:56:59] train INFO: Epoch: [30]  [1300/5004]  eta: 2:06:36  lr: 0.000979  loss: 4.5922 (4.3587)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 11:57:19] train INFO: Epoch: [30]  [1310/5004]  eta: 2:06:16  lr: 0.000979  loss: 4.4912 (4.3570)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 11:57:39] train INFO: Epoch: [30]  [1320/5004]  eta: 2:05:55  lr: 0.000979  loss: 4.1129 (4.3544)  time: 2.0468  data: 0.0001  max mem: 52718
+[05/11 11:58:00] train INFO: Epoch: [30]  [1330/5004]  eta: 2:05:34  lr: 0.000979  loss: 4.2452 (4.3551)  time: 2.0468  data: 0.0001  max mem: 52718
+[05/11 11:58:20] train INFO: Epoch: [30]  [1340/5004]  eta: 2:05:14  lr: 0.000979  loss: 4.5343 (4.3560)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 11:58:41] train INFO: Epoch: [30]  [1350/5004]  eta: 2:04:53  lr: 0.000979  loss: 4.5165 (4.3565)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 11:59:01] train INFO: Epoch: [30]  [1360/5004]  eta: 2:04:33  lr: 0.000979  loss: 4.4683 (4.3577)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 11:59:22] train INFO: Epoch: [30]  [1370/5004]  eta: 2:04:12  lr: 0.000979  loss: 4.6094 (4.3588)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 11:59:42] train INFO: Epoch: [30]  [1380/5004]  eta: 2:03:51  lr: 0.000979  loss: 4.6381 (4.3602)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 12:00:03] train INFO: Epoch: [30]  [1390/5004]  eta: 2:03:31  lr: 0.000979  loss: 4.6037 (4.3599)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:00:23] train INFO: Epoch: [30]  [1400/5004]  eta: 2:03:10  lr: 0.000979  loss: 4.4487 (4.3600)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:00:44] train INFO: Epoch: [30]  [1410/5004]  eta: 2:02:50  lr: 0.000979  loss: 4.5478 (4.3620)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:01:04] train INFO: Epoch: [30]  [1420/5004]  eta: 2:02:29  lr: 0.000979  loss: 4.5478 (4.3617)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:01:25] train INFO: Epoch: [30]  [1430/5004]  eta: 2:02:08  lr: 0.000979  loss: 4.4756 (4.3618)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:01:45] train INFO: Epoch: [30]  [1440/5004]  eta: 2:01:48  lr: 0.000979  loss: 4.3871 (4.3609)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:02:06] train INFO: Epoch: [30]  [1450/5004]  eta: 2:01:27  lr: 0.000979  loss: 4.5682 (4.3612)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:02:26] train INFO: Epoch: [30]  [1460/5004]  eta: 2:01:07  lr: 0.000979  loss: 4.6783 (4.3630)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:02:47] train INFO: Epoch: [30]  [1470/5004]  eta: 2:00:46  lr: 0.000979  loss: 4.7357 (4.3625)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:03:07] train INFO: Epoch: [30]  [1480/5004]  eta: 2:00:25  lr: 0.000979  loss: 4.4699 (4.3608)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:03:28] train INFO: Epoch: [30]  [1490/5004]  eta: 2:00:05  lr: 0.000979  loss: 3.8806 (4.3574)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:03:48] train INFO: Epoch: [30]  [1500/5004]  eta: 1:59:44  lr: 0.000979  loss: 4.0750 (4.3567)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:04:08] train INFO: Epoch: [30]  [1510/5004]  eta: 1:59:24  lr: 0.000979  loss: 4.4536 (4.3575)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:04:29] train INFO: Epoch: [30]  [1520/5004]  eta: 1:59:03  lr: 0.000979  loss: 4.4771 (4.3585)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:04:49] train INFO: Epoch: [30]  [1530/5004]  eta: 1:58:43  lr: 0.000979  loss: 4.4375 (4.3579)  time: 2.0468  data: 0.0001  max mem: 52718
+[05/11 12:05:10] train INFO: Epoch: [30]  [1540/5004]  eta: 1:58:22  lr: 0.000979  loss: 4.5061 (4.3583)  time: 2.0467  data: 0.0001  max mem: 52718
+[05/11 12:05:30] train INFO: Epoch: [30]  [1550/5004]  eta: 1:58:01  lr: 0.000979  loss: 4.3973 (4.3568)  time: 2.0467  data: 0.0001  max mem: 52718
+[05/11 12:05:51] train INFO: Epoch: [30]  [1560/5004]  eta: 1:57:41  lr: 0.000979  loss: 4.1743 (4.3563)  time: 2.0466  data: 0.0001  max mem: 52718
+[05/11 12:06:11] train INFO: Epoch: [30]  [1570/5004]  eta: 1:57:20  lr: 0.000979  loss: 3.9151 (4.3537)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:06:32] train INFO: Epoch: [30]  [1580/5004]  eta: 1:57:00  lr: 0.000979  loss: 3.9673 (4.3534)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:06:52] train INFO: Epoch: [30]  [1590/5004]  eta: 1:56:39  lr: 0.000979  loss: 4.4551 (4.3545)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:07:13] train INFO: Epoch: [30]  [1600/5004]  eta: 1:56:18  lr: 0.000979  loss: 4.5882 (4.3563)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:07:33] train INFO: Epoch: [30]  [1610/5004]  eta: 1:55:58  lr: 0.000979  loss: 4.5115 (4.3570)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:07:54] train INFO: Epoch: [30]  [1620/5004]  eta: 1:55:37  lr: 0.000979  loss: 4.4614 (4.3569)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:08:14] train INFO: Epoch: [30]  [1630/5004]  eta: 1:55:17  lr: 0.000979  loss: 4.5449 (4.3580)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 12:08:35] train INFO: Epoch: [30]  [1640/5004]  eta: 1:54:56  lr: 0.000979  loss: 4.5449 (4.3580)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:08:55] train INFO: Epoch: [30]  [1650/5004]  eta: 1:54:36  lr: 0.000979  loss: 4.1540 (4.3553)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:09:16] train INFO: Epoch: [30]  [1660/5004]  eta: 1:54:15  lr: 0.000979  loss: 3.7495 (4.3528)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:09:36] train INFO: Epoch: [30]  [1670/5004]  eta: 1:53:55  lr: 0.000979  loss: 4.1882 (4.3532)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:09:57] train INFO: Epoch: [30]  [1680/5004]  eta: 1:53:34  lr: 0.000979  loss: 4.6079 (4.3537)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:10:17] train INFO: Epoch: [30]  [1690/5004]  eta: 1:53:13  lr: 0.000979  loss: 4.3447 (4.3536)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:10:37] train INFO: Epoch: [30]  [1700/5004]  eta: 1:52:53  lr: 0.000979  loss: 4.7074 (4.3554)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:10:58] train INFO: Epoch: [30]  [1710/5004]  eta: 1:52:32  lr: 0.000979  loss: 4.6910 (4.3554)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:11:18] train INFO: Epoch: [30]  [1720/5004]  eta: 1:52:12  lr: 0.000979  loss: 4.1904 (4.3547)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:11:39] train INFO: Epoch: [30]  [1730/5004]  eta: 1:51:51  lr: 0.000979  loss: 4.5973 (4.3566)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:11:59] train INFO: Epoch: [30]  [1740/5004]  eta: 1:51:31  lr: 0.000979  loss: 4.6603 (4.3562)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:12:20] train INFO: Epoch: [30]  [1750/5004]  eta: 1:51:10  lr: 0.000979  loss: 4.0438 (4.3549)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:12:40] train INFO: Epoch: [30]  [1760/5004]  eta: 1:50:50  lr: 0.000979  loss: 4.0438 (4.3550)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:13:01] train INFO: Epoch: [30]  [1770/5004]  eta: 1:50:29  lr: 0.000979  loss: 4.6055 (4.3557)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:13:21] train INFO: Epoch: [30]  [1780/5004]  eta: 1:50:09  lr: 0.000979  loss: 4.6273 (4.3562)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:13:42] train INFO: Epoch: [30]  [1790/5004]  eta: 1:49:48  lr: 0.000979  loss: 4.6273 (4.3557)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:14:02] train INFO: Epoch: [30]  [1800/5004]  eta: 1:49:28  lr: 0.000979  loss: 4.5097 (4.3571)  time: 2.0487  data: 0.0001  max mem: 52718
+[05/11 12:14:23] train INFO: Epoch: [30]  [1810/5004]  eta: 1:49:07  lr: 0.000979  loss: 4.4809 (4.3567)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:14:43] train INFO: Epoch: [30]  [1820/5004]  eta: 1:48:46  lr: 0.000979  loss: 4.3618 (4.3576)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 12:15:04] train INFO: Epoch: [30]  [1830/5004]  eta: 1:48:26  lr: 0.000979  loss: 4.5679 (4.3584)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:15:24] train INFO: Epoch: [30]  [1840/5004]  eta: 1:48:05  lr: 0.000979  loss: 4.4709 (4.3583)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:15:45] train INFO: Epoch: [30]  [1850/5004]  eta: 1:47:45  lr: 0.000979  loss: 4.2496 (4.3570)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:16:05] train INFO: Epoch: [30]  [1860/5004]  eta: 1:47:24  lr: 0.000979  loss: 4.2496 (4.3565)  time: 2.0481  data: 0.0002  max mem: 52718
+[05/11 12:16:26] train INFO: Epoch: [30]  [1870/5004]  eta: 1:47:04  lr: 0.000979  loss: 4.3620 (4.3552)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:16:46] train INFO: Epoch: [30]  [1880/5004]  eta: 1:46:43  lr: 0.000979  loss: 4.5275 (4.3566)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:17:07] train INFO: Epoch: [30]  [1890/5004]  eta: 1:46:23  lr: 0.000979  loss: 4.5136 (4.3557)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 12:17:27] train INFO: Epoch: [30]  [1900/5004]  eta: 1:46:02  lr: 0.000979  loss: 4.3715 (4.3551)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:17:48] train INFO: Epoch: [30]  [1910/5004]  eta: 1:45:42  lr: 0.000979  loss: 4.3979 (4.3554)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:18:08] train INFO: Epoch: [30]  [1920/5004]  eta: 1:45:21  lr: 0.000979  loss: 4.1445 (4.3526)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:18:28] train INFO: Epoch: [30]  [1930/5004]  eta: 1:45:01  lr: 0.000979  loss: 3.9992 (4.3522)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 12:18:49] train INFO: Epoch: [30]  [1940/5004]  eta: 1:44:40  lr: 0.000979  loss: 4.0768 (4.3509)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:19:09] train INFO: Epoch: [30]  [1950/5004]  eta: 1:44:19  lr: 0.000979  loss: 4.1090 (4.3501)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 12:19:30] train INFO: Epoch: [30]  [1960/5004]  eta: 1:43:59  lr: 0.000979  loss: 4.3500 (4.3495)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:19:50] train INFO: Epoch: [30]  [1970/5004]  eta: 1:43:38  lr: 0.000979  loss: 4.3179 (4.3480)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:20:11] train INFO: Epoch: [30]  [1980/5004]  eta: 1:43:18  lr: 0.000979  loss: 4.2469 (4.3476)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:20:31] train INFO: Epoch: [30]  [1990/5004]  eta: 1:42:57  lr: 0.000979  loss: 4.5772 (4.3475)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:20:52] train INFO: Epoch: [30]  [2000/5004]  eta: 1:42:37  lr: 0.000979  loss: 4.5562 (4.3469)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:21:12] train INFO: Epoch: [30]  [2010/5004]  eta: 1:42:16  lr: 0.000979  loss: 4.6043 (4.3487)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:21:33] train INFO: Epoch: [30]  [2020/5004]  eta: 1:41:56  lr: 0.000979  loss: 4.3222 (4.3482)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:21:53] train INFO: Epoch: [30]  [2030/5004]  eta: 1:41:35  lr: 0.000979  loss: 4.4625 (4.3490)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:22:14] train INFO: Epoch: [30]  [2040/5004]  eta: 1:41:15  lr: 0.000979  loss: 4.5643 (4.3496)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:22:34] train INFO: Epoch: [30]  [2050/5004]  eta: 1:40:54  lr: 0.000979  loss: 4.4465 (4.3486)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:22:55] train INFO: Epoch: [30]  [2060/5004]  eta: 1:40:34  lr: 0.000979  loss: 4.2954 (4.3484)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 12:23:15] train INFO: Epoch: [30]  [2070/5004]  eta: 1:40:13  lr: 0.000979  loss: 4.4798 (4.3489)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:23:36] train INFO: Epoch: [30]  [2080/5004]  eta: 1:39:53  lr: 0.000979  loss: 4.3978 (4.3485)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:23:56] train INFO: Epoch: [30]  [2090/5004]  eta: 1:39:32  lr: 0.000979  loss: 4.3978 (4.3495)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:24:17] train INFO: Epoch: [30]  [2100/5004]  eta: 1:39:12  lr: 0.000979  loss: 4.5508 (4.3486)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:24:37] train INFO: Epoch: [30]  [2110/5004]  eta: 1:38:51  lr: 0.000979  loss: 4.5078 (4.3493)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:24:58] train INFO: Epoch: [30]  [2120/5004]  eta: 1:38:31  lr: 0.000979  loss: 4.5264 (4.3490)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:25:18] train INFO: Epoch: [30]  [2130/5004]  eta: 1:38:10  lr: 0.000979  loss: 4.2549 (4.3494)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:25:38] train INFO: Epoch: [30]  [2140/5004]  eta: 1:37:49  lr: 0.000979  loss: 4.6192 (4.3505)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:25:59] train INFO: Epoch: [30]  [2150/5004]  eta: 1:37:29  lr: 0.000979  loss: 4.6297 (4.3503)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:26:19] train INFO: Epoch: [30]  [2160/5004]  eta: 1:37:08  lr: 0.000979  loss: 4.6787 (4.3510)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:26:40] train INFO: Epoch: [30]  [2170/5004]  eta: 1:36:48  lr: 0.000979  loss: 4.6237 (4.3518)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:27:00] train INFO: Epoch: [30]  [2180/5004]  eta: 1:36:27  lr: 0.000979  loss: 4.5422 (4.3514)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:27:21] train INFO: Epoch: [30]  [2190/5004]  eta: 1:36:07  lr: 0.000979  loss: 4.5765 (4.3526)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:27:41] train INFO: Epoch: [30]  [2200/5004]  eta: 1:35:46  lr: 0.000979  loss: 4.4875 (4.3511)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:28:02] train INFO: Epoch: [30]  [2210/5004]  eta: 1:35:26  lr: 0.000979  loss: 4.0718 (4.3505)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:28:22] train INFO: Epoch: [30]  [2220/5004]  eta: 1:35:05  lr: 0.000979  loss: 4.2203 (4.3498)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:28:43] train INFO: Epoch: [30]  [2230/5004]  eta: 1:34:45  lr: 0.000979  loss: 4.2203 (4.3493)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:29:03] train INFO: Epoch: [30]  [2240/5004]  eta: 1:34:24  lr: 0.000979  loss: 4.1358 (4.3486)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:29:24] train INFO: Epoch: [30]  [2250/5004]  eta: 1:34:04  lr: 0.000979  loss: 4.1132 (4.3480)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:29:44] train INFO: Epoch: [30]  [2260/5004]  eta: 1:33:43  lr: 0.000979  loss: 4.1132 (4.3476)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:30:05] train INFO: Epoch: [30]  [2270/5004]  eta: 1:33:23  lr: 0.000979  loss: 4.4125 (4.3483)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:30:25] train INFO: Epoch: [30]  [2280/5004]  eta: 1:33:02  lr: 0.000979  loss: 4.4351 (4.3491)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:30:46] train INFO: Epoch: [30]  [2290/5004]  eta: 1:32:42  lr: 0.000979  loss: 4.4351 (4.3487)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:31:06] train INFO: Epoch: [30]  [2300/5004]  eta: 1:32:21  lr: 0.000979  loss: 4.2522 (4.3478)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 12:31:27] train INFO: Epoch: [30]  [2310/5004]  eta: 1:32:01  lr: 0.000979  loss: 4.2522 (4.3468)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 12:31:47] train INFO: Epoch: [30]  [2320/5004]  eta: 1:31:40  lr: 0.000979  loss: 4.4658 (4.3478)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:32:08] train INFO: Epoch: [30]  [2330/5004]  eta: 1:31:20  lr: 0.000979  loss: 4.5362 (4.3491)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:32:28] train INFO: Epoch: [30]  [2340/5004]  eta: 1:30:59  lr: 0.000979  loss: 4.6201 (4.3495)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:32:49] train INFO: Epoch: [30]  [2350/5004]  eta: 1:30:39  lr: 0.000979  loss: 4.5074 (4.3498)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:33:09] train INFO: Epoch: [30]  [2360/5004]  eta: 1:30:18  lr: 0.000979  loss: 4.3718 (4.3494)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 12:33:29] train INFO: Epoch: [30]  [2370/5004]  eta: 1:29:58  lr: 0.000979  loss: 4.2282 (4.3489)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 12:33:50] train INFO: Epoch: [30]  [2380/5004]  eta: 1:29:37  lr: 0.000979  loss: 4.4888 (4.3497)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:34:10] train INFO: Epoch: [30]  [2390/5004]  eta: 1:29:17  lr: 0.000979  loss: 4.5228 (4.3489)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:34:31] train INFO: Epoch: [30]  [2400/5004]  eta: 1:28:56  lr: 0.000979  loss: 4.1112 (4.3488)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:34:51] train INFO: Epoch: [30]  [2410/5004]  eta: 1:28:36  lr: 0.000979  loss: 4.6039 (4.3493)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:35:12] train INFO: Epoch: [30]  [2420/5004]  eta: 1:28:15  lr: 0.000979  loss: 4.4853 (4.3487)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:35:32] train INFO: Epoch: [30]  [2430/5004]  eta: 1:27:55  lr: 0.000979  loss: 4.1128 (4.3489)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:35:53] train INFO: Epoch: [30]  [2440/5004]  eta: 1:27:34  lr: 0.000979  loss: 4.4242 (4.3490)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:36:13] train INFO: Epoch: [30]  [2450/5004]  eta: 1:27:14  lr: 0.000979  loss: 4.4029 (4.3499)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:36:34] train INFO: Epoch: [30]  [2460/5004]  eta: 1:26:53  lr: 0.000979  loss: 4.5913 (4.3502)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:36:54] train INFO: Epoch: [30]  [2470/5004]  eta: 1:26:32  lr: 0.000979  loss: 4.5913 (4.3498)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:37:15] train INFO: Epoch: [30]  [2480/5004]  eta: 1:26:12  lr: 0.000979  loss: 4.1432 (4.3493)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:37:35] train INFO: Epoch: [30]  [2490/5004]  eta: 1:25:51  lr: 0.000979  loss: 4.3555 (4.3503)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:37:56] train INFO: Epoch: [30]  [2500/5004]  eta: 1:25:31  lr: 0.000979  loss: 4.4269 (4.3501)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:38:16] train INFO: Epoch: [30]  [2510/5004]  eta: 1:25:10  lr: 0.000979  loss: 4.0853 (4.3493)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:38:37] train INFO: Epoch: [30]  [2520/5004]  eta: 1:24:50  lr: 0.000979  loss: 4.3496 (4.3500)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:38:57] train INFO: Epoch: [30]  [2530/5004]  eta: 1:24:29  lr: 0.000979  loss: 4.6592 (4.3509)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:39:18] train INFO: Epoch: [30]  [2540/5004]  eta: 1:24:09  lr: 0.000979  loss: 4.5601 (4.3505)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 12:39:38] train INFO: Epoch: [30]  [2550/5004]  eta: 1:23:48  lr: 0.000979  loss: 4.1690 (4.3509)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:39:59] train INFO: Epoch: [30]  [2560/5004]  eta: 1:23:28  lr: 0.000979  loss: 4.6549 (4.3525)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:40:19] train INFO: Epoch: [30]  [2570/5004]  eta: 1:23:07  lr: 0.000979  loss: 4.6549 (4.3534)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:40:39] train INFO: Epoch: [30]  [2580/5004]  eta: 1:22:47  lr: 0.000979  loss: 4.4765 (4.3534)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:41:00] train INFO: Epoch: [30]  [2590/5004]  eta: 1:22:26  lr: 0.000979  loss: 4.4765 (4.3531)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:41:20] train INFO: Epoch: [30]  [2600/5004]  eta: 1:22:06  lr: 0.000979  loss: 4.4255 (4.3537)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:41:41] train INFO: Epoch: [30]  [2610/5004]  eta: 1:21:45  lr: 0.000979  loss: 4.3616 (4.3526)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:42:01] train INFO: Epoch: [30]  [2620/5004]  eta: 1:21:25  lr: 0.000979  loss: 4.2176 (4.3530)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 12:42:22] train INFO: Epoch: [30]  [2630/5004]  eta: 1:21:04  lr: 0.000979  loss: 4.3989 (4.3529)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:42:42] train INFO: Epoch: [30]  [2640/5004]  eta: 1:20:44  lr: 0.000979  loss: 4.5385 (4.3543)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:43:03] train INFO: Epoch: [30]  [2650/5004]  eta: 1:20:23  lr: 0.000979  loss: 4.7906 (4.3546)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 12:43:23] train INFO: Epoch: [30]  [2660/5004]  eta: 1:20:03  lr: 0.000979  loss: 4.6747 (4.3548)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:43:44] train INFO: Epoch: [30]  [2670/5004]  eta: 1:19:42  lr: 0.000979  loss: 4.6308 (4.3553)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:44:04] train INFO: Epoch: [30]  [2680/5004]  eta: 1:19:22  lr: 0.000979  loss: 4.6434 (4.3564)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:44:25] train INFO: Epoch: [30]  [2690/5004]  eta: 1:19:01  lr: 0.000979  loss: 4.7886 (4.3571)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:44:45] train INFO: Epoch: [30]  [2700/5004]  eta: 1:18:41  lr: 0.000979  loss: 4.7152 (4.3575)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:45:06] train INFO: Epoch: [30]  [2710/5004]  eta: 1:18:20  lr: 0.000979  loss: 4.5868 (4.3584)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:45:26] train INFO: Epoch: [30]  [2720/5004]  eta: 1:18:00  lr: 0.000979  loss: 4.5868 (4.3585)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:45:47] train INFO: Epoch: [30]  [2730/5004]  eta: 1:17:39  lr: 0.000979  loss: 4.5053 (4.3594)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 12:46:07] train INFO: Epoch: [30]  [2740/5004]  eta: 1:17:19  lr: 0.000979  loss: 4.2818 (4.3576)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 12:46:28] train INFO: Epoch: [30]  [2750/5004]  eta: 1:16:58  lr: 0.000979  loss: 4.0485 (4.3577)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:46:48] train INFO: Epoch: [30]  [2760/5004]  eta: 1:16:38  lr: 0.000979  loss: 4.4947 (4.3570)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:47:09] train INFO: Epoch: [30]  [2770/5004]  eta: 1:16:17  lr: 0.000979  loss: 4.6456 (4.3583)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:47:29] train INFO: Epoch: [30]  [2780/5004]  eta: 1:15:57  lr: 0.000979  loss: 4.6986 (4.3581)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 12:47:49] train INFO: Epoch: [30]  [2790/5004]  eta: 1:15:36  lr: 0.000979  loss: 4.0680 (4.3576)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 12:48:10] train INFO: Epoch: [30]  [2800/5004]  eta: 1:15:16  lr: 0.000979  loss: 4.0353 (4.3570)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:48:30] train INFO: Epoch: [30]  [2810/5004]  eta: 1:14:55  lr: 0.000979  loss: 4.5093 (4.3572)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 12:48:51] train INFO: Epoch: [30]  [2820/5004]  eta: 1:14:35  lr: 0.000979  loss: 4.5692 (4.3571)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:49:11] train INFO: Epoch: [30]  [2830/5004]  eta: 1:14:14  lr: 0.000979  loss: 4.3845 (4.3568)  time: 2.0486  data: 0.0001  max mem: 52718
+[05/11 12:49:32] train INFO: Epoch: [30]  [2840/5004]  eta: 1:13:54  lr: 0.000979  loss: 4.0913 (4.3566)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:49:52] train INFO: Epoch: [30]  [2850/5004]  eta: 1:13:33  lr: 0.000979  loss: 4.0913 (4.3557)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:50:13] train INFO: Epoch: [30]  [2860/5004]  eta: 1:13:13  lr: 0.000979  loss: 3.8459 (4.3541)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:50:33] train INFO: Epoch: [30]  [2870/5004]  eta: 1:12:52  lr: 0.000979  loss: 4.0845 (4.3538)  time: 2.0466  data: 0.0001  max mem: 52718
+[05/11 12:50:54] train INFO: Epoch: [30]  [2880/5004]  eta: 1:12:32  lr: 0.000979  loss: 4.3349 (4.3534)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:51:14] train INFO: Epoch: [30]  [2890/5004]  eta: 1:12:11  lr: 0.000979  loss: 4.2085 (4.3527)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:51:35] train INFO: Epoch: [30]  [2900/5004]  eta: 1:11:51  lr: 0.000979  loss: 4.2673 (4.3531)  time: 2.0470  data: 0.0001  max mem: 52718
+[05/11 12:51:55] train INFO: Epoch: [30]  [2910/5004]  eta: 1:11:30  lr: 0.000979  loss: 4.4895 (4.3524)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:52:16] train INFO: Epoch: [30]  [2920/5004]  eta: 1:11:10  lr: 0.000979  loss: 4.3142 (4.3525)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:52:36] train INFO: Epoch: [30]  [2930/5004]  eta: 1:10:49  lr: 0.000979  loss: 4.6015 (4.3534)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:52:57] train INFO: Epoch: [30]  [2940/5004]  eta: 1:10:29  lr: 0.000979  loss: 4.7195 (4.3546)  time: 2.0469  data: 0.0001  max mem: 52718
+[05/11 12:53:17] train INFO: Epoch: [30]  [2950/5004]  eta: 1:10:08  lr: 0.000979  loss: 4.3830 (4.3537)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:53:38] train INFO: Epoch: [30]  [2960/5004]  eta: 1:09:48  lr: 0.000979  loss: 4.3195 (4.3536)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 12:53:58] train INFO: Epoch: [30]  [2970/5004]  eta: 1:09:27  lr: 0.000979  loss: 4.4660 (4.3537)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:54:18] train INFO: Epoch: [30]  [2980/5004]  eta: 1:09:07  lr: 0.000979  loss: 4.4497 (4.3536)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 12:54:39] train INFO: Epoch: [30]  [2990/5004]  eta: 1:08:46  lr: 0.000979  loss: 4.4497 (4.3535)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:54:59] train INFO: Epoch: [30]  [3000/5004]  eta: 1:08:26  lr: 0.000979  loss: 4.4449 (4.3534)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 12:55:20] train INFO: Epoch: [30]  [3010/5004]  eta: 1:08:05  lr: 0.000979  loss: 4.2915 (4.3536)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:55:40] train INFO: Epoch: [30]  [3020/5004]  eta: 1:07:45  lr: 0.000979  loss: 4.4709 (4.3538)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:56:01] train INFO: Epoch: [30]  [3030/5004]  eta: 1:07:24  lr: 0.000979  loss: 4.4479 (4.3528)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:56:21] train INFO: Epoch: [30]  [3040/5004]  eta: 1:07:04  lr: 0.000979  loss: 4.4479 (4.3532)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:56:42] train INFO: Epoch: [30]  [3050/5004]  eta: 1:06:43  lr: 0.000979  loss: 4.5863 (4.3535)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:57:02] train INFO: Epoch: [30]  [3060/5004]  eta: 1:06:23  lr: 0.000979  loss: 4.4884 (4.3531)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:57:23] train INFO: Epoch: [30]  [3070/5004]  eta: 1:06:02  lr: 0.000979  loss: 4.2604 (4.3524)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 12:57:43] train INFO: Epoch: [30]  [3080/5004]  eta: 1:05:42  lr: 0.000979  loss: 4.2604 (4.3518)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 12:58:04] train INFO: Epoch: [30]  [3090/5004]  eta: 1:05:21  lr: 0.000979  loss: 4.3095 (4.3514)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 12:58:24] train INFO: Epoch: [30]  [3100/5004]  eta: 1:05:01  lr: 0.000979  loss: 4.5968 (4.3523)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 12:58:45] train INFO: Epoch: [30]  [3110/5004]  eta: 1:04:40  lr: 0.000979  loss: 4.5968 (4.3522)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 12:59:05] train INFO: Epoch: [30]  [3120/5004]  eta: 1:04:20  lr: 0.000979  loss: 4.3383 (4.3525)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 12:59:26] train INFO: Epoch: [30]  [3130/5004]  eta: 1:03:59  lr: 0.000979  loss: 4.3501 (4.3524)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 12:59:46] train INFO: Epoch: [30]  [3140/5004]  eta: 1:03:39  lr: 0.000979  loss: 4.2946 (4.3513)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:00:07] train INFO: Epoch: [30]  [3150/5004]  eta: 1:03:18  lr: 0.000979  loss: 4.2946 (4.3512)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 13:00:27] train INFO: Epoch: [30]  [3160/5004]  eta: 1:02:58  lr: 0.000979  loss: 4.3922 (4.3511)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 13:00:48] train INFO: Epoch: [30]  [3170/5004]  eta: 1:02:37  lr: 0.000979  loss: 4.6103 (4.3516)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 13:01:08] train INFO: Epoch: [30]  [3180/5004]  eta: 1:02:17  lr: 0.000979  loss: 4.6169 (4.3519)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:01:29] train INFO: Epoch: [30]  [3190/5004]  eta: 1:01:56  lr: 0.000979  loss: 4.3781 (4.3516)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 13:01:49] train INFO: Epoch: [30]  [3200/5004]  eta: 1:01:36  lr: 0.000979  loss: 4.4746 (4.3522)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 13:02:10] train INFO: Epoch: [30]  [3210/5004]  eta: 1:01:15  lr: 0.000979  loss: 4.6001 (4.3523)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:02:30] train INFO: Epoch: [30]  [3220/5004]  eta: 1:00:55  lr: 0.000979  loss: 4.5549 (4.3527)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:02:50] train INFO: Epoch: [30]  [3230/5004]  eta: 1:00:34  lr: 0.000979  loss: 4.5467 (4.3529)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:03:11] train INFO: Epoch: [30]  [3240/5004]  eta: 1:00:14  lr: 0.000979  loss: 4.6981 (4.3545)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 13:03:31] train INFO: Epoch: [30]  [3250/5004]  eta: 0:59:53  lr: 0.000979  loss: 4.8097 (4.3546)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 13:03:52] train INFO: Epoch: [30]  [3260/5004]  eta: 0:59:33  lr: 0.000979  loss: 4.2615 (4.3549)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 13:04:12] train INFO: Epoch: [30]  [3270/5004]  eta: 0:59:12  lr: 0.000979  loss: 4.4495 (4.3547)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 13:04:33] train INFO: Epoch: [30]  [3280/5004]  eta: 0:58:52  lr: 0.000979  loss: 4.1366 (4.3544)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 13:04:53] train INFO: Epoch: [30]  [3290/5004]  eta: 0:58:31  lr: 0.000979  loss: 4.3880 (4.3546)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:05:14] train INFO: Epoch: [30]  [3300/5004]  eta: 0:58:11  lr: 0.000979  loss: 4.4113 (4.3545)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:05:34] train INFO: Epoch: [30]  [3310/5004]  eta: 0:57:50  lr: 0.000979  loss: 4.7207 (4.3557)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 13:05:55] train INFO: Epoch: [30]  [3320/5004]  eta: 0:57:30  lr: 0.000979  loss: 4.7207 (4.3560)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:06:15] train INFO: Epoch: [30]  [3330/5004]  eta: 0:57:09  lr: 0.000979  loss: 4.3079 (4.3550)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:06:36] train INFO: Epoch: [30]  [3340/5004]  eta: 0:56:49  lr: 0.000979  loss: 3.9485 (4.3543)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 13:06:56] train INFO: Epoch: [30]  [3350/5004]  eta: 0:56:28  lr: 0.000979  loss: 4.3275 (4.3544)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 13:07:17] train INFO: Epoch: [30]  [3360/5004]  eta: 0:56:08  lr: 0.000979  loss: 4.6008 (4.3546)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:07:37] train INFO: Epoch: [30]  [3370/5004]  eta: 0:55:47  lr: 0.000979  loss: 4.5917 (4.3548)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 13:07:58] train INFO: Epoch: [30]  [3380/5004]  eta: 0:55:27  lr: 0.000979  loss: 4.4388 (4.3550)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:08:18] train INFO: Epoch: [30]  [3390/5004]  eta: 0:55:06  lr: 0.000979  loss: 4.6688 (4.3556)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:08:39] train INFO: Epoch: [30]  [3400/5004]  eta: 0:54:46  lr: 0.000979  loss: 4.4317 (4.3548)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 13:08:59] train INFO: Epoch: [30]  [3410/5004]  eta: 0:54:25  lr: 0.000979  loss: 4.4770 (4.3554)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:09:20] train INFO: Epoch: [30]  [3420/5004]  eta: 0:54:05  lr: 0.000979  loss: 4.6952 (4.3554)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 13:09:40] train INFO: Epoch: [30]  [3430/5004]  eta: 0:53:44  lr: 0.000979  loss: 4.3835 (4.3551)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 13:10:01] train INFO: Epoch: [30]  [3440/5004]  eta: 0:53:24  lr: 0.000979  loss: 4.2274 (4.3546)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 13:10:21] train INFO: Epoch: [30]  [3450/5004]  eta: 0:53:03  lr: 0.000979  loss: 4.2042 (4.3547)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:10:42] train INFO: Epoch: [30]  [3460/5004]  eta: 0:52:43  lr: 0.000979  loss: 4.6069 (4.3550)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:11:02] train INFO: Epoch: [30]  [3470/5004]  eta: 0:52:22  lr: 0.000979  loss: 4.3925 (4.3544)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:11:22] train INFO: Epoch: [30]  [3480/5004]  eta: 0:52:02  lr: 0.000979  loss: 4.1816 (4.3542)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:11:43] train INFO: Epoch: [30]  [3490/5004]  eta: 0:51:41  lr: 0.000979  loss: 4.1816 (4.3541)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:12:03] train INFO: Epoch: [30]  [3500/5004]  eta: 0:51:21  lr: 0.000979  loss: 4.2694 (4.3540)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:12:24] train INFO: Epoch: [30]  [3510/5004]  eta: 0:51:00  lr: 0.000979  loss: 4.6519 (4.3543)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:12:44] train INFO: Epoch: [30]  [3520/5004]  eta: 0:50:40  lr: 0.000979  loss: 4.4242 (4.3538)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:13:05] train INFO: Epoch: [30]  [3530/5004]  eta: 0:50:19  lr: 0.000979  loss: 4.3575 (4.3537)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 13:13:25] train INFO: Epoch: [30]  [3540/5004]  eta: 0:49:59  lr: 0.000979  loss: 4.3027 (4.3536)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:13:46] train INFO: Epoch: [30]  [3550/5004]  eta: 0:49:38  lr: 0.000979  loss: 4.2615 (4.3531)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 13:14:06] train INFO: Epoch: [30]  [3560/5004]  eta: 0:49:18  lr: 0.000979  loss: 4.7064 (4.3541)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 13:14:27] train INFO: Epoch: [30]  [3570/5004]  eta: 0:48:58  lr: 0.000979  loss: 4.7227 (4.3543)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:14:47] train INFO: Epoch: [30]  [3580/5004]  eta: 0:48:37  lr: 0.000979  loss: 4.6202 (4.3550)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:15:08] train INFO: Epoch: [30]  [3590/5004]  eta: 0:48:17  lr: 0.000979  loss: 4.6202 (4.3553)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:15:28] train INFO: Epoch: [30]  [3600/5004]  eta: 0:47:56  lr: 0.000979  loss: 4.4706 (4.3549)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:15:49] train INFO: Epoch: [30]  [3610/5004]  eta: 0:47:36  lr: 0.000979  loss: 4.5789 (4.3550)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 13:16:09] train INFO: Epoch: [30]  [3620/5004]  eta: 0:47:15  lr: 0.000979  loss: 4.6573 (4.3556)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:16:30] train INFO: Epoch: [30]  [3630/5004]  eta: 0:46:55  lr: 0.000979  loss: 4.6573 (4.3563)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:16:50] train INFO: Epoch: [30]  [3640/5004]  eta: 0:46:34  lr: 0.000979  loss: 4.4685 (4.3561)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:17:11] train INFO: Epoch: [30]  [3650/5004]  eta: 0:46:14  lr: 0.000979  loss: 4.4495 (4.3569)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 13:17:31] train INFO: Epoch: [30]  [3660/5004]  eta: 0:45:53  lr: 0.000979  loss: 4.5922 (4.3567)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:17:52] train INFO: Epoch: [30]  [3670/5004]  eta: 0:45:33  lr: 0.000979  loss: 4.5922 (4.3573)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 13:18:12] train INFO: Epoch: [30]  [3680/5004]  eta: 0:45:12  lr: 0.000979  loss: 4.5304 (4.3574)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:18:33] train INFO: Epoch: [30]  [3690/5004]  eta: 0:44:52  lr: 0.000979  loss: 4.4369 (4.3577)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:18:53] train INFO: Epoch: [30]  [3700/5004]  eta: 0:44:31  lr: 0.000979  loss: 4.4377 (4.3574)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 13:19:13] train INFO: Epoch: [30]  [3710/5004]  eta: 0:44:11  lr: 0.000979  loss: 4.3840 (4.3574)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:19:34] train INFO: Epoch: [30]  [3720/5004]  eta: 0:43:50  lr: 0.000979  loss: 4.4768 (4.3578)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:19:54] train INFO: Epoch: [30]  [3730/5004]  eta: 0:43:30  lr: 0.000979  loss: 4.6110 (4.3582)  time: 2.0474  data: 0.0001  max mem: 52718
+[05/11 13:20:15] train INFO: Epoch: [30]  [3740/5004]  eta: 0:43:09  lr: 0.000979  loss: 4.7105 (4.3587)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:20:35] train INFO: Epoch: [30]  [3750/5004]  eta: 0:42:49  lr: 0.000979  loss: 4.6127 (4.3584)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:20:56] train INFO: Epoch: [30]  [3760/5004]  eta: 0:42:28  lr: 0.000979  loss: 4.4721 (4.3586)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 13:21:16] train INFO: Epoch: [30]  [3770/5004]  eta: 0:42:08  lr: 0.000979  loss: 4.6260 (4.3592)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:21:37] train INFO: Epoch: [30]  [3780/5004]  eta: 0:41:47  lr: 0.000979  loss: 4.4768 (4.3587)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:21:57] train INFO: Epoch: [30]  [3790/5004]  eta: 0:41:27  lr: 0.000979  loss: 4.4768 (4.3592)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:22:18] train INFO: Epoch: [30]  [3800/5004]  eta: 0:41:06  lr: 0.000979  loss: 4.5385 (4.3595)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:22:38] train INFO: Epoch: [30]  [3810/5004]  eta: 0:40:46  lr: 0.000979  loss: 4.3728 (4.3592)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:22:59] train INFO: Epoch: [30]  [3820/5004]  eta: 0:40:25  lr: 0.000979  loss: 4.3362 (4.3590)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:23:19] train INFO: Epoch: [30]  [3830/5004]  eta: 0:40:05  lr: 0.000979  loss: 4.6291 (4.3596)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:23:40] train INFO: Epoch: [30]  [3840/5004]  eta: 0:39:44  lr: 0.000979  loss: 4.5314 (4.3590)  time: 2.0475  data: 0.0001  max mem: 52718
+[05/11 13:24:00] train INFO: Epoch: [30]  [3850/5004]  eta: 0:39:24  lr: 0.000979  loss: 4.4774 (4.3593)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 13:24:21] train INFO: Epoch: [30]  [3860/5004]  eta: 0:39:03  lr: 0.000979  loss: 4.0817 (4.3586)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:24:41] train INFO: Epoch: [30]  [3870/5004]  eta: 0:38:43  lr: 0.000979  loss: 4.2972 (4.3588)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:25:02] train INFO: Epoch: [30]  [3880/5004]  eta: 0:38:22  lr: 0.000979  loss: 4.4216 (4.3583)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:25:22] train INFO: Epoch: [30]  [3890/5004]  eta: 0:38:02  lr: 0.000979  loss: 4.3444 (4.3582)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:25:43] train INFO: Epoch: [30]  [3900/5004]  eta: 0:37:41  lr: 0.000979  loss: 4.3904 (4.3577)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:26:03] train INFO: Epoch: [30]  [3910/5004]  eta: 0:37:21  lr: 0.000979  loss: 4.2927 (4.3577)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 13:26:24] train INFO: Epoch: [30]  [3920/5004]  eta: 0:37:00  lr: 0.000979  loss: 4.4259 (4.3579)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:26:44] train INFO: Epoch: [30]  [3930/5004]  eta: 0:36:40  lr: 0.000979  loss: 4.4677 (4.3573)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:27:05] train INFO: Epoch: [30]  [3940/5004]  eta: 0:36:19  lr: 0.000979  loss: 4.0174 (4.3571)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:27:25] train INFO: Epoch: [30]  [3950/5004]  eta: 0:35:59  lr: 0.000979  loss: 4.3079 (4.3567)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 13:27:45] train INFO: Epoch: [30]  [3960/5004]  eta: 0:35:38  lr: 0.000979  loss: 4.3079 (4.3568)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:28:06] train INFO: Epoch: [30]  [3970/5004]  eta: 0:35:18  lr: 0.000979  loss: 4.6774 (4.3577)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 13:28:26] train INFO: Epoch: [30]  [3980/5004]  eta: 0:34:57  lr: 0.000979  loss: 4.6774 (4.3578)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 13:28:47] train INFO: Epoch: [30]  [3990/5004]  eta: 0:34:37  lr: 0.000979  loss: 4.3825 (4.3577)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:29:07] train INFO: Epoch: [30]  [4000/5004]  eta: 0:34:16  lr: 0.000979  loss: 4.3825 (4.3574)  time: 2.0484  data: 0.0001  max mem: 52718
+[05/11 13:29:28] train INFO: Epoch: [30]  [4010/5004]  eta: 0:33:56  lr: 0.000979  loss: 4.4465 (4.3569)  time: 2.0487  data: 0.0001  max mem: 52718
+[05/11 13:29:48] train INFO: Epoch: [30]  [4020/5004]  eta: 0:33:35  lr: 0.000979  loss: 4.4465 (4.3571)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 13:30:09] train INFO: Epoch: [30]  [4030/5004]  eta: 0:33:15  lr: 0.000979  loss: 4.4142 (4.3571)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:30:29] train INFO: Epoch: [30]  [4040/5004]  eta: 0:32:54  lr: 0.000979  loss: 4.5271 (4.3574)  time: 2.0485  data: 0.0001  max mem: 52718
+[05/11 13:30:50] train INFO: Epoch: [30]  [4050/5004]  eta: 0:32:34  lr: 0.000979  loss: 4.6767 (4.3584)  time: 2.0481  data: 0.0001  max mem: 52718
+[05/11 13:31:10] train INFO: Epoch: [30]  [4060/5004]  eta: 0:32:13  lr: 0.000979  loss: 4.6627 (4.3588)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:31:31] train INFO: Epoch: [30]  [4070/5004]  eta: 0:31:53  lr: 0.000979  loss: 4.2389 (4.3580)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:31:51] train INFO: Epoch: [30]  [4080/5004]  eta: 0:31:33  lr: 0.000979  loss: 3.8590 (4.3576)  time: 2.0483  data: 0.0001  max mem: 52718
+[05/11 13:32:12] train INFO: Epoch: [30]  [4090/5004]  eta: 0:31:12  lr: 0.000979  loss: 4.0604 (4.3569)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 13:32:32] train INFO: Epoch: [30]  [4100/5004]  eta: 0:30:52  lr: 0.000979  loss: 4.2838 (4.3569)  time: 2.0495  data: 0.0001  max mem: 52718
+[05/11 13:32:53] train INFO: Epoch: [30]  [4110/5004]  eta: 0:30:31  lr: 0.000979  loss: 4.3121 (4.3565)  time: 2.0494  data: 0.0001  max mem: 52718
+[05/11 13:33:13] train INFO: Epoch: [30]  [4120/5004]  eta: 0:30:11  lr: 0.000979  loss: 4.3448 (4.3563)  time: 2.0489  data: 0.0001  max mem: 52718
+[05/11 13:33:34] train INFO: Epoch: [30]  [4130/5004]  eta: 0:29:50  lr: 0.000979  loss: 4.3448 (4.3566)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 13:33:54] train INFO: Epoch: [30]  [4140/5004]  eta: 0:29:30  lr: 0.000979  loss: 4.3535 (4.3566)  time: 2.0482  data: 0.0001  max mem: 52718
+[05/11 13:34:15] train INFO: Epoch: [30]  [4150/5004]  eta: 0:29:09  lr: 0.000979  loss: 4.3176 (4.3564)  time: 2.0493  data: 0.0001  max mem: 52718
+[05/11 13:34:35] train INFO: Epoch: [30]  [4160/5004]  eta: 0:28:49  lr: 0.000979  loss: 4.2300 (4.3563)  time: 2.0487  data: 0.0001  max mem: 52718
+[05/11 13:34:56] train INFO: Epoch: [30]  [4170/5004]  eta: 0:28:28  lr: 0.000979  loss: 4.4856 (4.3569)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:35:16] train INFO: Epoch: [30]  [4180/5004]  eta: 0:28:08  lr: 0.000979  loss: 4.4856 (4.3572)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:35:37] train INFO: Epoch: [30]  [4190/5004]  eta: 0:27:47  lr: 0.000979  loss: 4.4678 (4.3571)  time: 2.0473  data: 0.0001  max mem: 52718
+[05/11 13:35:57] train INFO: Epoch: [30]  [4200/5004]  eta: 0:27:27  lr: 0.000979  loss: 4.2065 (4.3567)  time: 2.0472  data: 0.0001  max mem: 52718
+[05/11 13:36:18] train INFO: Epoch: [30]  [4210/5004]  eta: 0:27:06  lr: 0.000979  loss: 4.4435 (4.3572)  time: 2.0476  data: 0.0001  max mem: 52718
+[05/11 13:36:38] train INFO: Epoch: [30]  [4220/5004]  eta: 0:26:46  lr: 0.000979  loss: 4.5570 (4.3574)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:36:59] train INFO: Epoch: [30]  [4230/5004]  eta: 0:26:25  lr: 0.000979  loss: 4.3460 (4.3567)  time: 2.0478  data: 0.0001  max mem: 52718
+[05/11 13:37:19] train INFO: Epoch: [30]  [4240/5004]  eta: 0:26:05  lr: 0.000979  loss: 4.3193 (4.3568)  time: 2.0480  data: 0.0001  max mem: 52718
+[05/11 13:37:39] train INFO: Epoch: [30]  [4250/5004]  eta: 0:25:44  lr: 0.000979  loss: 4.5736 (4.3568)  time: 2.0479  data: 0.0001  max mem: 52718
+[05/11 13:38:00] train INFO: Epoch: [30]  [4260/5004]  eta: 0:25:24  lr: 0.000979  loss: 4.4945 (4.3569)  time: 2.0477  data: 0.0001  max mem: 52718
+[05/11 13:38:20] train INFO: Epoch: [30]  [4270/5004]  eta: 0:25:03  lr: 0.000979  loss: 4.0577 (4.3560)  time: 2.0471  data: 0.0001  max mem: 52718
+[05/11 13:38:41] train INFO: Epoch: [30]  [4280/5004]  eta: 0:24:43  lr: 0.000979  loss: 4.2997 (4.3560)  time: 2.0464  data: 0.0001  max mem: 52718
+[05/11 13:39:01] train INFO: Epoch: [30]  [4290/5004]  eta: 0:24:22  lr: 0.000979  loss: 4.5630 (4.3558)  time: 2.0467  data: 0.0001  max mem: 52718
+[05/11 13:39:22] train INFO: Epoch: [30]  [4300/5004]  eta: 0:24:02  lr: 0.000979  loss: 4.3600 (4.3556)  time: 2.0460  data: 0.0001  max mem: 52718
+[05/11 13:39:42] train INFO: Epoch: [30]  [4310/5004]  eta: 0:23:41  lr: 0.000979  loss: 4.3600 (4.3554)  time: 2.0453  data: 0.0001  max mem: 52718
+[05/11 13:40:03] train INFO: Epoch: [30]  [4320/5004]  eta: 0:23:21  lr: 0.000979  loss: 4.5391 (4.3561)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:40:23] train INFO: Epoch: [30]  [4330/5004]  eta: 0:23:00  lr: 0.000979  loss: 4.5391 (4.3559)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 13:40:44] train INFO: Epoch: [30]  [4340/5004]  eta: 0:22:40  lr: 0.000979  loss: 4.3878 (4.3559)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 13:41:04] train INFO: Epoch: [30]  [4350/5004]  eta: 0:22:19  lr: 0.000979  loss: 4.6371 (4.3557)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 13:41:25] train INFO: Epoch: [30]  [4360/5004]  eta: 0:21:59  lr: 0.000979  loss: 4.4498 (4.3557)  time: 2.0452  data: 0.0001  max mem: 52718
+[05/11 13:41:45] train INFO: Epoch: [30]  [4370/5004]  eta: 0:21:38  lr: 0.000979  loss: 4.5317 (4.3557)  time: 2.0452  data: 0.0001  max mem: 52718
+[05/11 13:42:05] train INFO: Epoch: [30]  [4380/5004]  eta: 0:21:18  lr: 0.000979  loss: 4.5122 (4.3557)  time: 2.0453  data: 0.0001  max mem: 52718
+[05/11 13:42:26] train INFO: Epoch: [30]  [4390/5004]  eta: 0:20:57  lr: 0.000979  loss: 4.4557 (4.3556)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:42:46] train INFO: Epoch: [30]  [4400/5004]  eta: 0:20:37  lr: 0.000979  loss: 4.5529 (4.3561)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:43:07] train INFO: Epoch: [30]  [4410/5004]  eta: 0:20:16  lr: 0.000979  loss: 4.5791 (4.3562)  time: 2.0452  data: 0.0001  max mem: 52718
+[05/11 13:43:27] train INFO: Epoch: [30]  [4420/5004]  eta: 0:19:56  lr: 0.000979  loss: 4.3472 (4.3560)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:43:48] train INFO: Epoch: [30]  [4430/5004]  eta: 0:19:35  lr: 0.000979  loss: 4.3472 (4.3555)  time: 2.0450  data: 0.0001  max mem: 52718
+[05/11 13:44:08] train INFO: Epoch: [30]  [4440/5004]  eta: 0:19:15  lr: 0.000979  loss: 4.7083 (4.3562)  time: 2.0455  data: 0.0001  max mem: 52718
+[05/11 13:44:29] train INFO: Epoch: [30]  [4450/5004]  eta: 0:18:54  lr: 0.000979  loss: 4.6868 (4.3562)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 13:44:49] train INFO: Epoch: [30]  [4460/5004]  eta: 0:18:34  lr: 0.000979  loss: 4.4381 (4.3555)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:45:10] train INFO: Epoch: [30]  [4470/5004]  eta: 0:18:13  lr: 0.000979  loss: 4.4717 (4.3565)  time: 2.0451  data: 0.0001  max mem: 52718
+[05/11 13:45:30] train INFO: Epoch: [30]  [4480/5004]  eta: 0:17:53  lr: 0.000979  loss: 4.7327 (4.3568)  time: 2.0455  data: 0.0001  max mem: 52718
+[05/11 13:45:50] train INFO: Epoch: [30]  [4490/5004]  eta: 0:17:32  lr: 0.000979  loss: 4.4147 (4.3561)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:46:11] train INFO: Epoch: [30]  [4500/5004]  eta: 0:17:12  lr: 0.000979  loss: 4.3169 (4.3562)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:46:31] train INFO: Epoch: [30]  [4510/5004]  eta: 0:16:51  lr: 0.000979  loss: 4.5342 (4.3567)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:46:52] train INFO: Epoch: [30]  [4520/5004]  eta: 0:16:31  lr: 0.000979  loss: 4.6116 (4.3564)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:47:12] train INFO: Epoch: [30]  [4530/5004]  eta: 0:16:10  lr: 0.000979  loss: 4.2780 (4.3565)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 13:47:33] train INFO: Epoch: [30]  [4540/5004]  eta: 0:15:50  lr: 0.000979  loss: 4.5114 (4.3562)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:47:53] train INFO: Epoch: [30]  [4550/5004]  eta: 0:15:30  lr: 0.000979  loss: 4.5323 (4.3564)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 13:48:14] train INFO: Epoch: [30]  [4560/5004]  eta: 0:15:09  lr: 0.000979  loss: 4.4755 (4.3563)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:48:34] train INFO: Epoch: [30]  [4570/5004]  eta: 0:14:49  lr: 0.000979  loss: 4.4909 (4.3564)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 13:48:55] train INFO: Epoch: [30]  [4580/5004]  eta: 0:14:28  lr: 0.000979  loss: 4.5519 (4.3567)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:49:15] train INFO: Epoch: [30]  [4590/5004]  eta: 0:14:08  lr: 0.000979  loss: 4.6108 (4.3573)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:49:36] train INFO: Epoch: [30]  [4600/5004]  eta: 0:13:47  lr: 0.000979  loss: 4.5565 (4.3572)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 13:49:56] train INFO: Epoch: [30]  [4610/5004]  eta: 0:13:27  lr: 0.000979  loss: 4.3139 (4.3568)  time: 2.0452  data: 0.0001  max mem: 52718
+[05/11 13:50:16] train INFO: Epoch: [30]  [4620/5004]  eta: 0:13:06  lr: 0.000979  loss: 4.3847 (4.3573)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:50:37] train INFO: Epoch: [30]  [4630/5004]  eta: 0:12:46  lr: 0.000979  loss: 4.6060 (4.3574)  time: 2.0455  data: 0.0001  max mem: 52718
+[05/11 13:50:57] train INFO: Epoch: [30]  [4640/5004]  eta: 0:12:25  lr: 0.000979  loss: 4.5695 (4.3579)  time: 2.0451  data: 0.0001  max mem: 52718
+[05/11 13:51:18] train INFO: Epoch: [30]  [4650/5004]  eta: 0:12:05  lr: 0.000979  loss: 4.5454 (4.3581)  time: 2.0449  data: 0.0001  max mem: 52718
+[05/11 13:51:38] train INFO: Epoch: [30]  [4660/5004]  eta: 0:11:44  lr: 0.000979  loss: 4.6295 (4.3586)  time: 2.0450  data: 0.0001  max mem: 52718
+[05/11 13:51:59] train INFO: Epoch: [30]  [4670/5004]  eta: 0:11:24  lr: 0.000979  loss: 4.6295 (4.3589)  time: 2.0453  data: 0.0001  max mem: 52718
+[05/11 13:52:19] train INFO: Epoch: [30]  [4680/5004]  eta: 0:11:03  lr: 0.000979  loss: 4.4254 (4.3589)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 13:52:40] train INFO: Epoch: [30]  [4690/5004]  eta: 0:10:43  lr: 0.000979  loss: 4.5120 (4.3593)  time: 2.0460  data: 0.0001  max mem: 52718
+[05/11 13:53:00] train INFO: Epoch: [30]  [4700/5004]  eta: 0:10:22  lr: 0.000979  loss: 4.6026 (4.3597)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:53:21] train INFO: Epoch: [30]  [4710/5004]  eta: 0:10:02  lr: 0.000979  loss: 4.4170 (4.3594)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:53:41] train INFO: Epoch: [30]  [4720/5004]  eta: 0:09:41  lr: 0.000979  loss: 4.5622 (4.3595)  time: 2.0452  data: 0.0001  max mem: 52718
+[05/11 13:54:01] train INFO: Epoch: [30]  [4730/5004]  eta: 0:09:21  lr: 0.000979  loss: 4.5622 (4.3592)  time: 2.0455  data: 0.0001  max mem: 52718
+[05/11 13:54:22] train INFO: Epoch: [30]  [4740/5004]  eta: 0:09:00  lr: 0.000979  loss: 4.4126 (4.3594)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:54:42] train INFO: Epoch: [30]  [4750/5004]  eta: 0:08:40  lr: 0.000979  loss: 4.6194 (4.3592)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 13:55:03] train INFO: Epoch: [30]  [4760/5004]  eta: 0:08:19  lr: 0.000979  loss: 4.4009 (4.3587)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:55:23] train INFO: Epoch: [30]  [4770/5004]  eta: 0:07:59  lr: 0.000979  loss: 4.4149 (4.3586)  time: 2.0454  data: 0.0001  max mem: 52718
+[05/11 13:55:44] train INFO: Epoch: [30]  [4780/5004]  eta: 0:07:38  lr: 0.000979  loss: 4.4092 (4.3585)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 13:56:04] train INFO: Epoch: [30]  [4790/5004]  eta: 0:07:18  lr: 0.000979  loss: 4.4841 (4.3586)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:56:25] train INFO: Epoch: [30]  [4800/5004]  eta: 0:06:57  lr: 0.000979  loss: 4.5151 (4.3587)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 13:56:45] train INFO: Epoch: [30]  [4810/5004]  eta: 0:06:37  lr: 0.000979  loss: 4.4569 (4.3586)  time: 2.0459  data: 0.0001  max mem: 52718
+[05/11 13:57:06] train INFO: Epoch: [30]  [4820/5004]  eta: 0:06:16  lr: 0.000979  loss: 4.4569 (4.3586)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:57:26] train INFO: Epoch: [30]  [4830/5004]  eta: 0:05:56  lr: 0.000979  loss: 4.4322 (4.3582)  time: 2.0457  data: 0.0001  max mem: 52718
+[05/11 13:57:46] train INFO: Epoch: [30]  [4840/5004]  eta: 0:05:35  lr: 0.000979  loss: 4.5165 (4.3584)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 13:58:07] train INFO: Epoch: [30]  [4850/5004]  eta: 0:05:15  lr: 0.000979  loss: 4.6713 (4.3585)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 13:58:27] train INFO: Epoch: [30]  [4860/5004]  eta: 0:04:54  lr: 0.000979  loss: 4.3037 (4.3579)  time: 2.0462  data: 0.0001  max mem: 52718
+[05/11 13:58:48] train INFO: Epoch: [30]  [4870/5004]  eta: 0:04:34  lr: 0.000979  loss: 3.9331 (4.3570)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 13:59:08] train INFO: Epoch: [30]  [4880/5004]  eta: 0:04:13  lr: 0.000979  loss: 3.9817 (4.3568)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 13:59:29] train INFO: Epoch: [30]  [4890/5004]  eta: 0:03:53  lr: 0.000979  loss: 4.3523 (4.3567)  time: 2.0449  data: 0.0001  max mem: 52718
+[05/11 13:59:49] train INFO: Epoch: [30]  [4900/5004]  eta: 0:03:33  lr: 0.000979  loss: 4.2999 (4.3564)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 14:00:10] train INFO: Epoch: [30]  [4910/5004]  eta: 0:03:12  lr: 0.000979  loss: 4.2659 (4.3564)  time: 2.0460  data: 0.0001  max mem: 52718
+[05/11 14:00:30] train INFO: Epoch: [30]  [4920/5004]  eta: 0:02:52  lr: 0.000979  loss: 4.4636 (4.3568)  time: 2.0451  data: 0.0001  max mem: 52718
+[05/11 14:00:51] train INFO: Epoch: [30]  [4930/5004]  eta: 0:02:31  lr: 0.000979  loss: 4.5332 (4.3566)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 14:01:11] train INFO: Epoch: [30]  [4940/5004]  eta: 0:02:11  lr: 0.000979  loss: 4.6588 (4.3573)  time: 2.0463  data: 0.0001  max mem: 52718
+[05/11 14:01:32] train INFO: Epoch: [30]  [4950/5004]  eta: 0:01:50  lr: 0.000979  loss: 4.6588 (4.3573)  time: 2.0461  data: 0.0001  max mem: 52718
+[05/11 14:01:52] train INFO: Epoch: [30]  [4960/5004]  eta: 0:01:30  lr: 0.000979  loss: 4.4546 (4.3573)  time: 2.0456  data: 0.0001  max mem: 52718
+[05/11 14:02:12] train INFO: Epoch: [30]  [4970/5004]  eta: 0:01:09  lr: 0.000979  loss: 4.2976 (4.3569)  time: 2.0458  data: 0.0001  max mem: 52718
+[05/11 14:02:33] train INFO: Epoch: [30]  [4980/5004]  eta: 0:00:49  lr: 0.000979  loss: 4.5723 (4.3576)  time: 2.0463  data: 0.0003  max mem: 52718
+[05/11 14:02:53] train INFO: Epoch: [30]  [4990/5004]  eta: 0:00:28  lr: 0.000979  loss: 4.6261 (4.3578)  time: 2.0458  data: 0.0003  max mem: 52718
+[05/11 14:03:14] train INFO: Epoch: [30]  [5000/5004]  eta: 0:00:08  lr: 0.000979  loss: 4.6040 (4.3583)  time: 2.0447  data: 0.0001  max mem: 52718
+[05/11 14:03:20] train INFO: Epoch: [30]  [5003/5004]  eta: 0:00:02  lr: 0.000979  loss: 4.4616 (4.3583)  time: 2.0448  data: 0.0001  max mem: 52718
+[05/11 14:03:20] train INFO: Epoch: [30] Total time: 2:50:49 (2.0483 s / it)
+[05/11 14:03:20] train INFO: Averaged stats:lr: 0.000979  loss: 4.4616 (4.3583)
+[05/11 14:03:20] train INFO: Distributing BatchNorm running means and vars
+/volume1/users/rgeens/simba/simba/engine.py:102: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+[05/11 14:03:24] train INFO: Test:  [  0/131]  eta: 0:08:08  loss: 1.6404 (1.6404)  acc1: 64.5833 (64.5833)  acc5: 88.5417 (88.5417)  time: 3.7288  data: 2.5372  max mem: 52718
+[05/11 14:03:32] train INFO: Test:  [ 10/131]  eta: 0:02:08  loss: 1.6195 (1.5626)  acc1: 65.6250 (66.7377)  acc5: 88.5417 (89.2282)  time: 1.0617  data: 0.2308  max mem: 52718
+[05/11 14:03:40] train INFO: Test:  [ 20/131]  eta: 0:01:44  loss: 1.4471 (1.4545)  acc1: 73.4375 (70.0521)  acc5: 89.5833 (90.1910)  time: 0.7977  data: 0.0002  max mem: 52718
+[05/11 14:03:48] train INFO: Test:  [ 30/131]  eta: 0:01:30  loss: 1.6560 (1.6173)  acc1: 65.1042 (65.0286)  acc5: 89.5833 (88.8693)  time: 0.8002  data: 0.0002  max mem: 52718
+[05/11 14:03:56] train INFO: Test:  [ 40/131]  eta: 0:01:19  loss: 1.7424 (1.5933)  acc1: 58.8542 (65.0534)  acc5: 89.8438 (89.5897)  time: 0.8002  data: 0.0002  max mem: 52718
+[05/11 14:04:04] train INFO: Test:  [ 50/131]  eta: 0:01:09  loss: 1.4348 (1.5571)  acc1: 66.9271 (66.0743)  acc5: 92.1875 (89.9969)  time: 0.8016  data: 0.0002  max mem: 52718
+[05/11 14:04:12] train INFO: Test:  [ 60/131]  eta: 0:01:00  loss: 1.7129 (1.6297)  acc1: 60.9375 (64.4510)  acc5: 87.7604 (88.7722)  time: 0.8022  data: 0.0002  max mem: 52718
+[05/11 14:04:20] train INFO: Test:  [ 70/131]  eta: 0:00:51  loss: 2.1588 (1.7132)  acc1: 52.3438 (62.5770)  acc5: 79.1667 (87.2983)  time: 0.8023  data: 0.0002  max mem: 52718
+[05/11 14:04:28] train INFO: Test:  [ 80/131]  eta: 0:00:42  loss: 1.9620 (1.7362)  acc1: 55.9896 (62.2589)  acc5: 79.1667 (86.7605)  time: 0.8025  data: 0.0002  max mem: 52718
+[05/11 14:04:36] train INFO: Test:  [ 90/131]  eta: 0:00:34  loss: 1.9185 (1.7813)  acc1: 56.7708 (61.2122)  acc5: 80.9896 (85.9661)  time: 0.8020  data: 0.0001  max mem: 52718
+[05/11 14:04:44] train INFO: Test:  [100/131]  eta: 0:00:25  loss: 2.1900 (1.8207)  acc1: 52.0833 (60.5121)  acc5: 77.6042 (85.2233)  time: 0.8020  data: 0.0002  max mem: 52718
+[05/11 14:04:52] train INFO: Test:  [110/131]  eta: 0:00:17  loss: 2.1953 (1.8546)  acc1: 53.3854 (59.8348)  acc5: 77.0833 (84.6120)  time: 0.8021  data: 0.0001  max mem: 52718
+[05/11 14:05:00] train INFO: Test:  [120/131]  eta: 0:00:09  loss: 2.1550 (1.8772)  acc1: 54.4271 (59.3901)  acc5: 77.8646 (84.2954)  time: 0.8025  data: 0.0001  max mem: 52718
+[05/11 14:05:07] train INFO: Test:  [130/131]  eta: 0:00:00  loss: 1.9644 (1.8629)  acc1: 56.5104 (59.8000)  acc5: 82.8125 (84.5460)  time: 0.7754  data: 0.0001  max mem: 52718
+[05/11 14:05:08] train INFO: Test: Total time: 0:01:47 (0.8203 s / it)
+[05/11 14:05:08] train INFO: * Acc@1 59.800 Acc@5 84.546 loss 1.863
+Current checkpoints:
+ ('checkpoints/simba_l/checkpoint-30.pth.tar', 59.800001669921876)
+
+[05/11 14:05:08] train INFO: *** Best metric: 59.800001669921876 (epoch 30)
+[05/11 14:05:08] train INFO: Accuracy of the network on the 50000 test images: 59.8%
+[05/11 14:05:08] train INFO: Max accuracy: 59.80%
+[05/11 14:05:08] train INFO: {'train_lr': 0.000978776382924168, 'train_loss': 4.358299225783177, 'test_loss': 1.862899724308771, 'test_acc1': 59.800001669921876, 'test_acc5': 84.5460025390625, 'epoch': 30, 'n_parameters': 36128264}
+[05/11 14:05:12] train INFO: Epoch: [31]  [   0/5004]  eta: 5:34:42  lr: 0.000977  loss: 4.7655 (4.7655)  time: 4.0132  data: 1.9586  max mem: 52719
+[05/11 14:05:32] train INFO: Epoch: [31]  [  10/5004]  eta: 3:05:03  lr: 0.000977  loss: 4.3873 (4.4091)  time: 2.2234  data: 0.1782  max mem: 52719
+[05/11 14:05:53] train INFO: Epoch: [31]  [  20/5004]  eta: 2:57:43  lr: 0.000977  loss: 4.3873 (4.3412)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:06:13] train INFO: Epoch: [31]  [  30/5004]  eta: 2:54:55  lr: 0.000977  loss: 4.2964 (4.2930)  time: 2.0476  data: 0.0002  max mem: 52719
+[05/11 14:06:34] train INFO: Epoch: [31]  [  40/5004]  eta: 2:53:17  lr: 0.000977  loss: 4.3485 (4.3277)  time: 2.0475  data: 0.0001  max mem: 52719
+[05/11 14:06:54] train INFO: Epoch: [31]  [  50/5004]  eta: 2:52:10  lr: 0.000977  loss: 4.4918 (4.3381)  time: 2.0470  data: 0.0001  max mem: 52719
+[05/11 14:07:15] train INFO: Epoch: [31]  [  60/5004]  eta: 2:51:18  lr: 0.000977  loss: 4.5070 (4.3681)  time: 2.0470  data: 0.0001  max mem: 52719
+[05/11 14:07:35] train INFO: Epoch: [31]  [  70/5004]  eta: 2:50:36  lr: 0.000977  loss: 4.4339 (4.3421)  time: 2.0474  data: 0.0001  max mem: 52719
+[05/11 14:07:56] train INFO: Epoch: [31]  [  80/5004]  eta: 2:49:58  lr: 0.000977  loss: 4.2524 (4.3287)  time: 2.0476  data: 0.0001  max mem: 52719
+[05/11 14:08:16] train INFO: Epoch: [31]  [  90/5004]  eta: 2:49:24  lr: 0.000977  loss: 4.1792 (4.3174)  time: 2.0470  data: 0.0001  max mem: 52719
+[05/11 14:08:37] train INFO: Epoch: [31]  [ 100/5004]  eta: 2:48:54  lr: 0.000977  loss: 4.4038 (4.3411)  time: 2.0473  data: 0.0001  max mem: 52719
+[05/11 14:08:57] train INFO: Epoch: [31]  [ 110/5004]  eta: 2:48:25  lr: 0.000977  loss: 4.6195 (4.3361)  time: 2.0479  data: 0.0001  max mem: 52719
+[05/11 14:09:18] train INFO: Epoch: [31]  [ 120/5004]  eta: 2:47:57  lr: 0.000977  loss: 4.2211 (4.3211)  time: 2.0474  data: 0.0001  max mem: 52719
+[05/11 14:09:38] train INFO: Epoch: [31]  [ 130/5004]  eta: 2:47:31  lr: 0.000977  loss: 4.2211 (4.3346)  time: 2.0480  data: 0.0001  max mem: 52719
+[05/11 14:09:59] train INFO: Epoch: [31]  [ 140/5004]  eta: 2:47:05  lr: 0.000977  loss: 4.6451 (4.3500)  time: 2.0485  data: 0.0001  max mem: 52719
+[05/11 14:10:19] train INFO: Epoch: [31]  [ 150/5004]  eta: 2:46:41  lr: 0.000977  loss: 4.6150 (4.3440)  time: 2.0482  data: 0.0001  max mem: 52719
+[05/11 14:10:40] train INFO: Epoch: [31]  [ 160/5004]  eta: 2:46:16  lr: 0.000977  loss: 4.6390 (4.3618)  time: 2.0482  data: 0.0001  max mem: 52719
+[05/11 14:11:00] train INFO: Epoch: [31]  [ 170/5004]  eta: 2:45:53  lr: 0.000977  loss: 4.6650 (4.3573)  time: 2.0481  data: 0.0001  max mem: 52719
+[05/11 14:11:20] train INFO: Epoch: [31]  [ 180/5004]  eta: 2:45:29  lr: 0.000977  loss: 4.7009 (4.3656)  time: 2.0476  data: 0.0001  max mem: 52719
+[05/11 14:11:41] train INFO: Epoch: [31]  [ 190/5004]  eta: 2:45:06  lr: 0.000977  loss: 4.1624 (4.3488)  time: 2.0473  data: 0.0001  max mem: 52719
+[05/11 14:12:01] train INFO: Epoch: [31]  [ 200/5004]  eta: 2:44:43  lr: 0.000977  loss: 4.4286 (4.3587)  time: 2.0478  data: 0.0001  max mem: 52719
+[05/11 14:12:22] train INFO: Epoch: [31]  [ 210/5004]  eta: 2:44:20  lr: 0.000977  loss: 4.7200 (4.3699)  time: 2.0478  data: 0.0001  max mem: 52719
+[05/11 14:12:42] train INFO: Epoch: [31]  [ 220/5004]  eta: 2:43:57  lr: 0.000977  loss: 4.6700 (4.3750)  time: 2.0474  data: 0.0001  max mem: 52719
+[05/11 14:13:03] train INFO: Epoch: [31]  [ 230/5004]  eta: 2:43:35  lr: 0.000977  loss: 4.5186 (4.3688)  time: 2.0477  data: 0.0001  max mem: 52719
+[05/11 14:13:23] train INFO: Epoch: [31]  [ 240/5004]  eta: 2:43:13  lr: 0.000977  loss: 4.6705 (4.3844)  time: 2.0480  data: 0.0001  max mem: 52719
+[05/11 14:13:44] train INFO: Epoch: [31]  [ 250/5004]  eta: 2:42:51  lr: 0.000977  loss: 4.7043 (4.3859)  time: 2.0473  data: 0.0001  max mem: 52719
+[05/11 14:14:04] train INFO: Epoch: [31]  [ 260/5004]  eta: 2:42:29  lr: 0.000977  loss: 4.3326 (4.3816)  time: 2.0478  data: 0.0001  max mem: 52719
+[05/11 14:14:25] train INFO: Epoch: [31]  [ 270/5004]  eta: 2:42:07  lr: 0.000977  loss: 4.2808 (4.3807)  time: 2.0478  data: 0.0001  max mem: 52719
+[05/11 14:14:45] train INFO: Epoch: [31]  [ 280/5004]  eta: 2:41:45  lr: 0.000977  loss: 4.6070 (4.3854)  time: 2.0471  data: 0.0002  max mem: 52719
+[05/11 14:15:06] train INFO: Epoch: [31]  [ 290/5004]  eta: 2:41:23  lr: 0.000977  loss: 4.6070 (4.3845)  time: 2.0475  data: 0.0001  max mem: 52719
+[05/11 14:15:26] train INFO: Epoch: [31]  [ 300/5004]  eta: 2:41:02  lr: 0.000977  loss: 4.6228 (4.3927)  time: 2.0478  data: 0.0001  max mem: 52719
+[05/11 14:15:47] train INFO: Epoch: [31]  [ 310/5004]  eta: 2:40:40  lr: 0.000977  loss: 4.5691 (4.3836)  time: 2.0474  data: 0.0001  max mem: 52719
+[05/11 14:16:07] train INFO: Epoch: [31]  [ 320/5004]  eta: 2:40:19  lr: 0.000977  loss: 4.1920 (4.3790)  time: 2.0476  data: 0.0001  max mem: 52719
+[05/11 14:16:28] train INFO: Epoch: [31]  [ 330/5004]  eta: 2:39:57  lr: 0.000977  loss: 4.1712 (4.3708)  time: 2.0476  data: 0.0002  max mem: 52719
+[05/11 14:16:48] train INFO: Epoch: [31]  [ 340/5004]  eta: 2:39:36  lr: 0.000977  loss: 4.5927 (4.3747)  time: 2.0479  data: 0.0001  max mem: 52719
+[05/11 14:17:09] train INFO: Epoch: [31]  [ 350/5004]  eta: 2:39:15  lr: 0.000977  loss: 4.6132 (4.3773)  time: 2.0478  data: 0.0001  max mem: 52719
+[05/11 14:17:29] train INFO: Epoch: [31]  [ 360/5004]  eta: 2:38:54  lr: 0.000977  loss: 4.4898 (4.3730)  time: 2.0473  data: 0.0001  max mem: 52719
+[05/11 14:17:50] train INFO: Epoch: [31]  [ 370/5004]  eta: 2:38:32  lr: 0.000977  loss: 4.1836 (4.3691)  time: 2.0473  data: 0.0001  max mem: 52719
+[05/11 14:18:10] train INFO: Epoch: [31]  [ 380/5004]  eta: 2:38:11  lr: 0.000977  loss: 4.1836 (4.3662)  time: 2.0466  data: 0.0001  max mem: 52719
+[05/11 14:18:30] train INFO: Epoch: [31]  [ 390/5004]  eta: 2:37:50  lr: 0.000977  loss: 4.3367 (4.3641)  time: 2.0464  data: 0.0002  max mem: 52719
+[05/11 14:18:51] train INFO: Epoch: [31]  [ 400/5004]  eta: 2:37:28  lr: 0.000977  loss: 4.4768 (4.3697)  time: 2.0466  data: 0.0001  max mem: 52719
+[05/11 14:19:11] train INFO: Epoch: [31]  [ 410/5004]  eta: 2:37:07  lr: 0.000977  loss: 4.5620 (4.3709)  time: 2.0465  data: 0.0001  max mem: 52719
+[05/11 14:19:32] train INFO: Epoch: [31]  [ 420/5004]  eta: 2:36:46  lr: 0.000977  loss: 4.2032 (4.3639)  time: 2.0458  data: 0.0001  max mem: 52719
+[05/11 14:19:52] train INFO: Epoch: [31]  [ 430/5004]  eta: 2:36:25  lr: 0.000977  loss: 4.2670 (4.3629)  time: 2.0453  data: 0.0001  max mem: 52719
+[05/11 14:20:13] train INFO: Epoch: [31]  [ 440/5004]  eta: 2:36:04  lr: 0.000977  loss: 4.5720 (4.3628)  time: 2.0453  data: 0.0001  max mem: 52719
+[05/11 14:20:33] train INFO: Epoch: [31]  [ 450/5004]  eta: 2:35:42  lr: 0.000977  loss: 4.5720 (4.3639)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 14:20:54] train INFO: Epoch: [31]  [ 460/5004]  eta: 2:35:21  lr: 0.000977  loss: 4.6194 (4.3665)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 14:21:14] train INFO: Epoch: [31]  [ 470/5004]  eta: 2:35:00  lr: 0.000977  loss: 4.6526 (4.3681)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:21:35] train INFO: Epoch: [31]  [ 480/5004]  eta: 2:34:39  lr: 0.000977  loss: 4.2180 (4.3604)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:21:55] train INFO: Epoch: [31]  [ 490/5004]  eta: 2:34:18  lr: 0.000977  loss: 4.4559 (4.3655)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:22:15] train INFO: Epoch: [31]  [ 500/5004]  eta: 2:33:57  lr: 0.000977  loss: 4.6269 (4.3654)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 14:22:36] train INFO: Epoch: [31]  [ 510/5004]  eta: 2:33:36  lr: 0.000977  loss: 4.2114 (4.3615)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 14:22:56] train INFO: Epoch: [31]  [ 520/5004]  eta: 2:33:15  lr: 0.000977  loss: 4.5625 (4.3652)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 14:23:17] train INFO: Epoch: [31]  [ 530/5004]  eta: 2:32:54  lr: 0.000977  loss: 4.2889 (4.3579)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 14:23:37] train INFO: Epoch: [31]  [ 540/5004]  eta: 2:32:33  lr: 0.000977  loss: 4.3848 (4.3567)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 14:23:58] train INFO: Epoch: [31]  [ 550/5004]  eta: 2:32:12  lr: 0.000977  loss: 4.3848 (4.3539)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:24:18] train INFO: Epoch: [31]  [ 560/5004]  eta: 2:31:51  lr: 0.000977  loss: 4.2967 (4.3547)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 14:24:39] train INFO: Epoch: [31]  [ 570/5004]  eta: 2:31:30  lr: 0.000977  loss: 4.2967 (4.3511)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 14:24:59] train INFO: Epoch: [31]  [ 580/5004]  eta: 2:31:09  lr: 0.000977  loss: 4.3976 (4.3515)  time: 2.0452  data: 0.0001  max mem: 52719
+[05/11 14:25:19] train INFO: Epoch: [31]  [ 590/5004]  eta: 2:30:48  lr: 0.000977  loss: 4.5249 (4.3549)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 14:25:40] train INFO: Epoch: [31]  [ 600/5004]  eta: 2:30:27  lr: 0.000977  loss: 4.6039 (4.3506)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:26:00] train INFO: Epoch: [31]  [ 610/5004]  eta: 2:30:06  lr: 0.000977  loss: 4.2478 (4.3510)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 14:26:21] train INFO: Epoch: [31]  [ 620/5004]  eta: 2:29:45  lr: 0.000977  loss: 4.4798 (4.3519)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:26:41] train INFO: Epoch: [31]  [ 630/5004]  eta: 2:29:25  lr: 0.000977  loss: 4.6968 (4.3582)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:27:02] train INFO: Epoch: [31]  [ 640/5004]  eta: 2:29:04  lr: 0.000977  loss: 4.5322 (4.3581)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:27:22] train INFO: Epoch: [31]  [ 650/5004]  eta: 2:28:43  lr: 0.000977  loss: 4.4727 (4.3569)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 14:27:43] train INFO: Epoch: [31]  [ 660/5004]  eta: 2:28:22  lr: 0.000977  loss: 4.3124 (4.3553)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:28:03] train INFO: Epoch: [31]  [ 670/5004]  eta: 2:28:01  lr: 0.000977  loss: 4.2562 (4.3553)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 14:28:24] train INFO: Epoch: [31]  [ 680/5004]  eta: 2:27:41  lr: 0.000977  loss: 4.4412 (4.3571)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 14:28:44] train INFO: Epoch: [31]  [ 690/5004]  eta: 2:27:20  lr: 0.000977  loss: 4.4655 (4.3580)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:29:04] train INFO: Epoch: [31]  [ 700/5004]  eta: 2:26:59  lr: 0.000977  loss: 4.5732 (4.3597)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 14:29:25] train INFO: Epoch: [31]  [ 710/5004]  eta: 2:26:38  lr: 0.000977  loss: 4.5688 (4.3580)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 14:29:45] train INFO: Epoch: [31]  [ 720/5004]  eta: 2:26:18  lr: 0.000977  loss: 4.2760 (4.3558)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 14:30:06] train INFO: Epoch: [31]  [ 730/5004]  eta: 2:25:57  lr: 0.000977  loss: 4.3137 (4.3540)  time: 2.0454  data: 0.0001  max mem: 52719
+[05/11 14:30:26] train INFO: Epoch: [31]  [ 740/5004]  eta: 2:25:36  lr: 0.000977  loss: 4.3137 (4.3533)  time: 2.0453  data: 0.0001  max mem: 52719
+[05/11 14:30:47] train INFO: Epoch: [31]  [ 750/5004]  eta: 2:25:15  lr: 0.000977  loss: 4.4273 (4.3542)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 14:31:07] train INFO: Epoch: [31]  [ 760/5004]  eta: 2:24:55  lr: 0.000977  loss: 4.5542 (4.3564)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 14:31:28] train INFO: Epoch: [31]  [ 770/5004]  eta: 2:24:34  lr: 0.000977  loss: 4.4671 (4.3549)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 14:31:48] train INFO: Epoch: [31]  [ 780/5004]  eta: 2:24:13  lr: 0.000977  loss: 4.4048 (4.3539)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 14:32:08] train INFO: Epoch: [31]  [ 790/5004]  eta: 2:23:53  lr: 0.000977  loss: 4.4048 (4.3521)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 14:32:29] train INFO: Epoch: [31]  [ 800/5004]  eta: 2:23:32  lr: 0.000977  loss: 4.2420 (4.3527)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 14:32:49] train INFO: Epoch: [31]  [ 810/5004]  eta: 2:23:11  lr: 0.000977  loss: 4.3105 (4.3525)  time: 2.0454  data: 0.0001  max mem: 52719
+[05/11 14:33:10] train INFO: Epoch: [31]  [ 820/5004]  eta: 2:22:51  lr: 0.000977  loss: 4.5709 (4.3549)  time: 2.0461  data: 0.0001  max mem: 52719
+[05/11 14:33:30] train INFO: Epoch: [31]  [ 830/5004]  eta: 2:22:30  lr: 0.000977  loss: 4.5506 (4.3565)  time: 2.0466  data: 0.0002  max mem: 52719
+[05/11 14:33:51] train INFO: Epoch: [31]  [ 840/5004]  eta: 2:22:09  lr: 0.000977  loss: 4.3734 (4.3562)  time: 2.0459  data: 0.0002  max mem: 52719
+[05/11 14:34:11] train INFO: Epoch: [31]  [ 850/5004]  eta: 2:21:49  lr: 0.000977  loss: 4.3734 (4.3548)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 14:34:32] train INFO: Epoch: [31]  [ 860/5004]  eta: 2:21:28  lr: 0.000977  loss: 4.5165 (4.3585)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 14:34:52] train INFO: Epoch: [31]  [ 870/5004]  eta: 2:21:07  lr: 0.000977  loss: 4.6921 (4.3635)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 14:35:13] train INFO: Epoch: [31]  [ 880/5004]  eta: 2:20:47  lr: 0.000977  loss: 4.6623 (4.3643)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 14:35:33] train INFO: Epoch: [31]  [ 890/5004]  eta: 2:20:26  lr: 0.000977  loss: 4.5537 (4.3620)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:35:53] train INFO: Epoch: [31]  [ 900/5004]  eta: 2:20:05  lr: 0.000977  loss: 4.2587 (4.3590)  time: 2.0451  data: 0.0003  max mem: 52719
+[05/11 14:36:14] train INFO: Epoch: [31]  [ 910/5004]  eta: 2:19:45  lr: 0.000977  loss: 4.3300 (4.3595)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 14:36:34] train INFO: Epoch: [31]  [ 920/5004]  eta: 2:19:24  lr: 0.000977  loss: 4.6068 (4.3603)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 14:36:55] train INFO: Epoch: [31]  [ 930/5004]  eta: 2:19:04  lr: 0.000977  loss: 4.7036 (4.3614)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 14:37:15] train INFO: Epoch: [31]  [ 940/5004]  eta: 2:18:43  lr: 0.000977  loss: 4.6408 (4.3635)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 14:37:36] train INFO: Epoch: [31]  [ 950/5004]  eta: 2:18:22  lr: 0.000977  loss: 4.5822 (4.3618)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:37:56] train INFO: Epoch: [31]  [ 960/5004]  eta: 2:18:02  lr: 0.000977  loss: 4.4871 (4.3607)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:38:17] train INFO: Epoch: [31]  [ 970/5004]  eta: 2:17:41  lr: 0.000977  loss: 4.5925 (4.3628)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 14:38:37] train INFO: Epoch: [31]  [ 980/5004]  eta: 2:17:21  lr: 0.000977  loss: 4.5945 (4.3635)  time: 2.0461  data: 0.0002  max mem: 52719
+[05/11 14:38:58] train INFO: Epoch: [31]  [ 990/5004]  eta: 2:17:00  lr: 0.000977  loss: 4.3772 (4.3632)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:39:18] train INFO: Epoch: [31]  [1000/5004]  eta: 2:16:39  lr: 0.000977  loss: 4.3772 (4.3642)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 14:39:38] train INFO: Epoch: [31]  [1010/5004]  eta: 2:16:19  lr: 0.000977  loss: 4.6386 (4.3666)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 14:39:59] train INFO: Epoch: [31]  [1020/5004]  eta: 2:15:58  lr: 0.000977  loss: 4.5273 (4.3650)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:40:19] train INFO: Epoch: [31]  [1030/5004]  eta: 2:15:38  lr: 0.000977  loss: 4.2315 (4.3619)  time: 2.0455  data: 0.0003  max mem: 52719
+[05/11 14:40:40] train INFO: Epoch: [31]  [1040/5004]  eta: 2:15:17  lr: 0.000977  loss: 4.1692 (4.3609)  time: 2.0454  data: 0.0003  max mem: 52719
+[05/11 14:41:00] train INFO: Epoch: [31]  [1050/5004]  eta: 2:14:57  lr: 0.000977  loss: 4.4378 (4.3616)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 14:41:21] train INFO: Epoch: [31]  [1060/5004]  eta: 2:14:36  lr: 0.000977  loss: 4.5547 (4.3627)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 14:41:41] train INFO: Epoch: [31]  [1070/5004]  eta: 2:14:15  lr: 0.000977  loss: 4.5547 (4.3636)  time: 2.0448  data: 0.0003  max mem: 52719
+[05/11 14:42:02] train INFO: Epoch: [31]  [1080/5004]  eta: 2:13:55  lr: 0.000977  loss: 4.5138 (4.3641)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 14:42:22] train INFO: Epoch: [31]  [1090/5004]  eta: 2:13:34  lr: 0.000977  loss: 4.5338 (4.3651)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 14:42:43] train INFO: Epoch: [31]  [1100/5004]  eta: 2:13:14  lr: 0.000977  loss: 4.4097 (4.3643)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 14:43:03] train INFO: Epoch: [31]  [1110/5004]  eta: 2:12:53  lr: 0.000977  loss: 3.8978 (4.3605)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 14:43:23] train INFO: Epoch: [31]  [1120/5004]  eta: 2:12:33  lr: 0.000977  loss: 4.0340 (4.3598)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 14:43:44] train INFO: Epoch: [31]  [1130/5004]  eta: 2:12:12  lr: 0.000977  loss: 4.4627 (4.3596)  time: 2.0441  data: 0.0002  max mem: 52719
+[05/11 14:44:04] train INFO: Epoch: [31]  [1140/5004]  eta: 2:11:51  lr: 0.000977  loss: 4.1396 (4.3559)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 14:44:25] train INFO: Epoch: [31]  [1150/5004]  eta: 2:11:31  lr: 0.000977  loss: 4.2534 (4.3569)  time: 2.0453  data: 0.0003  max mem: 52719
+[05/11 14:44:45] train INFO: Epoch: [31]  [1160/5004]  eta: 2:11:10  lr: 0.000977  loss: 4.4399 (4.3565)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 14:45:06] train INFO: Epoch: [31]  [1170/5004]  eta: 2:10:50  lr: 0.000977  loss: 4.5410 (4.3584)  time: 2.0446  data: 0.0002  max mem: 52719
+[05/11 14:45:26] train INFO: Epoch: [31]  [1180/5004]  eta: 2:10:29  lr: 0.000977  loss: 4.5009 (4.3577)  time: 2.0445  data: 0.0002  max mem: 52719
+[05/11 14:45:47] train INFO: Epoch: [31]  [1190/5004]  eta: 2:10:09  lr: 0.000977  loss: 4.5009 (4.3586)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 14:46:07] train INFO: Epoch: [31]  [1200/5004]  eta: 2:09:48  lr: 0.000977  loss: 4.5034 (4.3599)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 14:46:27] train INFO: Epoch: [31]  [1210/5004]  eta: 2:09:27  lr: 0.000977  loss: 4.1045 (4.3552)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 14:46:48] train INFO: Epoch: [31]  [1220/5004]  eta: 2:09:07  lr: 0.000977  loss: 4.0712 (4.3558)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 14:47:08] train INFO: Epoch: [31]  [1230/5004]  eta: 2:08:46  lr: 0.000977  loss: 4.4225 (4.3543)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:47:29] train INFO: Epoch: [31]  [1240/5004]  eta: 2:08:26  lr: 0.000977  loss: 4.5091 (4.3562)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:47:49] train INFO: Epoch: [31]  [1250/5004]  eta: 2:08:05  lr: 0.000977  loss: 4.6502 (4.3587)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 14:48:10] train INFO: Epoch: [31]  [1260/5004]  eta: 2:07:45  lr: 0.000977  loss: 4.6405 (4.3603)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:48:30] train INFO: Epoch: [31]  [1270/5004]  eta: 2:07:24  lr: 0.000977  loss: 4.4263 (4.3602)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 14:48:51] train INFO: Epoch: [31]  [1280/5004]  eta: 2:07:04  lr: 0.000977  loss: 4.4374 (4.3613)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:49:11] train INFO: Epoch: [31]  [1290/5004]  eta: 2:06:43  lr: 0.000977  loss: 4.6490 (4.3635)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:49:32] train INFO: Epoch: [31]  [1300/5004]  eta: 2:06:23  lr: 0.000977  loss: 4.7160 (4.3655)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 14:49:52] train INFO: Epoch: [31]  [1310/5004]  eta: 2:06:02  lr: 0.000977  loss: 4.7017 (4.3666)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 14:50:12] train INFO: Epoch: [31]  [1320/5004]  eta: 2:05:42  lr: 0.000977  loss: 4.7023 (4.3683)  time: 2.0453  data: 0.0003  max mem: 52719
+[05/11 14:50:33] train INFO: Epoch: [31]  [1330/5004]  eta: 2:05:21  lr: 0.000977  loss: 4.5310 (4.3668)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 14:50:53] train INFO: Epoch: [31]  [1340/5004]  eta: 2:05:01  lr: 0.000977  loss: 4.3269 (4.3676)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:51:14] train INFO: Epoch: [31]  [1350/5004]  eta: 2:04:40  lr: 0.000977  loss: 4.6046 (4.3668)  time: 2.0460  data: 0.0003  max mem: 52719
+[05/11 14:51:34] train INFO: Epoch: [31]  [1360/5004]  eta: 2:04:20  lr: 0.000977  loss: 4.6237 (4.3672)  time: 2.0461  data: 0.0003  max mem: 52719
+[05/11 14:51:55] train INFO: Epoch: [31]  [1370/5004]  eta: 2:03:59  lr: 0.000977  loss: 4.6505 (4.3685)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:52:15] train INFO: Epoch: [31]  [1380/5004]  eta: 2:03:38  lr: 0.000977  loss: 4.5223 (4.3682)  time: 2.0454  data: 0.0003  max mem: 52719
+[05/11 14:52:36] train INFO: Epoch: [31]  [1390/5004]  eta: 2:03:18  lr: 0.000977  loss: 4.4104 (4.3690)  time: 2.0450  data: 0.0003  max mem: 52719
+[05/11 14:52:56] train INFO: Epoch: [31]  [1400/5004]  eta: 2:02:57  lr: 0.000977  loss: 4.4104 (4.3692)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 14:53:17] train INFO: Epoch: [31]  [1410/5004]  eta: 2:02:37  lr: 0.000977  loss: 4.3925 (4.3698)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 14:53:37] train INFO: Epoch: [31]  [1420/5004]  eta: 2:02:16  lr: 0.000977  loss: 4.6630 (4.3710)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:53:57] train INFO: Epoch: [31]  [1430/5004]  eta: 2:01:56  lr: 0.000977  loss: 4.3435 (4.3686)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 14:54:18] train INFO: Epoch: [31]  [1440/5004]  eta: 2:01:35  lr: 0.000977  loss: 4.3822 (4.3686)  time: 2.0462  data: 0.0002  max mem: 52719
+[05/11 14:54:38] train INFO: Epoch: [31]  [1450/5004]  eta: 2:01:15  lr: 0.000977  loss: 4.5255 (4.3676)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 14:54:59] train INFO: Epoch: [31]  [1460/5004]  eta: 2:00:54  lr: 0.000977  loss: 4.4326 (4.3659)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 14:55:19] train INFO: Epoch: [31]  [1470/5004]  eta: 2:00:34  lr: 0.000977  loss: 4.0544 (4.3639)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:55:40] train INFO: Epoch: [31]  [1480/5004]  eta: 2:00:13  lr: 0.000977  loss: 4.0544 (4.3626)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 14:56:00] train INFO: Epoch: [31]  [1490/5004]  eta: 1:59:53  lr: 0.000977  loss: 4.5434 (4.3634)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:56:21] train INFO: Epoch: [31]  [1500/5004]  eta: 1:59:32  lr: 0.000977  loss: 4.5236 (4.3625)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 14:56:41] train INFO: Epoch: [31]  [1510/5004]  eta: 1:59:12  lr: 0.000977  loss: 4.4895 (4.3632)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 14:57:02] train INFO: Epoch: [31]  [1520/5004]  eta: 1:58:51  lr: 0.000977  loss: 4.5030 (4.3627)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:57:22] train INFO: Epoch: [31]  [1530/5004]  eta: 1:58:31  lr: 0.000977  loss: 4.5030 (4.3622)  time: 2.0462  data: 0.0002  max mem: 52719
+[05/11 14:57:42] train INFO: Epoch: [31]  [1540/5004]  eta: 1:58:10  lr: 0.000977  loss: 4.5950 (4.3632)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:58:03] train INFO: Epoch: [31]  [1550/5004]  eta: 1:57:50  lr: 0.000977  loss: 4.5416 (4.3637)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 14:58:23] train INFO: Epoch: [31]  [1560/5004]  eta: 1:57:29  lr: 0.000977  loss: 4.4113 (4.3637)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 14:58:44] train INFO: Epoch: [31]  [1570/5004]  eta: 1:57:09  lr: 0.000977  loss: 4.4920 (4.3654)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:59:04] train INFO: Epoch: [31]  [1580/5004]  eta: 1:56:48  lr: 0.000977  loss: 4.5508 (4.3646)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 14:59:25] train INFO: Epoch: [31]  [1590/5004]  eta: 1:56:28  lr: 0.000977  loss: 4.4765 (4.3649)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 14:59:45] train INFO: Epoch: [31]  [1600/5004]  eta: 1:56:07  lr: 0.000977  loss: 4.3711 (4.3641)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 15:00:06] train INFO: Epoch: [31]  [1610/5004]  eta: 1:55:47  lr: 0.000977  loss: 4.3088 (4.3632)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 15:00:26] train INFO: Epoch: [31]  [1620/5004]  eta: 1:55:26  lr: 0.000977  loss: 4.5015 (4.3647)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 15:00:47] train INFO: Epoch: [31]  [1630/5004]  eta: 1:55:06  lr: 0.000977  loss: 4.6558 (4.3640)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 15:01:07] train INFO: Epoch: [31]  [1640/5004]  eta: 1:54:45  lr: 0.000977  loss: 4.5879 (4.3644)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 15:01:27] train INFO: Epoch: [31]  [1650/5004]  eta: 1:54:25  lr: 0.000977  loss: 4.2899 (4.3632)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 15:01:48] train INFO: Epoch: [31]  [1660/5004]  eta: 1:54:04  lr: 0.000977  loss: 4.1604 (4.3625)  time: 2.0446  data: 0.0002  max mem: 52719
+[05/11 15:02:08] train INFO: Epoch: [31]  [1670/5004]  eta: 1:53:44  lr: 0.000977  loss: 4.2025 (4.3620)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 15:02:29] train INFO: Epoch: [31]  [1680/5004]  eta: 1:53:23  lr: 0.000977  loss: 4.1184 (4.3607)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 15:02:49] train INFO: Epoch: [31]  [1690/5004]  eta: 1:53:03  lr: 0.000977  loss: 4.2821 (4.3598)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 15:03:10] train INFO: Epoch: [31]  [1700/5004]  eta: 1:52:42  lr: 0.000977  loss: 4.5791 (4.3616)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 15:03:30] train INFO: Epoch: [31]  [1710/5004]  eta: 1:52:22  lr: 0.000977  loss: 4.5954 (4.3618)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:03:51] train INFO: Epoch: [31]  [1720/5004]  eta: 1:52:01  lr: 0.000977  loss: 4.5341 (4.3642)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 15:04:11] train INFO: Epoch: [31]  [1730/5004]  eta: 1:51:41  lr: 0.000977  loss: 4.5341 (4.3645)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 15:04:32] train INFO: Epoch: [31]  [1740/5004]  eta: 1:51:20  lr: 0.000977  loss: 4.2858 (4.3630)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 15:04:52] train INFO: Epoch: [31]  [1750/5004]  eta: 1:51:00  lr: 0.000977  loss: 4.0227 (4.3613)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 15:05:12] train INFO: Epoch: [31]  [1760/5004]  eta: 1:50:39  lr: 0.000977  loss: 4.0684 (4.3601)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:05:33] train INFO: Epoch: [31]  [1770/5004]  eta: 1:50:19  lr: 0.000977  loss: 4.4784 (4.3602)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 15:05:53] train INFO: Epoch: [31]  [1780/5004]  eta: 1:49:58  lr: 0.000977  loss: 4.6284 (4.3609)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:06:14] train INFO: Epoch: [31]  [1790/5004]  eta: 1:49:38  lr: 0.000977  loss: 4.6995 (4.3623)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 15:06:34] train INFO: Epoch: [31]  [1800/5004]  eta: 1:49:17  lr: 0.000977  loss: 4.6995 (4.3615)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 15:06:55] train INFO: Epoch: [31]  [1810/5004]  eta: 1:48:57  lr: 0.000977  loss: 4.4200 (4.3614)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:07:15] train INFO: Epoch: [31]  [1820/5004]  eta: 1:48:36  lr: 0.000977  loss: 4.2924 (4.3614)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 15:07:36] train INFO: Epoch: [31]  [1830/5004]  eta: 1:48:16  lr: 0.000977  loss: 4.2512 (4.3606)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:07:56] train INFO: Epoch: [31]  [1840/5004]  eta: 1:47:55  lr: 0.000977  loss: 4.3308 (4.3605)  time: 2.0446  data: 0.0002  max mem: 52719
+[05/11 15:08:16] train INFO: Epoch: [31]  [1850/5004]  eta: 1:47:35  lr: 0.000977  loss: 4.0213 (4.3583)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 15:08:37] train INFO: Epoch: [31]  [1860/5004]  eta: 1:47:14  lr: 0.000977  loss: 4.0239 (4.3577)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:08:57] train INFO: Epoch: [31]  [1870/5004]  eta: 1:46:54  lr: 0.000977  loss: 4.5156 (4.3586)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:09:18] train INFO: Epoch: [31]  [1880/5004]  eta: 1:46:33  lr: 0.000977  loss: 4.4427 (4.3572)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:09:38] train INFO: Epoch: [31]  [1890/5004]  eta: 1:46:13  lr: 0.000977  loss: 4.3889 (4.3574)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 15:09:59] train INFO: Epoch: [31]  [1900/5004]  eta: 1:45:52  lr: 0.000977  loss: 4.4002 (4.3567)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 15:10:19] train INFO: Epoch: [31]  [1910/5004]  eta: 1:45:32  lr: 0.000977  loss: 4.2170 (4.3564)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 15:10:40] train INFO: Epoch: [31]  [1920/5004]  eta: 1:45:11  lr: 0.000977  loss: 4.1289 (4.3555)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:11:00] train INFO: Epoch: [31]  [1930/5004]  eta: 1:44:51  lr: 0.000977  loss: 4.3182 (4.3561)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 15:11:21] train INFO: Epoch: [31]  [1940/5004]  eta: 1:44:30  lr: 0.000977  loss: 4.3795 (4.3552)  time: 2.0460  data: 0.0002  max mem: 52719
+[05/11 15:11:41] train INFO: Epoch: [31]  [1950/5004]  eta: 1:44:10  lr: 0.000977  loss: 4.1995 (4.3544)  time: 2.0464  data: 0.0002  max mem: 52719
+[05/11 15:12:02] train INFO: Epoch: [31]  [1960/5004]  eta: 1:43:49  lr: 0.000977  loss: 4.3407 (4.3546)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 15:12:22] train INFO: Epoch: [31]  [1970/5004]  eta: 1:43:29  lr: 0.000977  loss: 4.2354 (4.3540)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:12:42] train INFO: Epoch: [31]  [1980/5004]  eta: 1:43:08  lr: 0.000977  loss: 4.3912 (4.3544)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 15:13:03] train INFO: Epoch: [31]  [1990/5004]  eta: 1:42:48  lr: 0.000977  loss: 4.4655 (4.3536)  time: 2.0454  data: 0.0002  max mem: 52719
+[05/11 15:13:23] train INFO: Epoch: [31]  [2000/5004]  eta: 1:42:27  lr: 0.000977  loss: 3.9027 (4.3510)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:13:44] train INFO: Epoch: [31]  [2010/5004]  eta: 1:42:07  lr: 0.000977  loss: 3.9671 (4.3509)  time: 2.0441  data: 0.0002  max mem: 52719
+[05/11 15:14:04] train INFO: Epoch: [31]  [2020/5004]  eta: 1:41:46  lr: 0.000977  loss: 4.3819 (4.3505)  time: 2.0444  data: 0.0002  max mem: 52719
+[05/11 15:14:25] train INFO: Epoch: [31]  [2030/5004]  eta: 1:41:26  lr: 0.000977  loss: 4.4761 (4.3511)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:14:45] train INFO: Epoch: [31]  [2040/5004]  eta: 1:41:05  lr: 0.000977  loss: 4.4705 (4.3499)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:15:06] train INFO: Epoch: [31]  [2050/5004]  eta: 1:40:45  lr: 0.000977  loss: 4.4705 (4.3498)  time: 2.0455  data: 0.0001  max mem: 52719
+[05/11 15:15:26] train INFO: Epoch: [31]  [2060/5004]  eta: 1:40:25  lr: 0.000977  loss: 4.7362 (4.3512)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 15:15:46] train INFO: Epoch: [31]  [2070/5004]  eta: 1:40:04  lr: 0.000977  loss: 4.5787 (4.3505)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 15:16:07] train INFO: Epoch: [31]  [2080/5004]  eta: 1:39:44  lr: 0.000977  loss: 4.3110 (4.3490)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 15:16:27] train INFO: Epoch: [31]  [2090/5004]  eta: 1:39:23  lr: 0.000977  loss: 4.4240 (4.3493)  time: 2.0461  data: 0.0002  max mem: 52719
+[05/11 15:16:48] train INFO: Epoch: [31]  [2100/5004]  eta: 1:39:03  lr: 0.000977  loss: 4.5470 (4.3497)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 15:17:08] train INFO: Epoch: [31]  [2110/5004]  eta: 1:38:42  lr: 0.000977  loss: 4.0954 (4.3484)  time: 2.0454  data: 0.0001  max mem: 52719
+[05/11 15:17:29] train INFO: Epoch: [31]  [2120/5004]  eta: 1:38:22  lr: 0.000977  loss: 3.9266 (4.3480)  time: 2.0453  data: 0.0002  max mem: 52719
+[05/11 15:17:49] train INFO: Epoch: [31]  [2130/5004]  eta: 1:38:01  lr: 0.000977  loss: 4.2806 (4.3483)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:18:10] train INFO: Epoch: [31]  [2140/5004]  eta: 1:37:41  lr: 0.000977  loss: 4.4947 (4.3478)  time: 2.0460  data: 0.0003  max mem: 52719
+[05/11 15:18:30] train INFO: Epoch: [31]  [2150/5004]  eta: 1:37:20  lr: 0.000977  loss: 4.7258 (4.3502)  time: 2.0468  data: 0.0003  max mem: 52719
+[05/11 15:18:51] train INFO: Epoch: [31]  [2160/5004]  eta: 1:37:00  lr: 0.000977  loss: 4.8295 (4.3518)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 15:19:11] train INFO: Epoch: [31]  [2170/5004]  eta: 1:36:39  lr: 0.000977  loss: 4.7744 (4.3526)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 15:19:32] train INFO: Epoch: [31]  [2180/5004]  eta: 1:36:19  lr: 0.000977  loss: 4.4111 (4.3513)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:19:52] train INFO: Epoch: [31]  [2190/5004]  eta: 1:35:58  lr: 0.000977  loss: 4.3706 (4.3509)  time: 2.0460  data: 0.0002  max mem: 52719
+[05/11 15:20:12] train INFO: Epoch: [31]  [2200/5004]  eta: 1:35:38  lr: 0.000977  loss: 4.4882 (4.3517)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:20:33] train INFO: Epoch: [31]  [2210/5004]  eta: 1:35:17  lr: 0.000977  loss: 4.4536 (4.3509)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 15:20:53] train INFO: Epoch: [31]  [2220/5004]  eta: 1:34:57  lr: 0.000977  loss: 4.4825 (4.3516)  time: 2.0459  data: 0.0002  max mem: 52719
+[05/11 15:21:14] train INFO: Epoch: [31]  [2230/5004]  eta: 1:34:36  lr: 0.000977  loss: 4.4854 (4.3518)  time: 2.0458  data: 0.0002  max mem: 52719
+[05/11 15:21:34] train INFO: Epoch: [31]  [2240/5004]  eta: 1:34:16  lr: 0.000977  loss: 4.4001 (4.3520)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 15:21:55] train INFO: Epoch: [31]  [2250/5004]  eta: 1:33:55  lr: 0.000977  loss: 4.4001 (4.3514)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 15:22:15] train INFO: Epoch: [31]  [2260/5004]  eta: 1:33:35  lr: 0.000977  loss: 4.5886 (4.3525)  time: 2.0464  data: 0.0002  max mem: 52719
+[05/11 15:22:36] train INFO: Epoch: [31]  [2270/5004]  eta: 1:33:15  lr: 0.000977  loss: 4.6377 (4.3529)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 15:22:56] train INFO: Epoch: [31]  [2280/5004]  eta: 1:32:54  lr: 0.000977  loss: 4.0497 (4.3510)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 15:23:17] train INFO: Epoch: [31]  [2290/5004]  eta: 1:32:34  lr: 0.000977  loss: 4.2435 (4.3512)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:23:37] train INFO: Epoch: [31]  [2300/5004]  eta: 1:32:13  lr: 0.000977  loss: 4.4494 (4.3517)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 15:23:57] train INFO: Epoch: [31]  [2310/5004]  eta: 1:31:53  lr: 0.000977  loss: 4.4494 (4.3520)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:24:18] train INFO: Epoch: [31]  [2320/5004]  eta: 1:31:32  lr: 0.000977  loss: 4.1142 (4.3518)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:24:38] train INFO: Epoch: [31]  [2330/5004]  eta: 1:31:12  lr: 0.000977  loss: 4.1142 (4.3513)  time: 2.0446  data: 0.0002  max mem: 52719
+[05/11 15:24:59] train INFO: Epoch: [31]  [2340/5004]  eta: 1:30:51  lr: 0.000977  loss: 4.5778 (4.3524)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:25:19] train INFO: Epoch: [31]  [2350/5004]  eta: 1:30:31  lr: 0.000977  loss: 4.5809 (4.3526)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 15:25:40] train INFO: Epoch: [31]  [2360/5004]  eta: 1:30:10  lr: 0.000977  loss: 4.5464 (4.3531)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:26:00] train INFO: Epoch: [31]  [2370/5004]  eta: 1:29:50  lr: 0.000977  loss: 4.5217 (4.3526)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:26:21] train INFO: Epoch: [31]  [2380/5004]  eta: 1:29:29  lr: 0.000977  loss: 4.5217 (4.3532)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:26:41] train INFO: Epoch: [31]  [2390/5004]  eta: 1:29:09  lr: 0.000977  loss: 4.6758 (4.3539)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:27:01] train INFO: Epoch: [31]  [2400/5004]  eta: 1:28:48  lr: 0.000977  loss: 4.3400 (4.3521)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:27:22] train INFO: Epoch: [31]  [2410/5004]  eta: 1:28:28  lr: 0.000977  loss: 3.9196 (4.3514)  time: 2.0442  data: 0.0002  max mem: 52719
+[05/11 15:27:42] train INFO: Epoch: [31]  [2420/5004]  eta: 1:28:07  lr: 0.000977  loss: 4.4873 (4.3521)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:28:03] train INFO: Epoch: [31]  [2430/5004]  eta: 1:27:47  lr: 0.000977  loss: 4.3859 (4.3518)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:28:23] train INFO: Epoch: [31]  [2440/5004]  eta: 1:27:26  lr: 0.000977  loss: 4.1048 (4.3501)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:28:44] train INFO: Epoch: [31]  [2450/5004]  eta: 1:27:06  lr: 0.000977  loss: 4.1048 (4.3504)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:29:04] train INFO: Epoch: [31]  [2460/5004]  eta: 1:26:45  lr: 0.000977  loss: 4.6810 (4.3512)  time: 2.0445  data: 0.0002  max mem: 52719
+[05/11 15:29:25] train INFO: Epoch: [31]  [2470/5004]  eta: 1:26:25  lr: 0.000977  loss: 4.7595 (4.3518)  time: 2.0440  data: 0.0002  max mem: 52719
+[05/11 15:29:45] train INFO: Epoch: [31]  [2480/5004]  eta: 1:26:04  lr: 0.000977  loss: 4.4042 (4.3518)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 15:30:05] train INFO: Epoch: [31]  [2490/5004]  eta: 1:25:44  lr: 0.000977  loss: 4.3486 (4.3512)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 15:30:26] train INFO: Epoch: [31]  [2500/5004]  eta: 1:25:23  lr: 0.000977  loss: 4.4601 (4.3506)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:30:46] train INFO: Epoch: [31]  [2510/5004]  eta: 1:25:03  lr: 0.000977  loss: 4.3397 (4.3498)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:31:07] train INFO: Epoch: [31]  [2520/5004]  eta: 1:24:42  lr: 0.000977  loss: 4.2916 (4.3491)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:31:27] train INFO: Epoch: [31]  [2530/5004]  eta: 1:24:22  lr: 0.000977  loss: 4.3577 (4.3493)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 15:31:48] train INFO: Epoch: [31]  [2540/5004]  eta: 1:24:01  lr: 0.000977  loss: 4.4912 (4.3500)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:32:08] train INFO: Epoch: [31]  [2550/5004]  eta: 1:23:41  lr: 0.000977  loss: 4.4237 (4.3495)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:32:29] train INFO: Epoch: [31]  [2560/5004]  eta: 1:23:21  lr: 0.000977  loss: 4.0847 (4.3477)  time: 2.0442  data: 0.0002  max mem: 52719
+[05/11 15:32:49] train INFO: Epoch: [31]  [2570/5004]  eta: 1:23:00  lr: 0.000977  loss: 4.3368 (4.3479)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 15:33:09] train INFO: Epoch: [31]  [2580/5004]  eta: 1:22:40  lr: 0.000977  loss: 4.5360 (4.3484)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:33:30] train INFO: Epoch: [31]  [2590/5004]  eta: 1:22:19  lr: 0.000977  loss: 4.5755 (4.3484)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:33:50] train INFO: Epoch: [31]  [2600/5004]  eta: 1:21:59  lr: 0.000977  loss: 4.4632 (4.3482)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 15:34:11] train INFO: Epoch: [31]  [2610/5004]  eta: 1:21:38  lr: 0.000977  loss: 4.4289 (4.3479)  time: 2.0454  data: 0.0001  max mem: 52719
+[05/11 15:34:31] train INFO: Epoch: [31]  [2620/5004]  eta: 1:21:18  lr: 0.000977  loss: 4.6156 (4.3485)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:34:52] train INFO: Epoch: [31]  [2630/5004]  eta: 1:20:57  lr: 0.000977  loss: 4.6786 (4.3491)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 15:35:12] train INFO: Epoch: [31]  [2640/5004]  eta: 1:20:37  lr: 0.000977  loss: 4.3090 (4.3483)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:35:33] train INFO: Epoch: [31]  [2650/5004]  eta: 1:20:16  lr: 0.000977  loss: 4.2187 (4.3484)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:35:53] train INFO: Epoch: [31]  [2660/5004]  eta: 1:19:56  lr: 0.000977  loss: 4.6094 (4.3495)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:36:14] train INFO: Epoch: [31]  [2670/5004]  eta: 1:19:35  lr: 0.000977  loss: 4.6723 (4.3496)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:36:34] train INFO: Epoch: [31]  [2680/5004]  eta: 1:19:15  lr: 0.000977  loss: 4.4020 (4.3491)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:36:54] train INFO: Epoch: [31]  [2690/5004]  eta: 1:18:54  lr: 0.000977  loss: 4.4530 (4.3494)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:37:15] train INFO: Epoch: [31]  [2700/5004]  eta: 1:18:34  lr: 0.000977  loss: 4.4530 (4.3498)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:37:35] train INFO: Epoch: [31]  [2710/5004]  eta: 1:18:13  lr: 0.000977  loss: 4.2864 (4.3492)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:37:56] train INFO: Epoch: [31]  [2720/5004]  eta: 1:17:53  lr: 0.000977  loss: 3.8732 (4.3472)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:38:16] train INFO: Epoch: [31]  [2730/5004]  eta: 1:17:32  lr: 0.000977  loss: 4.0355 (4.3473)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:38:37] train INFO: Epoch: [31]  [2740/5004]  eta: 1:17:12  lr: 0.000977  loss: 4.2130 (4.3467)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 15:38:57] train INFO: Epoch: [31]  [2750/5004]  eta: 1:16:51  lr: 0.000977  loss: 4.1915 (4.3468)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 15:39:18] train INFO: Epoch: [31]  [2760/5004]  eta: 1:16:31  lr: 0.000977  loss: 4.4221 (4.3463)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 15:39:38] train INFO: Epoch: [31]  [2770/5004]  eta: 1:16:11  lr: 0.000977  loss: 4.4221 (4.3461)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 15:39:58] train INFO: Epoch: [31]  [2780/5004]  eta: 1:15:50  lr: 0.000977  loss: 4.2701 (4.3462)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 15:40:19] train INFO: Epoch: [31]  [2790/5004]  eta: 1:15:30  lr: 0.000977  loss: 4.4074 (4.3466)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 15:40:39] train INFO: Epoch: [31]  [2800/5004]  eta: 1:15:09  lr: 0.000977  loss: 4.3087 (4.3464)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 15:41:00] train INFO: Epoch: [31]  [2810/5004]  eta: 1:14:49  lr: 0.000977  loss: 4.3087 (4.3460)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:41:20] train INFO: Epoch: [31]  [2820/5004]  eta: 1:14:28  lr: 0.000977  loss: 4.3489 (4.3458)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 15:41:41] train INFO: Epoch: [31]  [2830/5004]  eta: 1:14:08  lr: 0.000977  loss: 4.4297 (4.3461)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 15:42:01] train INFO: Epoch: [31]  [2840/5004]  eta: 1:13:47  lr: 0.000977  loss: 4.7372 (4.3470)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 15:42:21] train INFO: Epoch: [31]  [2850/5004]  eta: 1:13:27  lr: 0.000977  loss: 4.4894 (4.3460)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 15:42:42] train INFO: Epoch: [31]  [2860/5004]  eta: 1:13:06  lr: 0.000977  loss: 4.3891 (4.3462)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:43:02] train INFO: Epoch: [31]  [2870/5004]  eta: 1:12:46  lr: 0.000977  loss: 4.6014 (4.3467)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:43:23] train INFO: Epoch: [31]  [2880/5004]  eta: 1:12:25  lr: 0.000977  loss: 4.6176 (4.3467)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:43:43] train INFO: Epoch: [31]  [2890/5004]  eta: 1:12:05  lr: 0.000977  loss: 4.4556 (4.3467)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 15:44:04] train INFO: Epoch: [31]  [2900/5004]  eta: 1:11:44  lr: 0.000977  loss: 4.4646 (4.3473)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 15:44:24] train INFO: Epoch: [31]  [2910/5004]  eta: 1:11:24  lr: 0.000977  loss: 4.3281 (4.3470)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:44:45] train INFO: Epoch: [31]  [2920/5004]  eta: 1:11:03  lr: 0.000977  loss: 4.3191 (4.3467)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:45:05] train INFO: Epoch: [31]  [2930/5004]  eta: 1:10:43  lr: 0.000977  loss: 4.3462 (4.3463)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 15:45:25] train INFO: Epoch: [31]  [2940/5004]  eta: 1:10:22  lr: 0.000977  loss: 4.4551 (4.3467)  time: 2.0452  data: 0.0001  max mem: 52719
+[05/11 15:45:46] train INFO: Epoch: [31]  [2950/5004]  eta: 1:10:02  lr: 0.000977  loss: 4.4402 (4.3460)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:46:06] train INFO: Epoch: [31]  [2960/5004]  eta: 1:09:42  lr: 0.000977  loss: 4.4555 (4.3462)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:46:27] train INFO: Epoch: [31]  [2970/5004]  eta: 1:09:21  lr: 0.000977  loss: 4.4083 (4.3452)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:46:47] train INFO: Epoch: [31]  [2980/5004]  eta: 1:09:01  lr: 0.000977  loss: 4.2893 (4.3452)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:47:08] train INFO: Epoch: [31]  [2990/5004]  eta: 1:08:40  lr: 0.000977  loss: 4.2893 (4.3449)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 15:47:28] train INFO: Epoch: [31]  [3000/5004]  eta: 1:08:20  lr: 0.000977  loss: 4.5228 (4.3449)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 15:47:49] train INFO: Epoch: [31]  [3010/5004]  eta: 1:07:59  lr: 0.000977  loss: 4.4123 (4.3445)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:48:09] train INFO: Epoch: [31]  [3020/5004]  eta: 1:07:39  lr: 0.000977  loss: 4.3165 (4.3445)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 15:48:30] train INFO: Epoch: [31]  [3030/5004]  eta: 1:07:18  lr: 0.000977  loss: 4.4910 (4.3445)  time: 2.0454  data: 0.0001  max mem: 52719
+[05/11 15:48:50] train INFO: Epoch: [31]  [3040/5004]  eta: 1:06:58  lr: 0.000977  loss: 4.5566 (4.3440)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 15:49:10] train INFO: Epoch: [31]  [3050/5004]  eta: 1:06:37  lr: 0.000977  loss: 4.1862 (4.3428)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:49:31] train INFO: Epoch: [31]  [3060/5004]  eta: 1:06:17  lr: 0.000977  loss: 4.4215 (4.3430)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:49:51] train INFO: Epoch: [31]  [3070/5004]  eta: 1:05:56  lr: 0.000977  loss: 4.7230 (4.3434)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:50:12] train INFO: Epoch: [31]  [3080/5004]  eta: 1:05:36  lr: 0.000977  loss: 4.6906 (4.3437)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:50:32] train INFO: Epoch: [31]  [3090/5004]  eta: 1:05:15  lr: 0.000977  loss: 4.6122 (4.3448)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 15:50:53] train INFO: Epoch: [31]  [3100/5004]  eta: 1:04:55  lr: 0.000977  loss: 4.5673 (4.3443)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:51:13] train INFO: Epoch: [31]  [3110/5004]  eta: 1:04:35  lr: 0.000977  loss: 4.2778 (4.3441)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:51:34] train INFO: Epoch: [31]  [3120/5004]  eta: 1:04:14  lr: 0.000977  loss: 4.3717 (4.3442)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:51:54] train INFO: Epoch: [31]  [3130/5004]  eta: 1:03:54  lr: 0.000977  loss: 4.3717 (4.3441)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:52:14] train INFO: Epoch: [31]  [3140/5004]  eta: 1:03:33  lr: 0.000977  loss: 4.2862 (4.3440)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 15:52:35] train INFO: Epoch: [31]  [3150/5004]  eta: 1:03:13  lr: 0.000977  loss: 4.2862 (4.3436)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 15:52:55] train INFO: Epoch: [31]  [3160/5004]  eta: 1:02:52  lr: 0.000977  loss: 4.2687 (4.3433)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:53:16] train INFO: Epoch: [31]  [3170/5004]  eta: 1:02:32  lr: 0.000977  loss: 4.5367 (4.3437)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:53:36] train INFO: Epoch: [31]  [3180/5004]  eta: 1:02:11  lr: 0.000977  loss: 4.5367 (4.3439)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:53:57] train INFO: Epoch: [31]  [3190/5004]  eta: 1:01:51  lr: 0.000977  loss: 4.4915 (4.3434)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 15:54:17] train INFO: Epoch: [31]  [3200/5004]  eta: 1:01:30  lr: 0.000977  loss: 4.4174 (4.3437)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:54:38] train INFO: Epoch: [31]  [3210/5004]  eta: 1:01:10  lr: 0.000977  loss: 4.3358 (4.3433)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:54:58] train INFO: Epoch: [31]  [3220/5004]  eta: 1:00:49  lr: 0.000977  loss: 4.3358 (4.3433)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:55:18] train INFO: Epoch: [31]  [3230/5004]  eta: 1:00:29  lr: 0.000977  loss: 4.4165 (4.3425)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 15:55:39] train INFO: Epoch: [31]  [3240/5004]  eta: 1:00:08  lr: 0.000977  loss: 4.3862 (4.3421)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 15:55:59] train INFO: Epoch: [31]  [3250/5004]  eta: 0:59:48  lr: 0.000977  loss: 4.4222 (4.3422)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 15:56:20] train INFO: Epoch: [31]  [3260/5004]  eta: 0:59:28  lr: 0.000977  loss: 4.6488 (4.3435)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 15:56:40] train INFO: Epoch: [31]  [3270/5004]  eta: 0:59:07  lr: 0.000977  loss: 4.7409 (4.3440)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 15:57:01] train INFO: Epoch: [31]  [3280/5004]  eta: 0:58:47  lr: 0.000977  loss: 4.6754 (4.3445)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 15:57:21] train INFO: Epoch: [31]  [3290/5004]  eta: 0:58:26  lr: 0.000977  loss: 4.4041 (4.3447)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 15:57:42] train INFO: Epoch: [31]  [3300/5004]  eta: 0:58:06  lr: 0.000977  loss: 4.2946 (4.3446)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 15:58:02] train INFO: Epoch: [31]  [3310/5004]  eta: 0:57:45  lr: 0.000977  loss: 4.0741 (4.3440)  time: 2.0452  data: 0.0001  max mem: 52719
+[05/11 15:58:23] train INFO: Epoch: [31]  [3320/5004]  eta: 0:57:25  lr: 0.000977  loss: 4.5335 (4.3443)  time: 2.0456  data: 0.0001  max mem: 52719
+[05/11 15:58:43] train INFO: Epoch: [31]  [3330/5004]  eta: 0:57:04  lr: 0.000977  loss: 4.6174 (4.3446)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 15:59:03] train INFO: Epoch: [31]  [3340/5004]  eta: 0:56:44  lr: 0.000977  loss: 4.2475 (4.3443)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 15:59:24] train INFO: Epoch: [31]  [3350/5004]  eta: 0:56:23  lr: 0.000977  loss: 4.4740 (4.3444)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 15:59:44] train INFO: Epoch: [31]  [3360/5004]  eta: 0:56:03  lr: 0.000977  loss: 4.6419 (4.3447)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:00:05] train INFO: Epoch: [31]  [3370/5004]  eta: 0:55:42  lr: 0.000977  loss: 4.4726 (4.3449)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:00:25] train INFO: Epoch: [31]  [3380/5004]  eta: 0:55:22  lr: 0.000977  loss: 4.3134 (4.3449)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:00:46] train INFO: Epoch: [31]  [3390/5004]  eta: 0:55:01  lr: 0.000977  loss: 4.3134 (4.3454)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:01:06] train INFO: Epoch: [31]  [3400/5004]  eta: 0:54:41  lr: 0.000977  loss: 4.6182 (4.3458)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:01:27] train INFO: Epoch: [31]  [3410/5004]  eta: 0:54:21  lr: 0.000977  loss: 4.3790 (4.3455)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:01:47] train INFO: Epoch: [31]  [3420/5004]  eta: 0:54:00  lr: 0.000977  loss: 4.2402 (4.3454)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:02:07] train INFO: Epoch: [31]  [3430/5004]  eta: 0:53:40  lr: 0.000977  loss: 4.1256 (4.3447)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:02:28] train INFO: Epoch: [31]  [3440/5004]  eta: 0:53:19  lr: 0.000977  loss: 4.4176 (4.3455)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:02:48] train INFO: Epoch: [31]  [3450/5004]  eta: 0:52:59  lr: 0.000977  loss: 4.6389 (4.3460)  time: 2.0435  data: 0.0001  max mem: 52719
+[05/11 16:03:09] train INFO: Epoch: [31]  [3460/5004]  eta: 0:52:38  lr: 0.000977  loss: 4.4335 (4.3466)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:03:29] train INFO: Epoch: [31]  [3470/5004]  eta: 0:52:18  lr: 0.000977  loss: 4.4159 (4.3462)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:03:50] train INFO: Epoch: [31]  [3480/5004]  eta: 0:51:57  lr: 0.000977  loss: 4.0922 (4.3455)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 16:04:10] train INFO: Epoch: [31]  [3490/5004]  eta: 0:51:37  lr: 0.000977  loss: 4.3498 (4.3460)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:04:30] train INFO: Epoch: [31]  [3500/5004]  eta: 0:51:16  lr: 0.000977  loss: 4.5772 (4.3466)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:04:51] train INFO: Epoch: [31]  [3510/5004]  eta: 0:50:56  lr: 0.000977  loss: 4.5963 (4.3470)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:05:11] train INFO: Epoch: [31]  [3520/5004]  eta: 0:50:35  lr: 0.000977  loss: 4.5963 (4.3470)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:05:32] train INFO: Epoch: [31]  [3530/5004]  eta: 0:50:15  lr: 0.000977  loss: 4.5048 (4.3471)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:05:52] train INFO: Epoch: [31]  [3540/5004]  eta: 0:49:54  lr: 0.000977  loss: 4.5179 (4.3475)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:06:13] train INFO: Epoch: [31]  [3550/5004]  eta: 0:49:34  lr: 0.000977  loss: 4.6699 (4.3480)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:06:33] train INFO: Epoch: [31]  [3560/5004]  eta: 0:49:14  lr: 0.000977  loss: 4.5362 (4.3482)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:06:54] train INFO: Epoch: [31]  [3570/5004]  eta: 0:48:53  lr: 0.000977  loss: 4.5008 (4.3483)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:07:14] train INFO: Epoch: [31]  [3580/5004]  eta: 0:48:33  lr: 0.000977  loss: 4.4908 (4.3475)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:07:34] train INFO: Epoch: [31]  [3590/5004]  eta: 0:48:12  lr: 0.000977  loss: 4.6164 (4.3482)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:07:55] train INFO: Epoch: [31]  [3600/5004]  eta: 0:47:52  lr: 0.000977  loss: 4.7026 (4.3488)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:08:15] train INFO: Epoch: [31]  [3610/5004]  eta: 0:47:31  lr: 0.000977  loss: 4.6073 (4.3490)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:08:36] train INFO: Epoch: [31]  [3620/5004]  eta: 0:47:11  lr: 0.000977  loss: 4.4222 (4.3496)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:08:56] train INFO: Epoch: [31]  [3630/5004]  eta: 0:46:50  lr: 0.000977  loss: 4.4099 (4.3495)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:09:17] train INFO: Epoch: [31]  [3640/5004]  eta: 0:46:30  lr: 0.000977  loss: 4.4661 (4.3501)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:09:37] train INFO: Epoch: [31]  [3650/5004]  eta: 0:46:09  lr: 0.000977  loss: 4.6011 (4.3501)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:09:58] train INFO: Epoch: [31]  [3660/5004]  eta: 0:45:49  lr: 0.000977  loss: 4.2456 (4.3492)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:10:18] train INFO: Epoch: [31]  [3670/5004]  eta: 0:45:28  lr: 0.000977  loss: 4.4103 (4.3494)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:10:38] train INFO: Epoch: [31]  [3680/5004]  eta: 0:45:08  lr: 0.000977  loss: 4.4023 (4.3485)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:10:59] train INFO: Epoch: [31]  [3690/5004]  eta: 0:44:48  lr: 0.000977  loss: 4.1170 (4.3485)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:11:19] train INFO: Epoch: [31]  [3700/5004]  eta: 0:44:27  lr: 0.000977  loss: 4.6036 (4.3491)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:11:40] train INFO: Epoch: [31]  [3710/5004]  eta: 0:44:07  lr: 0.000977  loss: 4.4349 (4.3488)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:12:00] train INFO: Epoch: [31]  [3720/5004]  eta: 0:43:46  lr: 0.000977  loss: 4.1414 (4.3492)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:12:21] train INFO: Epoch: [31]  [3730/5004]  eta: 0:43:26  lr: 0.000977  loss: 4.6032 (4.3492)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:12:41] train INFO: Epoch: [31]  [3740/5004]  eta: 0:43:05  lr: 0.000977  loss: 4.6981 (4.3502)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:13:02] train INFO: Epoch: [31]  [3750/5004]  eta: 0:42:45  lr: 0.000977  loss: 4.6324 (4.3503)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:13:22] train INFO: Epoch: [31]  [3760/5004]  eta: 0:42:24  lr: 0.000977  loss: 4.3778 (4.3506)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:13:42] train INFO: Epoch: [31]  [3770/5004]  eta: 0:42:04  lr: 0.000977  loss: 4.5537 (4.3513)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:14:03] train INFO: Epoch: [31]  [3780/5004]  eta: 0:41:43  lr: 0.000977  loss: 4.4258 (4.3510)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 16:14:23] train INFO: Epoch: [31]  [3790/5004]  eta: 0:41:23  lr: 0.000977  loss: 4.4258 (4.3517)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:14:44] train INFO: Epoch: [31]  [3800/5004]  eta: 0:41:02  lr: 0.000977  loss: 4.3286 (4.3510)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:15:04] train INFO: Epoch: [31]  [3810/5004]  eta: 0:40:42  lr: 0.000977  loss: 4.1612 (4.3508)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:15:25] train INFO: Epoch: [31]  [3820/5004]  eta: 0:40:22  lr: 0.000977  loss: 4.2297 (4.3513)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:15:45] train INFO: Epoch: [31]  [3830/5004]  eta: 0:40:01  lr: 0.000977  loss: 4.4486 (4.3515)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 16:16:06] train INFO: Epoch: [31]  [3840/5004]  eta: 0:39:41  lr: 0.000977  loss: 4.4570 (4.3518)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:16:26] train INFO: Epoch: [31]  [3850/5004]  eta: 0:39:20  lr: 0.000977  loss: 4.4590 (4.3519)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:16:46] train INFO: Epoch: [31]  [3860/5004]  eta: 0:39:00  lr: 0.000977  loss: 4.1745 (4.3518)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:17:07] train INFO: Epoch: [31]  [3870/5004]  eta: 0:38:39  lr: 0.000977  loss: 4.1709 (4.3518)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:17:27] train INFO: Epoch: [31]  [3880/5004]  eta: 0:38:19  lr: 0.000977  loss: 4.6705 (4.3519)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:17:48] train INFO: Epoch: [31]  [3890/5004]  eta: 0:37:58  lr: 0.000977  loss: 4.3619 (4.3512)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:18:08] train INFO: Epoch: [31]  [3900/5004]  eta: 0:37:38  lr: 0.000977  loss: 4.0855 (4.3506)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:18:29] train INFO: Epoch: [31]  [3910/5004]  eta: 0:37:17  lr: 0.000977  loss: 4.4605 (4.3514)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:18:49] train INFO: Epoch: [31]  [3920/5004]  eta: 0:36:57  lr: 0.000977  loss: 4.4337 (4.3511)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:19:09] train INFO: Epoch: [31]  [3930/5004]  eta: 0:36:36  lr: 0.000977  loss: 4.3605 (4.3518)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:19:30] train INFO: Epoch: [31]  [3940/5004]  eta: 0:36:16  lr: 0.000977  loss: 4.3258 (4.3514)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:19:50] train INFO: Epoch: [31]  [3950/5004]  eta: 0:35:56  lr: 0.000977  loss: 4.1464 (4.3512)  time: 2.0435  data: 0.0001  max mem: 52719
+[05/11 16:20:11] train INFO: Epoch: [31]  [3960/5004]  eta: 0:35:35  lr: 0.000977  loss: 4.6732 (4.3522)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:20:31] train INFO: Epoch: [31]  [3970/5004]  eta: 0:35:15  lr: 0.000977  loss: 4.7552 (4.3524)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:20:52] train INFO: Epoch: [31]  [3980/5004]  eta: 0:34:54  lr: 0.000977  loss: 4.5120 (4.3521)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:21:12] train INFO: Epoch: [31]  [3990/5004]  eta: 0:34:34  lr: 0.000977  loss: 4.3852 (4.3520)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 16:21:33] train INFO: Epoch: [31]  [4000/5004]  eta: 0:34:13  lr: 0.000977  loss: 4.2966 (4.3509)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:21:53] train INFO: Epoch: [31]  [4010/5004]  eta: 0:33:53  lr: 0.000977  loss: 4.1380 (4.3505)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 16:22:13] train INFO: Epoch: [31]  [4020/5004]  eta: 0:33:32  lr: 0.000977  loss: 4.3973 (4.3510)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 16:22:34] train INFO: Epoch: [31]  [4030/5004]  eta: 0:33:12  lr: 0.000977  loss: 4.5896 (4.3512)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:22:54] train INFO: Epoch: [31]  [4040/5004]  eta: 0:32:51  lr: 0.000977  loss: 4.4787 (4.3508)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:23:15] train INFO: Epoch: [31]  [4050/5004]  eta: 0:32:31  lr: 0.000977  loss: 3.9500 (4.3505)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:23:35] train INFO: Epoch: [31]  [4060/5004]  eta: 0:32:10  lr: 0.000977  loss: 4.4825 (4.3504)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:23:56] train INFO: Epoch: [31]  [4070/5004]  eta: 0:31:50  lr: 0.000977  loss: 4.3799 (4.3504)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:24:16] train INFO: Epoch: [31]  [4080/5004]  eta: 0:31:30  lr: 0.000977  loss: 4.3786 (4.3503)  time: 2.0453  data: 0.0001  max mem: 52719
+[05/11 16:24:37] train INFO: Epoch: [31]  [4090/5004]  eta: 0:31:09  lr: 0.000977  loss: 4.5165 (4.3507)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:24:57] train INFO: Epoch: [31]  [4100/5004]  eta: 0:30:49  lr: 0.000977  loss: 4.5102 (4.3508)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:25:17] train INFO: Epoch: [31]  [4110/5004]  eta: 0:30:28  lr: 0.000977  loss: 4.4618 (4.3511)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:25:38] train INFO: Epoch: [31]  [4120/5004]  eta: 0:30:08  lr: 0.000977  loss: 4.3818 (4.3505)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:25:58] train INFO: Epoch: [31]  [4130/5004]  eta: 0:29:47  lr: 0.000977  loss: 4.0280 (4.3504)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:26:19] train INFO: Epoch: [31]  [4140/5004]  eta: 0:29:27  lr: 0.000977  loss: 4.3681 (4.3500)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:26:39] train INFO: Epoch: [31]  [4150/5004]  eta: 0:29:06  lr: 0.000977  loss: 4.2549 (4.3496)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:27:00] train INFO: Epoch: [31]  [4160/5004]  eta: 0:28:46  lr: 0.000977  loss: 4.3039 (4.3500)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 16:27:20] train INFO: Epoch: [31]  [4170/5004]  eta: 0:28:25  lr: 0.000977  loss: 4.3204 (4.3496)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 16:27:41] train INFO: Epoch: [31]  [4180/5004]  eta: 0:28:05  lr: 0.000977  loss: 4.3124 (4.3489)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:28:01] train INFO: Epoch: [31]  [4190/5004]  eta: 0:27:45  lr: 0.000977  loss: 4.3873 (4.3491)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:28:21] train INFO: Epoch: [31]  [4200/5004]  eta: 0:27:24  lr: 0.000977  loss: 4.5511 (4.3492)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:28:42] train INFO: Epoch: [31]  [4210/5004]  eta: 0:27:04  lr: 0.000977  loss: 4.6944 (4.3493)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:29:02] train INFO: Epoch: [31]  [4220/5004]  eta: 0:26:43  lr: 0.000977  loss: 4.7388 (4.3498)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:29:23] train INFO: Epoch: [31]  [4230/5004]  eta: 0:26:23  lr: 0.000977  loss: 4.4972 (4.3493)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:29:43] train INFO: Epoch: [31]  [4240/5004]  eta: 0:26:02  lr: 0.000977  loss: 4.0766 (4.3489)  time: 2.0435  data: 0.0001  max mem: 52719
+[05/11 16:30:04] train INFO: Epoch: [31]  [4250/5004]  eta: 0:25:42  lr: 0.000977  loss: 4.3700 (4.3493)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:30:24] train INFO: Epoch: [31]  [4260/5004]  eta: 0:25:21  lr: 0.000977  loss: 4.5476 (4.3493)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:30:45] train INFO: Epoch: [31]  [4270/5004]  eta: 0:25:01  lr: 0.000977  loss: 4.6030 (4.3495)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:31:05] train INFO: Epoch: [31]  [4280/5004]  eta: 0:24:40  lr: 0.000977  loss: 4.6030 (4.3497)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:31:25] train INFO: Epoch: [31]  [4290/5004]  eta: 0:24:20  lr: 0.000977  loss: 4.5423 (4.3499)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:31:46] train INFO: Epoch: [31]  [4300/5004]  eta: 0:24:00  lr: 0.000977  loss: 4.5408 (4.3493)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:32:06] train INFO: Epoch: [31]  [4310/5004]  eta: 0:23:39  lr: 0.000977  loss: 4.3597 (4.3493)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:32:27] train INFO: Epoch: [31]  [4320/5004]  eta: 0:23:19  lr: 0.000977  loss: 4.6421 (4.3495)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:32:47] train INFO: Epoch: [31]  [4330/5004]  eta: 0:22:58  lr: 0.000977  loss: 4.2855 (4.3486)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:33:08] train INFO: Epoch: [31]  [4340/5004]  eta: 0:22:38  lr: 0.000977  loss: 4.2620 (4.3485)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:33:28] train INFO: Epoch: [31]  [4350/5004]  eta: 0:22:17  lr: 0.000977  loss: 4.3752 (4.3483)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:33:49] train INFO: Epoch: [31]  [4360/5004]  eta: 0:21:57  lr: 0.000977  loss: 4.5697 (4.3490)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:34:09] train INFO: Epoch: [31]  [4370/5004]  eta: 0:21:36  lr: 0.000977  loss: 4.5697 (4.3488)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:34:29] train INFO: Epoch: [31]  [4380/5004]  eta: 0:21:16  lr: 0.000977  loss: 4.4170 (4.3487)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:34:50] train INFO: Epoch: [31]  [4390/5004]  eta: 0:20:55  lr: 0.000977  loss: 4.6762 (4.3494)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:35:10] train INFO: Epoch: [31]  [4400/5004]  eta: 0:20:35  lr: 0.000977  loss: 4.4881 (4.3490)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:35:31] train INFO: Epoch: [31]  [4410/5004]  eta: 0:20:14  lr: 0.000977  loss: 4.5662 (4.3498)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:35:51] train INFO: Epoch: [31]  [4420/5004]  eta: 0:19:54  lr: 0.000977  loss: 4.7422 (4.3507)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:36:12] train INFO: Epoch: [31]  [4430/5004]  eta: 0:19:34  lr: 0.000977  loss: 4.5197 (4.3506)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:36:32] train INFO: Epoch: [31]  [4440/5004]  eta: 0:19:13  lr: 0.000977  loss: 4.4283 (4.3508)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:36:53] train INFO: Epoch: [31]  [4450/5004]  eta: 0:18:53  lr: 0.000977  loss: 4.3713 (4.3507)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:37:13] train INFO: Epoch: [31]  [4460/5004]  eta: 0:18:32  lr: 0.000977  loss: 4.4836 (4.3509)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:37:33] train INFO: Epoch: [31]  [4470/5004]  eta: 0:18:12  lr: 0.000977  loss: 4.4927 (4.3512)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 16:37:54] train INFO: Epoch: [31]  [4480/5004]  eta: 0:17:51  lr: 0.000977  loss: 4.7363 (4.3521)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:38:14] train INFO: Epoch: [31]  [4490/5004]  eta: 0:17:31  lr: 0.000977  loss: 4.7363 (4.3522)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:38:35] train INFO: Epoch: [31]  [4500/5004]  eta: 0:17:10  lr: 0.000977  loss: 3.9805 (4.3510)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:38:55] train INFO: Epoch: [31]  [4510/5004]  eta: 0:16:50  lr: 0.000977  loss: 3.5835 (4.3497)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:39:16] train INFO: Epoch: [31]  [4520/5004]  eta: 0:16:29  lr: 0.000977  loss: 4.1068 (4.3498)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:39:36] train INFO: Epoch: [31]  [4530/5004]  eta: 0:16:09  lr: 0.000977  loss: 4.4988 (4.3504)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:39:57] train INFO: Epoch: [31]  [4540/5004]  eta: 0:15:49  lr: 0.000977  loss: 4.4616 (4.3505)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 16:40:17] train INFO: Epoch: [31]  [4550/5004]  eta: 0:15:28  lr: 0.000977  loss: 4.3553 (4.3504)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:40:37] train INFO: Epoch: [31]  [4560/5004]  eta: 0:15:08  lr: 0.000977  loss: 4.3211 (4.3502)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:40:58] train INFO: Epoch: [31]  [4570/5004]  eta: 0:14:47  lr: 0.000977  loss: 4.3812 (4.3503)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:41:18] train INFO: Epoch: [31]  [4580/5004]  eta: 0:14:27  lr: 0.000977  loss: 4.4388 (4.3502)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:41:39] train INFO: Epoch: [31]  [4590/5004]  eta: 0:14:06  lr: 0.000977  loss: 4.4388 (4.3501)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:41:59] train INFO: Epoch: [31]  [4600/5004]  eta: 0:13:46  lr: 0.000977  loss: 4.4496 (4.3503)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:42:20] train INFO: Epoch: [31]  [4610/5004]  eta: 0:13:25  lr: 0.000977  loss: 4.3239 (4.3501)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:42:40] train INFO: Epoch: [31]  [4620/5004]  eta: 0:13:05  lr: 0.000977  loss: 4.1769 (4.3498)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:43:00] train INFO: Epoch: [31]  [4630/5004]  eta: 0:12:44  lr: 0.000977  loss: 4.2694 (4.3498)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:43:21] train INFO: Epoch: [31]  [4640/5004]  eta: 0:12:24  lr: 0.000977  loss: 4.4259 (4.3491)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:43:41] train INFO: Epoch: [31]  [4650/5004]  eta: 0:12:04  lr: 0.000977  loss: 4.4463 (4.3497)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:44:02] train INFO: Epoch: [31]  [4660/5004]  eta: 0:11:43  lr: 0.000977  loss: 4.4435 (4.3497)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:44:22] train INFO: Epoch: [31]  [4670/5004]  eta: 0:11:23  lr: 0.000977  loss: 4.5376 (4.3504)  time: 2.0447  data: 0.0001  max mem: 52719
+[05/11 16:44:43] train INFO: Epoch: [31]  [4680/5004]  eta: 0:11:02  lr: 0.000977  loss: 4.6114 (4.3507)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:45:03] train INFO: Epoch: [31]  [4690/5004]  eta: 0:10:42  lr: 0.000977  loss: 4.5128 (4.3508)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:45:24] train INFO: Epoch: [31]  [4700/5004]  eta: 0:10:21  lr: 0.000977  loss: 4.5237 (4.3514)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:45:44] train INFO: Epoch: [31]  [4710/5004]  eta: 0:10:01  lr: 0.000977  loss: 4.5733 (4.3518)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:46:04] train INFO: Epoch: [31]  [4720/5004]  eta: 0:09:40  lr: 0.000977  loss: 4.4425 (4.3513)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:46:25] train INFO: Epoch: [31]  [4730/5004]  eta: 0:09:20  lr: 0.000977  loss: 4.3637 (4.3512)  time: 2.0451  data: 0.0001  max mem: 52719
+[05/11 16:46:45] train INFO: Epoch: [31]  [4740/5004]  eta: 0:08:59  lr: 0.000977  loss: 4.4324 (4.3514)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 16:47:06] train INFO: Epoch: [31]  [4750/5004]  eta: 0:08:39  lr: 0.000977  loss: 4.1130 (4.3509)  time: 2.0442  data: 0.0001  max mem: 52719
+[05/11 16:47:26] train INFO: Epoch: [31]  [4760/5004]  eta: 0:08:19  lr: 0.000977  loss: 4.2632 (4.3507)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:47:47] train INFO: Epoch: [31]  [4770/5004]  eta: 0:07:58  lr: 0.000977  loss: 4.2993 (4.3505)  time: 2.0440  data: 0.0001  max mem: 52719
+[05/11 16:48:07] train INFO: Epoch: [31]  [4780/5004]  eta: 0:07:38  lr: 0.000977  loss: 4.1820 (4.3503)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:48:28] train INFO: Epoch: [31]  [4790/5004]  eta: 0:07:17  lr: 0.000977  loss: 4.4085 (4.3506)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 16:48:48] train INFO: Epoch: [31]  [4800/5004]  eta: 0:06:57  lr: 0.000977  loss: 4.4513 (4.3504)  time: 2.0448  data: 0.0001  max mem: 52719
+[05/11 16:49:09] train INFO: Epoch: [31]  [4810/5004]  eta: 0:06:36  lr: 0.000977  loss: 4.3865 (4.3500)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 16:49:29] train INFO: Epoch: [31]  [4820/5004]  eta: 0:06:16  lr: 0.000977  loss: 4.3865 (4.3500)  time: 2.0450  data: 0.0001  max mem: 52719
+[05/11 16:49:49] train INFO: Epoch: [31]  [4830/5004]  eta: 0:05:55  lr: 0.000977  loss: 4.3142 (4.3499)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:50:10] train INFO: Epoch: [31]  [4840/5004]  eta: 0:05:35  lr: 0.000977  loss: 4.5349 (4.3502)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:50:30] train INFO: Epoch: [31]  [4850/5004]  eta: 0:05:14  lr: 0.000977  loss: 4.1580 (4.3493)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:50:51] train INFO: Epoch: [31]  [4860/5004]  eta: 0:04:54  lr: 0.000977  loss: 4.2150 (4.3494)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:51:11] train INFO: Epoch: [31]  [4870/5004]  eta: 0:04:34  lr: 0.000977  loss: 4.4042 (4.3492)  time: 2.0437  data: 0.0001  max mem: 52719
+[05/11 16:51:32] train INFO: Epoch: [31]  [4880/5004]  eta: 0:04:13  lr: 0.000977  loss: 4.4380 (4.3494)  time: 2.0438  data: 0.0001  max mem: 52719
+[05/11 16:51:52] train INFO: Epoch: [31]  [4890/5004]  eta: 0:03:53  lr: 0.000977  loss: 4.5704 (4.3495)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:52:12] train INFO: Epoch: [31]  [4900/5004]  eta: 0:03:32  lr: 0.000977  loss: 4.4148 (4.3495)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:52:33] train INFO: Epoch: [31]  [4910/5004]  eta: 0:03:12  lr: 0.000977  loss: 4.4348 (4.3495)  time: 2.0446  data: 0.0001  max mem: 52719
+[05/11 16:52:53] train INFO: Epoch: [31]  [4920/5004]  eta: 0:02:51  lr: 0.000977  loss: 4.4323 (4.3495)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:53:14] train INFO: Epoch: [31]  [4930/5004]  eta: 0:02:31  lr: 0.000977  loss: 4.4277 (4.3494)  time: 2.0436  data: 0.0001  max mem: 52719
+[05/11 16:53:34] train INFO: Epoch: [31]  [4940/5004]  eta: 0:02:10  lr: 0.000977  loss: 4.4891 (4.3497)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 16:53:55] train INFO: Epoch: [31]  [4950/5004]  eta: 0:01:50  lr: 0.000977  loss: 4.2675 (4.3494)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 16:54:15] train INFO: Epoch: [31]  [4960/5004]  eta: 0:01:29  lr: 0.000977  loss: 4.2197 (4.3491)  time: 2.0441  data: 0.0001  max mem: 52719
+[05/11 16:54:36] train INFO: Epoch: [31]  [4970/5004]  eta: 0:01:09  lr: 0.000977  loss: 4.3695 (4.3492)  time: 2.0439  data: 0.0001  max mem: 52719
+[05/11 16:54:56] train INFO: Epoch: [31]  [4980/5004]  eta: 0:00:49  lr: 0.000977  loss: 4.5698 (4.3494)  time: 2.0441  data: 0.0007  max mem: 52719
+[05/11 16:55:16] train INFO: Epoch: [31]  [4990/5004]  eta: 0:00:28  lr: 0.000977  loss: 4.5283 (4.3494)  time: 2.0436  data: 0.0007  max mem: 52719
+[05/11 16:55:37] train INFO: Epoch: [31]  [5000/5004]  eta: 0:00:08  lr: 0.000977  loss: 4.4368 (4.3493)  time: 2.0427  data: 0.0001  max mem: 52719
+[05/11 16:55:43] train INFO: Epoch: [31]  [5003/5004]  eta: 0:00:02  lr: 0.000977  loss: 4.4368 (4.3493)  time: 2.0429  data: 0.0001  max mem: 52719
+[05/11 16:55:43] train INFO: Epoch: [31] Total time: 2:50:35 (2.0454 s / it)
+[05/11 16:55:43] train INFO: Averaged stats:lr: 0.000977  loss: 4.4368 (4.3493)
+[05/11 16:55:43] train INFO: Distributing BatchNorm running means and vars
+[05/11 16:55:46] train INFO: Test:  [  0/131]  eta: 0:06:55  loss: 1.5403 (1.5403)  acc1: 64.5833 (64.5833)  acc5: 89.8438 (89.8438)  time: 3.1727  data: 2.4131  max mem: 52719
+[05/11 16:55:54] train INFO: Test:  [ 10/131]  eta: 0:02:02  loss: 1.5280 (1.5037)  acc1: 67.4479 (66.8087)  acc5: 89.5833 (89.2756)  time: 1.0142  data: 0.2195  max mem: 52719
+[05/11 16:56:02] train INFO: Test:  [ 20/131]  eta: 0:01:41  loss: 1.3962 (1.4415)  acc1: 69.7917 (69.7173)  acc5: 89.5833 (89.8438)  time: 0.7994  data: 0.0002  max mem: 52719
+[05/11 16:56:10] train INFO: Test:  [ 30/131]  eta: 0:01:28  loss: 1.6384 (1.5470)  acc1: 62.5000 (65.7258)  acc5: 89.3229 (89.5077)  time: 0.8004  data: 0.0002  max mem: 52719
+[05/11 16:56:18] train INFO: Test:  [ 40/131]  eta: 0:01:18  loss: 1.6384 (1.5358)  acc1: 57.8125 (65.4726)  acc5: 91.1458 (90.0915)  time: 0.8000  data: 0.0002  max mem: 52719
+[05/11 16:56:26] train INFO: Test:  [ 50/131]  eta: 0:01:08  loss: 1.4411 (1.5201)  acc1: 68.2292 (66.4880)  acc5: 91.6667 (90.2165)  time: 0.8008  data: 0.0002  max mem: 52719
+[05/11 16:56:34] train INFO: Test:  [ 60/131]  eta: 0:00:59  loss: 1.7130 (1.6014)  acc1: 60.1562 (64.9206)  acc5: 87.2396 (88.9430)  time: 0.8014  data: 0.0002  max mem: 52719
+[05/11 16:56:42] train INFO: Test:  [ 70/131]  eta: 0:00:50  loss: 2.0387 (1.6771)  acc1: 54.4271 (63.3583)  acc5: 82.0312 (87.7421)  time: 0.8011  data: 0.0002  max mem: 52719
+[05/11 16:56:50] train INFO: Test:  [ 80/131]  eta: 0:00:42  loss: 1.9735 (1.7027)  acc1: 57.0312 (63.1398)  acc5: 81.7708 (87.1624)  time: 0.8018  data: 0.0002  max mem: 52719
+[05/11 16:56:58] train INFO: Test:  [ 90/131]  eta: 0:00:33  loss: 2.0515 (1.7517)  acc1: 56.7708 (62.1623)  acc5: 80.4688 (86.4011)  time: 0.8027  data: 0.0002  max mem: 52719
+[05/11 16:57:06] train INFO: Test:  [100/131]  eta: 0:00:25  loss: 2.1567 (1.7914)  acc1: 53.9062 (61.4764)  acc5: 79.1667 (85.6590)  time: 0.8023  data: 0.0002  max mem: 52719
+[05/11 16:57:14] train INFO: Test:  [110/131]  eta: 0:00:17  loss: 2.1344 (1.8300)  acc1: 52.6042 (60.6818)  acc5: 78.9062 (84.9873)  time: 0.8014  data: 0.0002  max mem: 52719
+[05/11 16:57:22] train INFO: Test:  [120/131]  eta: 0:00:09  loss: 2.1741 (1.8518)  acc1: 53.1250 (60.3155)  acc5: 79.1667 (84.6569)  time: 0.8012  data: 0.0001  max mem: 52719
+[05/11 16:57:30] train INFO: Test:  [130/131]  eta: 0:00:00  loss: 1.9420 (1.8463)  acc1: 59.8958 (60.5520)  acc5: 82.0312 (84.8420)  time: 0.7687  data: 0.0001  max mem: 52719
+[05/11 16:57:30] train INFO: Test: Total time: 0:01:46 (0.8148 s / it)
+[05/11 16:57:30] train INFO: * Acc@1 60.552 Acc@5 84.842 loss 1.846
+Current checkpoints:
+ ('checkpoints/simba_l/checkpoint-31.pth.tar', 60.552001474609376)
+ ('checkpoints/simba_l/checkpoint-30.pth.tar', 59.800001669921876)
+
+[05/11 16:57:30] train INFO: *** Best metric: 60.552001474609376 (epoch 31)
+[05/11 16:57:30] train INFO: Accuracy of the network on the 50000 test images: 60.6%
+[05/11 16:57:30] train INFO: Max accuracy: 60.55%
+[05/11 16:57:30] train INFO: {'train_lr': 0.000977298931918092, 'train_loss': 4.349282937798854, 'test_loss': 1.8462651776903458, 'test_acc1': 60.552001474609376, 'test_acc5': 84.842002421875, 'epoch': 31, 'n_parameters': 36128264}
+[05/11 16:57:34] train INFO: Epoch: [32]  [   0/5004]  eta: 5:04:08  lr: 0.000976  loss: 4.3762 (4.3762)  time: 3.6467  data: 1.6115  max mem: 52719
+[05/11 16:57:54] train INFO: Epoch: [32]  [  10/5004]  eta: 3:02:32  lr: 0.000976  loss: 4.6076 (4.5223)  time: 2.1930  data: 0.1467  max mem: 52719
+[05/11 16:58:15] train INFO: Epoch: [32]  [  20/5004]  eta: 2:56:28  lr: 0.000976  loss: 4.6349 (4.5689)  time: 2.0483  data: 0.0002  max mem: 52719
+[05/11 16:58:35] train INFO: Epoch: [32]  [  30/5004]  eta: 2:54:00  lr: 0.000976  loss: 4.6967 (4.5532)  time: 2.0474  data: 0.0002  max mem: 52719
+[05/11 16:58:56] train INFO: Epoch: [32]  [  40/5004]  eta: 2:52:35  lr: 0.000976  loss: 4.3844 (4.4261)  time: 2.0459  data: 0.0001  max mem: 52719
+[05/11 16:59:16] train INFO: Epoch: [32]  [  50/5004]  eta: 2:51:34  lr: 0.000976  loss: 4.4828 (4.4812)  time: 2.0454  data: 0.0001  max mem: 52719
+[05/11 16:59:37] train INFO: Epoch: [32]  [  60/5004]  eta: 2:50:46  lr: 0.000976  loss: 4.4900 (4.4454)  time: 2.0444  data: 0.0001  max mem: 52719
+[05/11 16:59:57] train INFO: Epoch: [32]  [  70/5004]  eta: 2:50:06  lr: 0.000976  loss: 4.3710 (4.4526)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 17:00:18] train INFO: Epoch: [32]  [  80/5004]  eta: 2:49:31  lr: 0.000976  loss: 4.3758 (4.4344)  time: 2.0452  data: 0.0001  max mem: 52719
+[05/11 17:00:38] train INFO: Epoch: [32]  [  90/5004]  eta: 2:48:59  lr: 0.000976  loss: 4.4929 (4.4497)  time: 2.0452  data: 0.0001  max mem: 52719
+[05/11 17:00:58] train INFO: Epoch: [32]  [ 100/5004]  eta: 2:48:30  lr: 0.000976  loss: 4.4929 (4.4185)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 17:01:19] train INFO: Epoch: [32]  [ 110/5004]  eta: 2:48:02  lr: 0.000976  loss: 4.4150 (4.4319)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 17:01:39] train INFO: Epoch: [32]  [ 120/5004]  eta: 2:47:36  lr: 0.000976  loss: 4.5696 (4.4253)  time: 2.0459  data: 0.0002  max mem: 52719
+[05/11 17:02:00] train INFO: Epoch: [32]  [ 130/5004]  eta: 2:47:10  lr: 0.000976  loss: 4.3983 (4.4173)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:02:20] train INFO: Epoch: [32]  [ 140/5004]  eta: 2:46:45  lr: 0.000976  loss: 4.3593 (4.3971)  time: 2.0446  data: 0.0002  max mem: 52719
+[05/11 17:02:41] train INFO: Epoch: [32]  [ 150/5004]  eta: 2:46:20  lr: 0.000976  loss: 3.9756 (4.3855)  time: 2.0443  data: 0.0001  max mem: 52719
+[05/11 17:03:01] train INFO: Epoch: [32]  [ 160/5004]  eta: 2:45:56  lr: 0.000976  loss: 4.3432 (4.3886)  time: 2.0449  data: 0.0001  max mem: 52719
+[05/11 17:03:22] train INFO: Epoch: [32]  [ 170/5004]  eta: 2:45:33  lr: 0.000976  loss: 4.5947 (4.3980)  time: 2.0456  data: 0.0001  max mem: 52719
+[05/11 17:03:42] train INFO: Epoch: [32]  [ 180/5004]  eta: 2:45:10  lr: 0.000976  loss: 4.6060 (4.3904)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 17:04:03] train INFO: Epoch: [32]  [ 190/5004]  eta: 2:44:47  lr: 0.000976  loss: 4.6262 (4.3981)  time: 2.0452  data: 0.0001  max mem: 52719
+[05/11 17:04:23] train INFO: Epoch: [32]  [ 200/5004]  eta: 2:44:24  lr: 0.000976  loss: 4.6262 (4.4035)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 17:04:43] train INFO: Epoch: [32]  [ 210/5004]  eta: 2:44:02  lr: 0.000976  loss: 4.4565 (4.3956)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:05:04] train INFO: Epoch: [32]  [ 220/5004]  eta: 2:43:39  lr: 0.000976  loss: 4.0767 (4.3765)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 17:05:24] train INFO: Epoch: [32]  [ 230/5004]  eta: 2:43:17  lr: 0.000976  loss: 4.2253 (4.3745)  time: 2.0445  data: 0.0002  max mem: 52719
+[05/11 17:05:45] train INFO: Epoch: [32]  [ 240/5004]  eta: 2:42:55  lr: 0.000976  loss: 4.5943 (4.3827)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:06:05] train INFO: Epoch: [32]  [ 250/5004]  eta: 2:42:33  lr: 0.000976  loss: 4.6395 (4.3959)  time: 2.0445  data: 0.0001  max mem: 52719
+[05/11 17:06:26] train INFO: Epoch: [32]  [ 260/5004]  eta: 2:42:11  lr: 0.000976  loss: 4.6119 (4.3993)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 17:06:46] train INFO: Epoch: [32]  [ 270/5004]  eta: 2:41:49  lr: 0.000976  loss: 4.3608 (4.3903)  time: 2.0438  data: 0.0002  max mem: 52719
+[05/11 17:07:07] train INFO: Epoch: [32]  [ 280/5004]  eta: 2:41:28  lr: 0.000976  loss: 4.3608 (4.3932)  time: 2.0442  data: 0.0002  max mem: 52719
+[05/11 17:07:27] train INFO: Epoch: [32]  [ 290/5004]  eta: 2:41:06  lr: 0.000976  loss: 4.5082 (4.3950)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 17:07:47] train INFO: Epoch: [32]  [ 300/5004]  eta: 2:40:45  lr: 0.000976  loss: 4.4096 (4.4035)  time: 2.0445  data: 0.0002  max mem: 52719
+[05/11 17:08:08] train INFO: Epoch: [32]  [ 310/5004]  eta: 2:40:23  lr: 0.000976  loss: 4.1358 (4.3894)  time: 2.0442  data: 0.0002  max mem: 52719
+[05/11 17:08:28] train INFO: Epoch: [32]  [ 320/5004]  eta: 2:40:02  lr: 0.000976  loss: 4.0390 (4.3884)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 17:08:49] train INFO: Epoch: [32]  [ 330/5004]  eta: 2:39:41  lr: 0.000976  loss: 4.5345 (4.3949)  time: 2.0445  data: 0.0002  max mem: 52719
+[05/11 17:09:09] train INFO: Epoch: [32]  [ 340/5004]  eta: 2:39:19  lr: 0.000976  loss: 4.4648 (4.3913)  time: 2.0439  data: 0.0002  max mem: 52719
+[05/11 17:09:30] train INFO: Epoch: [32]  [ 350/5004]  eta: 2:38:58  lr: 0.000976  loss: 4.4648 (4.3935)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:09:50] train INFO: Epoch: [32]  [ 360/5004]  eta: 2:38:37  lr: 0.000976  loss: 4.5956 (4.3964)  time: 2.0457  data: 0.0002  max mem: 52719
+[05/11 17:10:11] train INFO: Epoch: [32]  [ 370/5004]  eta: 2:38:16  lr: 0.000976  loss: 4.2435 (4.3838)  time: 2.0444  data: 0.0002  max mem: 52719
+[05/11 17:10:31] train INFO: Epoch: [32]  [ 380/5004]  eta: 2:37:55  lr: 0.000976  loss: 3.8327 (4.3760)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 17:10:51] train INFO: Epoch: [32]  [ 390/5004]  eta: 2:37:34  lr: 0.000976  loss: 4.2287 (4.3754)  time: 2.0439  data: 0.0002  max mem: 52719
+[05/11 17:11:12] train INFO: Epoch: [32]  [ 400/5004]  eta: 2:37:13  lr: 0.000976  loss: 4.1421 (4.3678)  time: 2.0441  data: 0.0002  max mem: 52719
+[05/11 17:11:32] train INFO: Epoch: [32]  [ 410/5004]  eta: 2:36:52  lr: 0.000976  loss: 4.0548 (4.3669)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 17:11:53] train INFO: Epoch: [32]  [ 420/5004]  eta: 2:36:31  lr: 0.000976  loss: 4.1834 (4.3591)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 17:12:13] train INFO: Epoch: [32]  [ 430/5004]  eta: 2:36:10  lr: 0.000976  loss: 4.1415 (4.3562)  time: 2.0441  data: 0.0002  max mem: 52719
+[05/11 17:12:34] train INFO: Epoch: [32]  [ 440/5004]  eta: 2:35:49  lr: 0.000976  loss: 4.2631 (4.3578)  time: 2.0436  data: 0.0002  max mem: 52719
+[05/11 17:12:54] train INFO: Epoch: [32]  [ 450/5004]  eta: 2:35:28  lr: 0.000976  loss: 4.2631 (4.3528)  time: 2.0436  data: 0.0002  max mem: 52719
+[05/11 17:13:15] train INFO: Epoch: [32]  [ 460/5004]  eta: 2:35:07  lr: 0.000976  loss: 4.3672 (4.3538)  time: 2.0440  data: 0.0002  max mem: 52719
+[05/11 17:13:35] train INFO: Epoch: [32]  [ 470/5004]  eta: 2:34:46  lr: 0.000976  loss: 4.6317 (4.3581)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 17:13:55] train INFO: Epoch: [32]  [ 480/5004]  eta: 2:34:25  lr: 0.000976  loss: 4.4296 (4.3550)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 17:14:16] train INFO: Epoch: [32]  [ 490/5004]  eta: 2:34:05  lr: 0.000976  loss: 4.3211 (4.3543)  time: 2.0443  data: 0.0002  max mem: 52719
+[05/11 17:14:36] train INFO: Epoch: [32]  [ 500/5004]  eta: 2:33:44  lr: 0.000976  loss: 4.5508 (4.3574)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:14:57] train INFO: Epoch: [32]  [ 510/5004]  eta: 2:33:23  lr: 0.000976  loss: 4.4765 (4.3559)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 17:15:17] train INFO: Epoch: [32]  [ 520/5004]  eta: 2:33:02  lr: 0.000976  loss: 4.3886 (4.3572)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:15:38] train INFO: Epoch: [32]  [ 530/5004]  eta: 2:32:42  lr: 0.000976  loss: 4.1208 (4.3522)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 17:15:58] train INFO: Epoch: [32]  [ 540/5004]  eta: 2:32:21  lr: 0.000976  loss: 4.1672 (4.3551)  time: 2.0452  data: 0.0002  max mem: 52719
+[05/11 17:16:19] train INFO: Epoch: [32]  [ 550/5004]  eta: 2:32:00  lr: 0.000976  loss: 4.6210 (4.3535)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 17:16:39] train INFO: Epoch: [32]  [ 560/5004]  eta: 2:31:39  lr: 0.000976  loss: 3.9659 (4.3447)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 17:16:59] train INFO: Epoch: [32]  [ 570/5004]  eta: 2:31:19  lr: 0.000976  loss: 3.9659 (4.3438)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 17:17:20] train INFO: Epoch: [32]  [ 580/5004]  eta: 2:30:58  lr: 0.000976  loss: 4.5613 (4.3427)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 17:17:40] train INFO: Epoch: [32]  [ 590/5004]  eta: 2:30:37  lr: 0.000976  loss: 4.1946 (4.3362)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:18:01] train INFO: Epoch: [32]  [ 600/5004]  eta: 2:30:17  lr: 0.000976  loss: 4.1262 (4.3348)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:18:21] train INFO: Epoch: [32]  [ 610/5004]  eta: 2:29:56  lr: 0.000976  loss: 4.2027 (4.3324)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:18:42] train INFO: Epoch: [32]  [ 620/5004]  eta: 2:29:36  lr: 0.000976  loss: 4.1892 (4.3314)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 17:19:02] train INFO: Epoch: [32]  [ 630/5004]  eta: 2:29:15  lr: 0.000976  loss: 4.6513 (4.3379)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 17:19:23] train INFO: Epoch: [32]  [ 640/5004]  eta: 2:28:54  lr: 0.000976  loss: 4.6513 (4.3356)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:19:43] train INFO: Epoch: [32]  [ 650/5004]  eta: 2:28:34  lr: 0.000976  loss: 4.1236 (4.3322)  time: 2.0455  data: 0.0002  max mem: 52719
+[05/11 17:20:04] train INFO: Epoch: [32]  [ 660/5004]  eta: 2:28:13  lr: 0.000976  loss: 4.2441 (4.3327)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 17:20:24] train INFO: Epoch: [32]  [ 670/5004]  eta: 2:27:52  lr: 0.000976  loss: 4.4393 (4.3328)  time: 2.0456  data: 0.0002  max mem: 52719
+[05/11 17:20:44] train INFO: Epoch: [32]  [ 680/5004]  eta: 2:27:32  lr: 0.000976  loss: 4.4983 (4.3365)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 17:21:05] train INFO: Epoch: [32]  [ 690/5004]  eta: 2:27:11  lr: 0.000976  loss: 4.5064 (4.3377)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:21:25] train INFO: Epoch: [32]  [ 700/5004]  eta: 2:26:51  lr: 0.000976  loss: 4.5776 (4.3391)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:21:46] train INFO: Epoch: [32]  [ 710/5004]  eta: 2:26:30  lr: 0.000976  loss: 4.5776 (4.3371)  time: 2.0447  data: 0.0002  max mem: 52719
+[05/11 17:22:06] train INFO: Epoch: [32]  [ 720/5004]  eta: 2:26:09  lr: 0.000976  loss: 4.4367 (4.3352)  time: 2.0448  data: 0.0002  max mem: 52719
+[05/11 17:22:27] train INFO: Epoch: [32]  [ 730/5004]  eta: 2:25:49  lr: 0.000976  loss: 4.5132 (4.3377)  time: 2.0451  data: 0.0002  max mem: 52719
+[05/11 17:22:47] train INFO: Epoch: [32]  [ 740/5004]  eta: 2:25:28  lr: 0.000976  loss: 4.5267 (4.3378)  time: 2.0449  data: 0.0002  max mem: 52719
+[05/11 17:23:08] train INFO: Epoch: [32]  [ 750/5004]  eta: 2:25:08  lr: 0.000976  loss: 4.4546 (4.3393)  time: 2.0450  data: 0.0002  max mem: 52719
+[05/11 17:23:28] train INFO: Epoch: [32]  [ 760/5004]  eta: 2:24:47  lr: 0.000976  loss: 4.2832 (4.3381)  time: 2.0451  data: 0.0002  max mem: 52719
+E0511 17:23:47.879000 1213447 torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: -9) local_rank: 0 (pid: 1213522) of binary: /volume1/users/rgeens/simba/env/bin/python3.11
+Traceback (most recent call last):
+  File "/volume1/users/rgeens/simba/env/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/volume1/users/rgeens/simba/env/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/volume1/users/rgeens/simba/env/lib/python3.11/site-packages/torch/distributed/run.py", line 892, in main
+    run(args)
+  File "/volume1/users/rgeens/simba/env/lib/python3.11/site-packages/torch/distributed/run.py", line 883, in run
+    elastic_launch(
+  File "/volume1/users/rgeens/simba/env/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 139, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/volume1/users/rgeens/simba/env/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 270, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+========================================================
+simba/main.py FAILED
+--------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+--------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-05-11_17:23:47
+  host      : cassiopeia.esat.kuleuven.be
+  rank      : 0 (local_rank: 0)
+  exitcode  : -9 (pid: 1213522)
+  error_file: <N/A>
+  traceback : Signal 9 (SIGKILL) received by PID 1213522
+========================================================
+./main.sh: line 35: 256: command not found

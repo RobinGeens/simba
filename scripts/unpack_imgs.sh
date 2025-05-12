@@ -7,7 +7,7 @@ LOGFILE="prepare_imagenet.log"
 exec > >(tee -a "$LOGFILE") 2>&1
 
 # === CONFIGURATION ===
-# Set to where the tar files are
+# Set to where the tar files are. Should be downloaded from https://image-net.org/download-images
 TRAIN_TAR="ILSVRC2012_img_train.tar"
 VAL_TAR="ILSVRC2012_img_val.tar"
 

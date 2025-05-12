@@ -9,11 +9,12 @@ import sys
 from typing import Iterable, Optional
 
 import torch
-import utils
-from losses import DistillationLoss
 from timm.data import Mixup
 from timm.utils import ModelEma, accuracy
 from tlt.data import create_token_label_target
+
+from simba import utils
+from simba.losses import DistillationLoss
 
 
 def train_one_epoch(
@@ -99,7 +100,7 @@ def evaluate(data_loader, model, device):
         target = target.to(device, non_blocking=True)
 
         # compute output
-        with torch.cuda.amp.autocast():
+        with torch.amp.autocast("cuda"):
             output = model(images)
             loss = criterion(output, target)
 
