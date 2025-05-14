@@ -22,7 +22,8 @@ FP32 = torch.float32
 ACT_T = BF16
 FFT_ACT_T = FP16
 FFT_WEIGHT_T = FP32
-MAMBA_T = FP32  # Put everything in FP32, to annoying to only put weights in FP32 for now
+MAMBA_MAIN_T = FP32  # Put everything in FP32, to annoying to only put weights in FP32 for now
+MAMBA_ACT_T = BF16
 PATCH_EMBED_T = FP32
 
 
@@ -131,13 +132,14 @@ class MambaLayer(nn.Module):
             d_state=d_state,  # SSM state expansion factor
             d_conv=d_conv,  # Local convolution width
             expand=expand,  # Block expansion factor
-            dtype=MAMBA_T,  # NOTE should be enough to put most of Mamba's layer in the correct type
+            dtype=MAMBA_MAIN_T,  # NOTE should be enough to put most of Mamba's layer in the correct type
+            dtype_act=MAMBA_MAIN_T,
         )
 
     def forward(self, x):
         # print('x',x.shape)
         B, L, C = x.shape
-        x_norm = self.norm(x)
+        x_norm = self.norm(x).to(MAMBA_MAIN_T)
         x_mamba = self.mamba(x_norm)
         return x_mamba
 
