@@ -14,23 +14,17 @@ import warnings
 from pathlib import Path
 
 import numpy as np
-from PIL import ImageFile
-
-import wandb  # Add wandb import
-
-ImageFile.LOAD_TRUNCATED_IMAGES = True
-
+import simba_bf16  # noqa: F401
 import timm
 import torch
 import torch.backends.cudnn as cudnn
 import torch.serialization
-
-# import models
 import utils
 from datasets import build_dataset
-from engine import evaluate, train_one_epoch
+from engine import AUTOCAST_DTYPE, evaluate, train_one_epoch
 from loss import TokenLabelCrossEntropy
 from losses import DistillationLoss
+from PIL import ImageFile
 from samplers import RASampler
 from timm.data import Mixup
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
@@ -42,13 +36,12 @@ from tlt.data import create_token_label_dataset, create_token_label_loader
 from util.checkpoint_saver import CheckpointSaver2
 from util.flops_counter import get_model_complexity_info
 
+# import models
+import simba  # noqa: F401
+import wandb  # Add wandb import
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
-
-
-def load_config(config_path):
-    with open(config_path, "r") as f:
-        config = json.load(f)
-    return config
 
 
 def get_args_parser():
@@ -601,6 +594,22 @@ def build_imagenet_dataset(args):
         return build_no_token_label(args)
 
 
+class NoOpScaler:
+    """No op scaler for BF16 training"""
+
+    def __call__(self, loss, optimizer, clip_grad=None, parameters=None, create_graph=False):
+        loss.backward(create_graph=create_graph)
+        if clip_grad is not None:
+            torch.nn.utils.clip_grad_norm_(parameters, clip_grad)
+        optimizer.step()
+
+    def state_dict(self):
+        return {}
+
+    def load_state_dict(self, state_dict):
+        pass
+
+
 def main(args):
     timm.utils.setup_default_logging()
     utils.init_distributed_mode(args)
@@ -624,8 +633,6 @@ def main(args):
     utils.setup_logger(args.output_dir, distributed_rank=utils.get_rank())
     _logger = logging.getLogger("train")
     _logger.info(args)
-
-    config = load_config(args.config)
 
     (
         dataset_train,
@@ -668,11 +675,7 @@ def main(args):
     model.to(device)
     print(model)
 
-    # Set model to use the specified datatype for weights
-    dtype_map = {"float32": torch.float32, "float16": torch.float16, "bfloat16": torch.bfloat16}
-    model = model.to(dtype=dtype_map[config["train_weight_dtype"]])
-
-    with torch.amp.autocast("cuda", dtype=dtype_map[config["train_activation_dtype"]]):  # enabled=True):
+    with torch.amp.autocast("cuda", dtype=AUTOCAST_DTYPE):
         flops_count, params_count = get_model_complexity_info(
             model,
             (3, 224, 224),
@@ -693,7 +696,7 @@ def main(args):
     linear_scaled_lr = args.lr * args.batch_size * utils.get_world_size() / 512.0
     args.lr = linear_scaled_lr
     optimizer = create_optimizer(args, model_without_ddp)
-    loss_scaler = NativeScaler()
+    loss_scaler = NoOpScaler() if args.clip_grad is None else NativeScaler()
     lr_scheduler, _ = create_scheduler(args, optimizer)
 
     if args.token_label:

@@ -13,8 +13,14 @@ from timm.data import Mixup
 from timm.utils import ModelEma, accuracy
 from tlt.data import create_token_label_target
 
-from simba import utils
-from simba.losses import DistillationLoss
+try:
+    from simba import utils
+    from simba.losses import DistillationLoss
+except ImportError:
+    import utils
+    from losses import DistillationLoss
+
+AUTOCAST_DTYPE = torch.bfloat16
 
 
 def train_one_epoch(
@@ -52,13 +58,14 @@ def train_one_epoch(
                     targets, num_classes=args.nb_classes, smoothing=args.smoothing, label_size=args.token_label_size
                 )
 
-        with torch.amp.autocast("cuda", dtype=torch.bfloat16):  # enabled=not fp32):
+        with torch.amp.autocast("cuda", dtype=AUTOCAST_DTYPE):
             outputs = model(samples)
 
-            if args.token_label:
-                loss = criterion(outputs, targets)
-            else:
-                loss = criterion(samples, outputs, targets)
+        # Do not wrap in autocast!
+        if args.token_label:
+            loss = criterion(outputs, targets)
+        else:
+            loss = criterion(samples, outputs, targets)
 
         loss_value = loss.item()
 
@@ -71,6 +78,10 @@ def train_one_epoch(
         # this attribute is added by timm on one optimizer (adahessian)
         is_second_order = hasattr(optimizer, "is_second_order") and optimizer.is_second_order
         loss_scaler(loss, optimizer, clip_grad=max_norm, parameters=model.parameters(), create_graph=is_second_order)
+        with open("grad_stats.log", "a") as f:
+            for name, param in model.named_parameters():
+                if param.grad is not None:
+                    f.write(f"{name} grad mean: {param.grad.abs().mean().item():.3e}\n")
 
         torch.cuda.synchronize()
         if model_ema is not None:

@@ -1,5 +1,3 @@
-import re
-
 import matplotlib.pyplot as plt
 
 
@@ -10,23 +8,29 @@ def parse_log_file(filename):
 
     with open(filename, "r") as f:
         for line in f:
-            # Look for lines with test accuracy summary
-            if "* Acc@1" in line:
-                # Extract accuracies using regex
-                acc1_match = re.search(r"Acc@1 (\d+\.\d+)", line)
-                acc5_match = re.search(r"Acc@5 (\d+\.\d+)", line)
+            try:
+                # Parse JSON-formatted log lines
+                data = eval(line)
+                if "test_acc1" in data and "test_acc5" in data:
+                    acc1.append(data["test_acc1"])
+                    acc5.append(data["test_acc5"])
+                    epochs.append(data["epoch"])
+            except:
+                continue
 
-                if acc1_match and acc5_match:
-                    acc1.append(float(acc1_match.group(1)))
-                    acc5.append(float(acc5_match.group(1)))
-                    epochs.append(len(acc1))
+    # Sort data points by epoch
+    sorted_data = sorted(zip(epochs, acc1, acc5))
+    epochs = [x[0] for x in sorted_data]
+    acc1 = [x[1] for x in sorted_data]
+    acc5 = [x[2] for x in sorted_data]
 
     return epochs, acc1, acc5
 
 
 # Parse both log files
-simba_s_epochs, simba_s_acc1, simba_s_acc5 = parse_log_file("checkpoints/simba_s/log.txt")
-simba_l_epochs, simba_l_acc1, simba_l_acc5 = parse_log_file("nohup.out")
+simba_s_epochs, simba_s_acc1, simba_s_acc5 = parse_log_file("checkpoints/simba_s/tlog.txt")
+simba_l_epochs, simba_l_acc1, simba_l_acc5 = parse_log_file("checkpoints/simba_l/tlog.txt")
+# simba_l_bf16_epochs, simba_l_bf16_acc1, simba_l_bf16_acc5 = parse_log_file("checkpoints/simba_l_bf16/tlog.txt")
 
 # Create the plot
 plt.figure(figsize=(10, 6))

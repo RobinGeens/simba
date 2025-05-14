@@ -4,11 +4,15 @@ import json
 import os
 
 import torchvision.datasets as datasets
-from mcloader.classification import ClassificationDataset
 from timm.data import create_transform
 from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from torchvision import transforms
 from torchvision.datasets.folder import ImageFolder, default_loader
+
+try:
+    from mcloader.classification import ClassificationDataset
+except ImportError:
+    from simba.mcloader.classification import ClassificationDataset
 
 
 class INatDataset(ImageFolder):

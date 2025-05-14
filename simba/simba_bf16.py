@@ -15,8 +15,15 @@ from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
 
-BF16 = torch.bfloat16
 FP16 = torch.float16
+BF16 = torch.bfloat16
+FP32 = torch.float32
+
+ACT_T = BF16
+FFT_ACT_T = FP16
+FFT_WEIGHT_T = FP32
+MAMBA_T = FP32  # Put everything in FP32, to annoying to only put weights in FP32 for now
+PATCH_EMBED_T = FP32
 
 
 class EinFFT(nn.Module):
@@ -35,7 +42,7 @@ class EinFFT(nn.Module):
                 self.num_blocks,
                 self.block_size,
                 self.block_size,
-                dtype=FP16,
+                dtype=FFT_WEIGHT_T,
             )
             * self.scale
         )
@@ -45,25 +52,30 @@ class EinFFT(nn.Module):
                 self.num_blocks,
                 self.block_size,
                 self.block_size,
-                dtype=BF16,
+                dtype=FFT_WEIGHT_T,
             )
             * self.scale
         )
-        self.complex_bias_1 = nn.Parameter(torch.randn(2, self.num_blocks, self.block_size, dtype=FP16) * self.scale)
-        self.complex_bias_2 = nn.Parameter(torch.randn(2, self.num_blocks, self.block_size, dtype=FP16) * self.scale)
+        self.complex_bias_1 = nn.Parameter(
+            torch.randn(2, self.num_blocks, self.block_size, dtype=FFT_WEIGHT_T) * self.scale
+        )
+        self.complex_bias_2 = nn.Parameter(
+            torch.randn(2, self.num_blocks, self.block_size, dtype=FFT_WEIGHT_T) * self.scale
+        )
 
-    def multiply(self, input, weights):
+    def multiply(self, input: torch.Tensor, weights: torch.Tensor):
+        weights = weights.to(FFT_ACT_T)
         return torch.einsum("...bd,bdk->...bk", input, weights)
 
     def get_pad_size(self, size):
-        # Get next power of 2
+        # Get next power of 2``
         return 2 ** math.ceil(math.log2(size))
 
     def forward(self, x: torch.Tensor, H: int, W: int) -> torch.Tensor:
         """Torch's fft is only implemented for FP16, not for BF16
         Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input"""
         B, N, C = x.shape
-        x = x.to(FP16)
+        x = x.to(FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
 
         # Pad the input
@@ -76,35 +88,36 @@ class EinFFT(nn.Module):
         x_real_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[0])
             - self.multiply(x.imag, self.complex_weight_1[1])
-            + self.complex_bias_1[0]
+            + self.complex_bias_1[0].to(FFT_ACT_T)
         )
         x_imag_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[1])
             + self.multiply(x.imag, self.complex_weight_1[0])
-            + self.complex_bias_1[1]
+            + self.complex_bias_1[1].to(FFT_ACT_T)
         )
         x_real_2 = (
             self.multiply(x_real_1, self.complex_weight_2[0])
             - self.multiply(x_imag_1, self.complex_weight_2[1])
-            + self.complex_bias_2[0]
+            + self.complex_bias_2[0].to(FFT_ACT_T)
         )
         x_imag_2 = (
             self.multiply(x_real_1, self.complex_weight_2[1])
             + self.multiply(x_imag_1, self.complex_weight_2[0])
-            + self.complex_bias_2[1]
+            + self.complex_bias_2[1].to(FFT_ACT_T)
         )
 
         x = torch.stack([x_real_2, x_imag_2], dim=-1)
         x = F.softshrink(x, lambd=self.sparsity_threshold) if self.sparsity_threshold else x
-        x = torch.view_as_complex(x)
+        x = x.to(FFT_ACT_T)
 
+        x = torch.view_as_complex(x)
         x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
 
         # Unpad the output
         x = x[:, :N, : self.num_blocks, :]
 
         x = x.reshape(B, N, C)
-        x = x.to(BF16)
+        x = x.to(ACT_T)
         return x
 
 
@@ -118,7 +131,7 @@ class MambaLayer(nn.Module):
             d_state=d_state,  # SSM state expansion factor
             d_conv=d_conv,  # Local convolution width
             expand=expand,  # Block expansion factor
-            dtype=BF16,  # NOTE should be enough to put most of Mamba's layer in the correct type
+            dtype=MAMBA_T,  # NOTE should be enough to put most of Mamba's layer in the correct type
         )
 
     def forward(self, x):
@@ -298,7 +311,7 @@ class DownSamples(nn.Module):
             kernel_size=3,
             stride=2,
             padding=1,
-            dtype=BF16,  # NOTE new
+            dtype=PATCH_EMBED_T,  # NOTE new
         )
         self.norm = nn.LayerNorm(out_channels)
         self.apply(self._init_weights)
@@ -331,17 +344,23 @@ class Stem(nn.Module):
         super().__init__()
         hidden_dim = stem_hidden_dim
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False, dtype=BF16),  # 112x112
+            nn.Conv2d(
+                in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False, dtype=PATCH_EMBED_T
+            ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=BF16),  # 112x112
+            nn.Conv2d(
+                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=PATCH_EMBED_T
+            ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=BF16),  # 112x112
+            nn.Conv2d(
+                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=PATCH_EMBED_T
+            ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
         )
-        self.proj = nn.Conv2d(hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=BF16)
+        self.proj = nn.Conv2d(hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=PATCH_EMBED_T)
         self.norm = nn.LayerNorm(out_channels)
 
         self.apply(self._init_weights)
@@ -564,7 +583,7 @@ class SiMBA(nn.Module):
 class DWConv(nn.Module):
     def __init__(self, dim=768):
         super(DWConv, self).__init__()
-        self.dwconv = nn.Conv2d(dim, dim, 3, 1, 1, bias=True, groups=dim, dtype=BF16)
+        self.dwconv = nn.Conv2d(dim, dim, 3, 1, 1, bias=True, groups=dim, dtype=ACT_T)
 
     def forward(self, x, H, W):
         B, N, C = x.shape

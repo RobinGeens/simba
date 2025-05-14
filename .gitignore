@@ -3,6 +3,7 @@ dataset
 __pycache__
 .vscode
 
+nohup.out
 *.tar
 *.out
 *.log

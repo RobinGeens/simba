@@ -1,17 +1,24 @@
-import argparse  # Add this import
+import argparse
 import logging
 import os
 
+# # Add the current directory to Python path to ensure simba package is importable
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import torch
 from timm.models import create_model
 
-from simba.datasets import build_dataset
-from simba.engine import evaluate
+from simba.simba import simba_l  # noqa: F401
+from simba.simba_bf16 import simba_l_bf16  # noqa: F401
+
+if __name__ == "__main__":
+    from simba.datasets import build_dataset
+    from simba.engine import evaluate
 
 # Global parameters for datatypes
 EVAL_ACTIVATION_DTYPE = "bfloat16"
 EVAL_WEIGHT_DTYPE = "bfloat16"
 
+MODEL_NAME = "simba_l_bf16"
 CHECKPOINT_DIR = "checkpoints/simba_l"
 
 # Configuration constants
@@ -62,7 +69,7 @@ def main():
     logging.info(f"Checkpoint found: {checkpoint_path}")
 
     model: torch.nn.Module = create_model(
-        "simba_l",
+        MODEL_NAME,
         pretrained=False,
         num_classes=1000,
         drop_rate=0.0,
@@ -75,7 +82,8 @@ def main():
     # Set data type
     model = model.to(dtype=dtype_map[EVAL_WEIGHT_DTYPE])
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Explicitly use GPU 1
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
     # Create dataset and dataloader
@@ -102,7 +110,7 @@ def main():
     )
 
     # Evaluate
-    with torch.amp.autocast("cuda", dtype=dtype_map[EVAL_ACTIVATION_DTYPE]):
+    with torch.cuda.amp.autocast(dtype=dtype_map[EVAL_ACTIVATION_DTYPE]):
         test_stats = evaluate(data_loader, model, device)
 
     logging.info(

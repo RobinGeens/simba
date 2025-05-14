@@ -1,11 +1,9 @@
 #!/bin/bash
 
-MODEL="simba_l_bf"
+MODEL="simba_l_bf16"
 
 echo "Running on GPU $CUDA_VISIBLE_DEVICES"
 nvidia-smi
-
-# Activate the Python environment
 source env/bin/activate
 
 # LATEST_CHECKPOINT=$(ls -v checkpoints/$MODEL/checkpoint-*.pth.tar | tail -n1)
@@ -13,8 +11,7 @@ source env/bin/activate
 
 DATA_PATH="dataset/ILSVRC2012"
 # LABEL_PATH="dataset/Image_net/imagenet_efficientnet_l2_sz475_top5/"
-# export DATA_PATH
-# export LABEL_PATH
+
 
 CUDA_VISIBLE_DEVICES=1 torchrun  \
    --nproc_per_node=1 \

@@ -4,6 +4,7 @@ import torch
 from timm.models import create_model
 
 from eval import get_most_recent_checkpoint, load_checkpoint
+from simba.simba_bf16 import simba_l_bf16  # noqa: F401
 
 CHECKPOINT_DIR = "checkpoints/simba_l_bf16"
 
