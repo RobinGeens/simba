@@ -22,7 +22,7 @@ FP32 = torch.float32
 ACT_T = BF16
 FFT_ACT_T = FP16
 FFT_WEIGHT_T = FP32
-MAMBA_MAIN_T = FP32  # Put everything in FP32, to annoying to only put weights in FP32 for now
+MAMBA_MAIN_T = FP32
 MAMBA_ACT_T = BF16
 PATCH_EMBED_T = FP32
 
@@ -65,8 +65,7 @@ class EinFFT(nn.Module):
         )
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
-        weights = weights.to(FFT_ACT_T)
-        return torch.einsum("...bd,bdk->...bk", input, weights)
+        return torch.einsum("...bd,bdk->...bk", input.to(FFT_ACT_T), weights.to(FFT_ACT_T))
 
     def get_pad_size(self, size):
         # Get next power of 2``
@@ -108,7 +107,7 @@ class EinFFT(nn.Module):
         )
 
         x = torch.stack([x_real_2, x_imag_2], dim=-1)
-        x = F.softshrink(x, lambd=self.sparsity_threshold) if self.sparsity_threshold else x
+        x = F.softshrink(x.to(FP32), lambd=self.sparsity_threshold) if self.sparsity_threshold else x
         x = x.to(FFT_ACT_T)
 
         x = torch.view_as_complex(x)
@@ -126,20 +125,20 @@ class MambaLayer(nn.Module):
     def __init__(self, dim, d_state=64, d_conv=4, expand=2):
         super().__init__()
         self.dim = dim
-        self.norm = nn.LayerNorm(dim)
+        self.norm = nn.LayerNorm(dim, dtype=FP32)
         self.mamba = Mamba(
             d_model=dim,  # Model dimension d_model
             d_state=d_state,  # SSM state expansion factor
             d_conv=d_conv,  # Local convolution width
             expand=expand,  # Block expansion factor
             dtype=MAMBA_MAIN_T,  # NOTE should be enough to put most of Mamba's layer in the correct type
-            dtype_act=MAMBA_MAIN_T,
+            dtype_act=MAMBA_ACT_T,
         )
 
     def forward(self, x):
         # print('x',x.shape)
         B, L, C = x.shape
-        x_norm = self.norm(x).to(MAMBA_MAIN_T)
+        x_norm = self.norm(x)
         x_mamba = self.mamba(x_norm)
         return x_mamba
 
@@ -237,6 +236,7 @@ class ClassBlock(nn.Module):
         if cm_type == "EinFFT":
             self.mlp = EinFFT(dim)
         else:
+            raise NotImplementedError()
             self.mlp = FFN(dim, int(dim * mlp_ratio))
         self.apply(self._init_weights)
 
@@ -274,11 +274,12 @@ class Block_mamba(nn.Module):
     ):
         super().__init__()
         # self.norm1 = norm_layer(dim)
-        self.norm2 = norm_layer(dim)
+        self.norm2 = norm_layer(dim, dtype=FP32)
         self.attn = MambaLayer(dim)  # MambaBlock(d_model=dim)
         if cm_type == "EinFFT":
             self.mlp = EinFFT(dim)
         else:
+            raise NotImplementedError()
             self.mlp = PVT2FFN(in_features=dim, hidden_features=int(dim * mlp_ratio))
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         self.apply(self._init_weights)
@@ -363,7 +364,7 @@ class Stem(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.proj = nn.Conv2d(hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=PATCH_EMBED_T)
-        self.norm = nn.LayerNorm(out_channels)
+        self.norm = nn.LayerNorm(out_channels, dtype=FP32)
 
         self.apply(self._init_weights)
 
@@ -415,7 +416,6 @@ class SiMBA(nn.Module):
 
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
-        alpha = 5  #
         for i in range(num_stages):
             if i == 0:
                 patch_embed = Stem(in_chans, stem_hidden_dim, embed_dims[i])
@@ -436,7 +436,7 @@ class SiMBA(nn.Module):
                 ]
             )
 
-            norm = norm_layer(embed_dims[i])
+            norm = norm_layer(embed_dims[i], dtype=FP32)
             cur += depths[i]
 
             setattr(self, f"patch_embed{i + 1}", patch_embed)
