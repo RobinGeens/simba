@@ -7,6 +7,7 @@ nohup.out
 *.tar
 *.out
 *.log
+*.png
 
 Python-3.11.9
 checkpoints

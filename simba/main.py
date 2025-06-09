@@ -14,6 +14,8 @@ import warnings
 from pathlib import Path
 
 import numpy as np
+
+# import models
 import simba_bf16  # noqa: F401
 import timm
 import torch
@@ -21,7 +23,7 @@ import torch.backends.cudnn as cudnn
 import torch.serialization
 import utils
 from datasets import build_dataset
-from engine import AUTOCAST_DTYPE, evaluate, train_one_epoch
+from engine import evaluate, train_one_epoch
 from loss import TokenLabelCrossEntropy
 from losses import DistillationLoss
 from PIL import ImageFile
@@ -36,7 +38,6 @@ from tlt.data import create_token_label_dataset, create_token_label_loader
 from util.checkpoint_saver import CheckpointSaver2
 from util.flops_counter import get_model_complexity_info
 
-# import models
 import simba  # noqa: F401
 import wandb  # Add wandb import
 
@@ -50,6 +51,14 @@ def get_args_parser():
     parser.add_argument("--batch-size", default=128, type=int)
     parser.add_argument("--epochs", default=300, type=int)
     parser.add_argument("--config", required=True, type=str, help="config")
+    parser.add_argument("--run-name", type=str, help="Name of the run for wandb logging")
+    parser.add_argument(
+        "--autocast-dtype",
+        type=str,
+        default=None,
+        choices=["float32", "float16", "bfloat16"],
+        help="Data type for automatic mixed precision training",
+    )
 
     # Model parameters
     parser.add_argument(
@@ -594,22 +603,6 @@ def build_imagenet_dataset(args):
         return build_no_token_label(args)
 
 
-class NoOpScaler:
-    """No op scaler for BF16 training"""
-
-    def __call__(self, loss, optimizer, clip_grad=None, parameters=None, create_graph=False):
-        loss.backward(create_graph=create_graph)
-        if clip_grad is not None:
-            torch.nn.utils.clip_grad_norm_(parameters, clip_grad)
-        optimizer.step()
-
-    def state_dict(self):
-        return {}
-
-    def load_state_dict(self, state_dict):
-        pass
-
-
 def main(args):
     timm.utils.setup_default_logging()
     utils.init_distributed_mode(args)
@@ -617,7 +610,9 @@ def main(args):
     # Initialize wandb
     if utils.is_main_process():
         wandb.init(
-            project="simba", config=vars(args), name=f"simba_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            project="simba",
+            config=vars(args),
+            name=args.run_name,
         )
 
     device = torch.device(args.device)
@@ -672,10 +667,20 @@ def main(args):
 
         model.load_state_dict(checkpoint_model, strict=False)
 
+    match args.autocast_dtype:
+        case "bfloat16":
+            autocast_dtype = torch.bfloat16
+        case "float16":
+            autocast_dtype = torch.float16
+        case "float32":
+            autocast_dtype = torch.float32
+        case _:
+            autocast_dtype = torch.float32
+
     model.to(device)
     print(model)
 
-    with torch.amp.autocast("cuda", dtype=AUTOCAST_DTYPE):
+    with torch.amp.autocast("cuda", dtype=autocast_dtype):
         flops_count, params_count = get_model_complexity_info(
             model,
             (3, 224, 224),
@@ -696,7 +701,7 @@ def main(args):
     linear_scaled_lr = args.lr * args.batch_size * utils.get_world_size() / 512.0
     args.lr = linear_scaled_lr
     optimizer = create_optimizer(args, model_without_ddp)
-    loss_scaler = NoOpScaler() if args.clip_grad is None else NativeScaler()
+    loss_scaler = NativeScaler()
     lr_scheduler, _ = create_scheduler(args, optimizer)
 
     if args.token_label:
@@ -788,6 +793,7 @@ def main(args):
             mixup_fn,
             set_training_mode=args.finetune == "",  # keep in eval mode during finetuning
             fp32=args.fp32_resume,
+            autocast_dtype=autocast_dtype,
             args=args,
         )
 
@@ -797,7 +803,7 @@ def main(args):
 
         lr_scheduler.step(epoch)
 
-        test_stats = evaluate(data_loader_val, model, device)
+        test_stats = evaluate(data_loader_val, model, device, autocast_dtype=autocast_dtype)
 
         if saver is not None:
             # save proper checkpoint with eval metric
@@ -839,4 +845,7 @@ if __name__ == "__main__":
     args = utils.update_from_config(args)
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    main(args)
+    main(args)
+    main(args)
     main(args)

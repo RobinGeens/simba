@@ -1,4 +1,10 @@
 import matplotlib.pyplot as plt
+import seaborn
+
+log_files = [
+    {"path": "checkpoints/simba_l_bf16/tlog.txt", "label": "Simba-L-BF16"},
+    {"path": "checkpoints/simba_l_FP32_B/tlog.txt", "label": "Simba-L-FP32"},
+]
 
 
 def parse_log_file(filename):
@@ -15,7 +21,7 @@ def parse_log_file(filename):
                     acc1.append(data["test_acc1"])
                     acc5.append(data["test_acc5"])
                     epochs.append(data["epoch"])
-            except:
+            except Exception:
                 continue
 
     # Sort data points by epoch
@@ -27,26 +33,31 @@ def parse_log_file(filename):
     return epochs, acc1, acc5
 
 
-# Parse both log files
-simba_s_epochs, simba_s_acc1, simba_s_acc5 = parse_log_file("checkpoints/simba_s/tlog.txt")
-simba_l_epochs, simba_l_acc1, simba_l_acc5 = parse_log_file("checkpoints/simba_l/tlog.txt")
-# simba_l_bf16_epochs, simba_l_bf16_acc1, simba_l_bf16_acc5 = parse_log_file("checkpoints/simba_l_bf16/tlog.txt")
+def make_plot():
 
-# Create the plot
-plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
 
-# Plot top-1 accuracy
-plt.plot(simba_s_epochs, simba_s_acc1, "b-", label="SimBA-S Top-1")
-plt.plot(simba_l_epochs, simba_l_acc1, "r-", label="SimBA-L Top-1")
+    colors = seaborn.color_palette("muted")
 
-# Plot top-5 accuracy
-plt.plot(simba_s_epochs, simba_s_acc5, "b--", label="SimBA-S Top-5")
-plt.plot(simba_l_epochs, simba_l_acc5, "r--", label="SimBA-L Top-5")
+    for i, config in enumerate(log_files):
+        epochs, acc1, acc5 = parse_log_file(config["path"])
 
-plt.xlabel("Epoch")
-plt.ylabel("Accuracy (%)")
-plt.title("Training Accuracy vs Epoch")
-plt.legend()
-plt.grid(True)
-plt.savefig("accuracy_plot.png")
-plt.close()
+        plt.plot(epochs, acc1, color=colors[i], ls="-", linewidth=2)
+        plt.plot(epochs, acc5, color=colors[i], ls="--", linewidth=2)
+
+    for i, config in enumerate(log_files):
+        plt.plot([], [], color=colors[i], label=f"{config['label']}")
+
+    plt.plot([], [], color="gray", label="Top1", ls="-")
+    plt.plot([], [], color="gray", label="Top5", ls="--")
+
+    plt.xlabel("Epoch", fontsize=14)
+    plt.ylabel("Training Accuracy (%)", fontsize=14)
+    plt.legend()
+    plt.grid(True)
+    plt.savefig("accuracy_plot.png", bbox_inches="tight", pad_inches=0)
+    plt.close()
+
+
+if __name__ == "__main__":
+    make_plot()

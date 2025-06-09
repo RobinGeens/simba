@@ -20,8 +20,6 @@ except ImportError:
     import utils
     from losses import DistillationLoss
 
-AUTOCAST_DTYPE = torch.bfloat16
-
 
 def train_one_epoch(
     model: torch.nn.Module,
@@ -36,13 +34,14 @@ def train_one_epoch(
     mixup_fn: Optional[Mixup] = None,
     set_training_mode=True,
     fp32=False,
+    autocast_dtype=torch.float32,
     args=None,
 ):
     model.train(set_training_mode)
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
     header = "Epoch: [{}]".format(epoch)
-    print_freq = 10
+    print_freq = 40
 
     _logger = logging.getLogger("train")
     for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
@@ -58,7 +57,7 @@ def train_one_epoch(
                     targets, num_classes=args.nb_classes, smoothing=args.smoothing, label_size=args.token_label_size
                 )
 
-        with torch.amp.autocast("cuda", dtype=AUTOCAST_DTYPE):
+        with torch.amp.autocast("cuda", dtype=autocast_dtype):
             outputs = model(samples)
 
         # Do not wrap in autocast!
@@ -96,7 +95,7 @@ def train_one_epoch(
 
 
 @torch.no_grad()
-def evaluate(data_loader, model, device):
+def evaluate(data_loader, model, device, autocast_dtype=torch.float32):
     criterion = torch.nn.CrossEntropyLoss()
 
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -111,7 +110,7 @@ def evaluate(data_loader, model, device):
         target = target.to(device, non_blocking=True)
 
         # compute output
-        with torch.amp.autocast("cuda"):
+        with torch.amp.autocast("cuda", dtype=autocast_dtype):
             output = model(images)
             loss = criterion(output, target)
 
