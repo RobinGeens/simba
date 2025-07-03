@@ -5,6 +5,7 @@ MODEL="simba_l_bf16"
 RUN_NAME="simba_l_bf16_B"
 AUTOCAST_DTYPE="bfloat16"
 
+# TODO make sure the output dir in configs/$MODEL matches $RUN_NAME
 
 echo "Running on GPU $CUDA_VISIBLE_DEVICES"
 nvidia-smi

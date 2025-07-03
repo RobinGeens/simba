@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn
 
 log_files = [
-    {"path": "checkpoints/simba_l_bf16/tlog.txt", "label": "Simba-L-BF16"},
+    {"path": "checkpoints/simba_l_bf16_B/tlog.txt", "label": "Simba-L-BF16"},
     {"path": "checkpoints/simba_l_FP32_B/tlog.txt", "label": "Simba-L-FP32"},
 ]
 
@@ -44,6 +44,8 @@ def make_plot():
 
         plt.plot(epochs, acc1, color=colors[i], ls="-", linewidth=2)
         plt.plot(epochs, acc5, color=colors[i], ls="--", linewidth=2)
+
+    plt.axhline(y=83.9, color="red", linestyle=":", linewidth=2, label="Target")
 
     for i, config in enumerate(log_files):
         plt.plot([], [], color=colors[i], label=f"{config['label']}")

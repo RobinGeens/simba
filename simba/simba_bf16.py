@@ -21,16 +21,16 @@ FP32 = torch.float32
 
 ACT_T = BF16
 FFT_ACT_T = FP16
-FFT_WEIGHT_T = FP32
-MAMBA_MAIN_T = FP32
-MAMBA_ACT_T = BF16
+FFT_WEIGHT_T = FP32  # Weights before casting
+MAMBA_MAIN_T = FP32  # Weights before casting, non-linear functions
+MAMBA_ACT_T = BF16  # Linear projections, state-update, etc
 PATCH_EMBED_T = FP32
 
 
 class EinFFT(nn.Module):
     def __init__(self, dim):
         super().__init__()
-        self.hidden_size = dim  # 768
+        self.hidden_size = dim  # 384
         self.num_blocks = 4
         self.block_size = self.hidden_size // self.num_blocks
         assert self.hidden_size % self.num_blocks == 0

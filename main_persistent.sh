@@ -1,18 +1,15 @@
 #!/bin/bash
 
-STOP_FILE="/tmp/main_persistent.stop"
+STOP_FILE="main_persistent.stop"
 
 # Function to handle cleanup
 cleanup() {
     echo "Cleaning up..."
     pkill -f "main.sh" 2>/dev/null
-    rm -f "$STOP_FILE" 2>/dev/null
     echo "Script terminated."
     exit 0
 }
 
-# Remove stop file if it exists from a previous run
-rm -f "$STOP_FILE"
 
 while true; do
     # Check if stop file exists
