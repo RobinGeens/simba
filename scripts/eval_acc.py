@@ -1,10 +1,11 @@
 import argparse
 import logging
 import os
+import sys
 
-# # Add the current directory to Python path to ensure simba package is importable
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import torch
+import torch.amp
 from timm.models import create_model
 
 from simba.simba import simba_l  # noqa: F401
@@ -19,7 +20,8 @@ EVAL_AUTOCAST_TYPE = FP32
 EVAL_WEIGHT_DTYPE = BF16
 
 MODEL_NAME = "simba_l_bf16"
-CHECKPOINT_DIR = "checkpoints/simba_l_bf16"
+CHECKPOINT_DIR = "checkpoints/simba_l_bf16_B"
+BEST_CHECKPOINT = "checkpoints/simba_l_bf16_B/checkpoint-316.pth.tar"  # Should be 83.0%
 
 # Configuration constants
 DATA_PATH = "dataset/ILSVRC2012"
@@ -28,7 +30,9 @@ NUM_WORKERS = 12
 PIN_MEMORY = True
 
 
-def get_most_recent_checkpoint(checkpoint_dir):
+def get_checkpoint(checkpoint_dir):
+    if BEST_CHECKPOINT:
+        return BEST_CHECKPOINT
     try:
         return max(
             [os.path.join(checkpoint_dir, f) for f in os.listdir(checkpoint_dir) if ".pth" in f],
@@ -63,7 +67,7 @@ def load_checkpoint(model, checkpoint_path):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    checkpoint_path = get_most_recent_checkpoint(CHECKPOINT_DIR)
+    checkpoint_path = get_checkpoint(CHECKPOINT_DIR)
     logging.info(f"Checkpoint found: {checkpoint_path}")
 
     model: torch.nn.Module = create_model(
@@ -77,8 +81,8 @@ def main():
 
     load_checkpoint(model, checkpoint_path)
 
-    # Set data type
-    model = model.to(dtype=EVAL_WEIGHT_DTYPE)
+    # Set data type # TODO this doesn't work because sensitive weights (e.g. batch norm) must stay in FP32
+    # model = model.to(dtype=EVAL_WEIGHT_DTYPE)
 
     # Explicitly use GPU 1
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
@@ -108,7 +112,7 @@ def main():
     )
 
     # Evaluate
-    with torch.cuda.amp.autocast(dtype=EVAL_AUTOCAST_TYPE):
+    with torch.amp.autocast("cuda", dtype=EVAL_AUTOCAST_TYPE):
         test_stats = evaluate(data_loader, model, device)
 
     logging.info(
