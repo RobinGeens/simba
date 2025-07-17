@@ -4,6 +4,7 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import re
 import torch
 import torch.amp
 from timm.models import create_model
@@ -65,10 +66,11 @@ def load_checkpoint(model, checkpoint_path):
         # raise FileNotFoundError()
 
 
-def main():
+def main(checkpoint_path=None):
     logging.basicConfig(level=logging.INFO)
-    checkpoint_path = get_checkpoint(CHECKPOINT_DIR)
-    logging.info(f"Checkpoint found: {checkpoint_path}")
+    if checkpoint_path is None:
+        checkpoint_path = get_checkpoint(CHECKPOINT_DIR)
+    logging.info(f"Using checkpoint: {checkpoint_path}")
 
     model: torch.nn.Module = create_model(
         MODEL_NAME,
@@ -122,5 +124,20 @@ def main():
     logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")
 
 
+def get_checkpoints(checkpoint_dir, min_id=300):
+    checkpoint_pattern = re.compile(r"^checkpoint-(\d+)\.pth\.tar$")
+    checkpoint_files = []
+    for fname in os.listdir(checkpoint_dir):
+        match = checkpoint_pattern.match(fname)
+        if match:
+            checkpoint_id = int(match.group(1))
+            if checkpoint_id > min_id:
+                checkpoint_files.append(os.path.join(checkpoint_dir, fname))
+    return sorted(checkpoint_files)
+
+
 if __name__ == "__main__":
+    # checkpoints = get_checkpoints(CHECKPOINT_DIR, min_id=300)
+    # for checkpoint in checkpoints:
+    #     main(checkpoint)
     main()
