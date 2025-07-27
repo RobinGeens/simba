@@ -21,11 +21,13 @@ EVAL_AUTOCAST_TYPE = FP32
 EVAL_WEIGHT_DTYPE = BF16
 
 MODEL_NAME = "simba_l_bf16"
-CHECKPOINT_DIR = "checkpoints/simba_l_bf16_B"
-BEST_CHECKPOINT = "checkpoints/simba_l_bf16_B/checkpoint-316.pth.tar"  # Should be 83.0%
+# CHECKPOINT_DIR = "checkpoints/simba_l_bf16_B"
+CHECKPOINT_DIR = "/volume1/users/rgeens/simba/checkpoints/simba_1_l_bf16_B"
+BEST_CHECKPOINT = "/volume1/users/rgeens/simba/checkpoints/simba_l_bf16_B/checkpoint-316.pth.tar"  # Should be 83.0%
 
 # Configuration constants
-DATA_PATH = "dataset/ILSVRC2012"
+# DATA_PATH = "dataset/ILSVRC2012"
+DATA_PATH ="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
 BATCH_SIZE = 256
 NUM_WORKERS = 12
 PIN_MEMORY = True
