@@ -13,6 +13,7 @@ nvidia-cudnn-cu11
 wheel
 einops
 wandb
+tensorboard
 # mamba_ssm # installing as package doesn't work -> install manually from repo with --no-build-isolation
 
 

@@ -4,7 +4,7 @@
 # Run via crontab -e
 
 # Set the source and destination directories
-SOURCE_DIR="/volume1/users/rgeens/simba/checkpoints"
+SOURCE_DIR="/checkpoints"
 DEST_DIR="$HOME/checkpoints_backup"
 
 # Create destination directory if it doesn't exist
