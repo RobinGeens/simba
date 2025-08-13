@@ -22,7 +22,7 @@ EVAL_WEIGHT_DTYPE = BF16
 
 MODEL_NAME = "simba_l_bf16"
 CHECKPOINT_DIR = "checkpoints/simba_l_bf16_B"
-BEST_CHECKPOINT = "checkpoints/simba_l_bf16_B/checkpoint-316.pth.tar"  # Should be 83.0%
+BEST_CHECKPOINT = "checkpoints/simba_l_bf16_B/checkpoint-316.pth.tar"  # Should be 83.0% Top-1 acc
 
 # Configuration constants
 DATA_PATH = "dataset/ILSVRC2012"
@@ -86,8 +86,9 @@ def main(checkpoint_path=None):
     # Set data type # TODO this doesn't work because sensitive weights (e.g. batch norm) must stay in FP32
     # model = model.to(dtype=EVAL_WEIGHT_DTYPE)
 
-    # Explicitly use GPU 1
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    # Explicitly use GPU 0
+    # TODO set t0 1
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
     # Create dataset and dataloader
