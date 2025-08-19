@@ -13,6 +13,8 @@ from timm.data import Mixup
 from timm.utils import ModelEma, accuracy
 from tlt.data import create_token_label_target
 
+from simba.simba import SiMBA
+
 try:
     from simba import utils
     from simba.losses import DistillationLoss
@@ -22,7 +24,7 @@ except ImportError:
 
 
 def train_one_epoch(
-    model: torch.nn.Module,
+    model: SiMBA,
     criterion: DistillationLoss,
     data_loader: Iterable,
     optimizer: torch.optim.Optimizer,
@@ -33,8 +35,6 @@ def train_one_epoch(
     model_ema: Optional[ModelEma] = None,
     mixup_fn: Optional[Mixup] = None,
     set_training_mode=True,
-    fp32=False,
-    autocast_dtype=torch.float32,
     args=None,
 ):
     model.train(set_training_mode)
@@ -57,7 +57,7 @@ def train_one_epoch(
                     targets, num_classes=args.nb_classes, smoothing=args.smoothing, label_size=args.token_label_size
                 )
 
-        with torch.amp.autocast("cuda", dtype=autocast_dtype):
+        with torch.amp.autocast("cuda", dtype=model.AUTOCAST_T):
             outputs = model(samples)
 
         # Do not wrap in autocast!
@@ -95,7 +95,7 @@ def train_one_epoch(
 
 
 @torch.no_grad()
-def evaluate(data_loader, model, device, autocast_dtype=torch.float32):
+def evaluate(data_loader, model: SiMBA, device):
     criterion = torch.nn.CrossEntropyLoss()
 
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -110,9 +110,9 @@ def evaluate(data_loader, model, device, autocast_dtype=torch.float32):
         target = target.to(device, non_blocking=True)
 
         # compute output
-        with torch.amp.autocast("cuda", dtype=autocast_dtype):
+        with torch.amp.autocast("cuda", dtype=model.AUTOCAST_T):
             output = model(images)
-            loss = criterion(output, target)
+        loss = criterion(output, target)
 
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
 

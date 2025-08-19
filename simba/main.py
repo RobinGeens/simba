@@ -52,13 +52,6 @@ def get_args_parser():
     parser.add_argument("--epochs", default=300, type=int)
     parser.add_argument("--config", required=True, type=str, help="config")
     parser.add_argument("--run-name", type=str, help="Name of the run for wandb logging")
-    parser.add_argument(
-        "--autocast-dtype",
-        type=str,
-        default=None,
-        choices=["float32", "float16", "bfloat16"],
-        help="Data type for automatic mixed precision training",
-    )
 
     # Model parameters
     parser.add_argument(
@@ -621,7 +614,6 @@ def main(args):
     seed = args.seed + utils.get_rank()
     torch.manual_seed(seed)
     np.random.seed(seed)
-    # random.seed(seed)
 
     cudnn.benchmark = True
 
@@ -667,20 +659,10 @@ def main(args):
 
         model.load_state_dict(checkpoint_model, strict=False)
 
-    match args.autocast_dtype:
-        case "bfloat16":
-            autocast_dtype = torch.bfloat16
-        case "float16":
-            autocast_dtype = torch.float16
-        case "float32":
-            autocast_dtype = torch.float32
-        case _:
-            autocast_dtype = torch.float32
-
     model.to(device)
     print(model)
 
-    with torch.amp.autocast("cuda", dtype=autocast_dtype):
+    with torch.amp.autocast("cuda", dtype=model.AUTOCAST_T):
         flops_count, params_count = get_model_complexity_info(
             model,
             (3, 224, 224),
@@ -792,8 +774,6 @@ def main(args):
             model_ema,
             mixup_fn,
             set_training_mode=args.finetune == "",  # keep in eval mode during finetuning
-            fp32=args.fp32_resume,
-            autocast_dtype=autocast_dtype,
             args=args,
         )
 
@@ -803,7 +783,7 @@ def main(args):
 
         lr_scheduler.step(epoch)
 
-        test_stats = evaluate(data_loader_val, model, device, autocast_dtype=autocast_dtype)
+        test_stats = evaluate(data_loader_val, model, device)
 
         if saver is not None:
             # save proper checkpoint with eval metric
@@ -845,7 +825,4 @@ if __name__ == "__main__":
     args = utils.update_from_config(args)
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
-    main(args)
-    main(args)
-    main(args)
     main(args)

@@ -15,20 +15,14 @@ from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
 
+
 FP16 = torch.float16
 BF16 = torch.bfloat16
 FP32 = torch.float32
 
-ACT_T = BF16
-FFT_ACT_T = FP16
-FFT_WEIGHT_T = FP32  # Weights before casting
-MAMBA_MAIN_T = FP32  # Weights before casting, non-linear functions
-MAMBA_ACT_T = BF16  # Linear projections, state-update, etc
-PATCH_EMBED_T = FP32
-
 
 class EinFFT(nn.Module):
-    def __init__(self, dim):
+    def __init__(self, dim, **kwargs):
         super().__init__()
         self.hidden_size = dim  # 384
         self.num_blocks = 4
@@ -37,13 +31,16 @@ class EinFFT(nn.Module):
         self.sparsity_threshold = 0.01
         self.scale = 0.02
 
+        self.ACT_T = kwargs["EINFFT_ACT_T"]
+        self.FFT_ACT_T = kwargs["FFT_ACT_T"]
+
         self.complex_weight_1 = nn.Parameter(
             torch.randn(
                 2,
                 self.num_blocks,
                 self.block_size,
                 self.block_size,
-                dtype=FFT_WEIGHT_T,
+                dtype=kwargs["FFT_WEIGHT_T"],
             )
             * self.scale
         )
@@ -53,19 +50,19 @@ class EinFFT(nn.Module):
                 self.num_blocks,
                 self.block_size,
                 self.block_size,
-                dtype=FFT_WEIGHT_T,
+                dtype=kwargs["FFT_WEIGHT_T"],
             )
             * self.scale
         )
         self.complex_bias_1 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=FFT_WEIGHT_T) * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["FFT_WEIGHT_T"]) * self.scale
         )
         self.complex_bias_2 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=FFT_WEIGHT_T) * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["FFT_WEIGHT_T"]) * self.scale
         )
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
-        return torch.einsum("...bd,bdk->...bk", input.to(FFT_ACT_T), weights.to(FFT_ACT_T))
+        return torch.einsum("...bd,bdk->...bk", input.to(self.FFT_ACT_T), weights.to(self.FFT_ACT_T))
 
     def get_pad_size(self, size):
         # Get next power of 2``
@@ -75,7 +72,7 @@ class EinFFT(nn.Module):
         """Torch's fft is only implemented for FP16, not for BF16
         Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input"""
         B, N, C = x.shape
-        x = x.to(FFT_ACT_T)
+        x = x.to(self.FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
 
         # Pad the input
@@ -88,27 +85,27 @@ class EinFFT(nn.Module):
         x_real_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[0])
             - self.multiply(x.imag, self.complex_weight_1[1])
-            + self.complex_bias_1[0].to(FFT_ACT_T)
+            + self.complex_bias_1[0].to(self.FFT_ACT_T)
         )
         x_imag_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[1])
             + self.multiply(x.imag, self.complex_weight_1[0])
-            + self.complex_bias_1[1].to(FFT_ACT_T)
+            + self.complex_bias_1[1].to(self.FFT_ACT_T)
         )
         x_real_2 = (
             self.multiply(x_real_1, self.complex_weight_2[0])
             - self.multiply(x_imag_1, self.complex_weight_2[1])
-            + self.complex_bias_2[0].to(FFT_ACT_T)
+            + self.complex_bias_2[0].to(self.FFT_ACT_T)
         )
         x_imag_2 = (
             self.multiply(x_real_1, self.complex_weight_2[1])
             + self.multiply(x_imag_1, self.complex_weight_2[0])
-            + self.complex_bias_2[1].to(FFT_ACT_T)
+            + self.complex_bias_2[1].to(self.FFT_ACT_T)
         )
 
         x = torch.stack([x_real_2, x_imag_2], dim=-1)
         x = F.softshrink(x.to(FP32), lambd=self.sparsity_threshold) if self.sparsity_threshold else x
-        x = x.to(FFT_ACT_T)
+        x = x.to(self.FFT_ACT_T)
 
         x = torch.view_as_complex(x)
         x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
@@ -117,22 +114,22 @@ class EinFFT(nn.Module):
         x = x[:, :N, : self.num_blocks, :]
 
         x = x.reshape(B, N, C)
-        x = x.to(ACT_T)
+        x = x.to(self.ACT_T)
         return x
 
 
 class MambaLayer(nn.Module):
-    def __init__(self, dim, d_state=64, d_conv=4, expand=2):
+    def __init__(self, dim, d_state=64, d_conv=4, expand=2, **kwargs):
         super().__init__()
         self.dim = dim
         self.norm = nn.LayerNorm(dim, dtype=FP32)
         self.mamba = Mamba(
-            d_model=dim,  # Model dimension d_model
-            d_state=d_state,  # SSM state expansion factor
-            d_conv=d_conv,  # Local convolution width
-            expand=expand,  # Block expansion factor
-            dtype=MAMBA_MAIN_T,  # NOTE should be enough to put most of Mamba's layer in the correct type
-            dtype_act=MAMBA_ACT_T,
+            d_model=dim,
+            d_state=d_state,
+            d_conv=d_conv,
+            expand=expand,
+            dtype=kwargs["MAMBA_MAIN_T"],  # NOTE should be enough to put most of Mamba's layer in the correct type
+            dtype_act=kwargs["MAMBA_ACT_T"],
         )
 
     def forward(self, x):
@@ -162,82 +159,13 @@ def rand_bbox(size, lam, scale=1):
     return bbx1, bby1, bbx2, bby2
 
 
-class PVT2FFN(nn.Module):
-    def __init__(self, in_features, hidden_features):
-        raise NotImplementedError()
-        super().__init__()
-        self.fc1 = nn.Linear(in_features, hidden_features)
-        self.dwconv = DWConv(hidden_features)
-        self.act = nn.GELU()
-        self.fc2 = nn.Linear(hidden_features, in_features)
-        self.apply(self._init_weights)
-
-    def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=0.02)
-            if isinstance(m, nn.Linear) and m.bias is not None:
-                nn.init.constant_(m.bias, 0)
-        elif isinstance(m, nn.LayerNorm):
-            nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.weight, 1.0)
-        elif isinstance(m, nn.Conv2d):
-            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            fan_out //= m.groups
-            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
-            if m.bias is not None:
-                m.bias.data.zero_()
-
-    def forward(self, x, H, W):
-        x = self.fc1(x)
-        x = self.dwconv(x, H, W)
-        x = self.act(x)
-        x = self.fc2(x)
-        return x
-
-
-class FFN(nn.Module):
-    def __init__(self, in_features, hidden_features):
-        raise NotImplementedError()
-        super().__init__()
-        self.fc1 = nn.Linear(in_features, hidden_features)
-        self.act = nn.GELU()
-        self.fc2 = nn.Linear(hidden_features, in_features)
-        self.apply(self._init_weights)
-
-    def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=0.02)
-            if isinstance(m, nn.Linear) and m.bias is not None:
-                nn.init.constant_(m.bias, 0)
-        elif isinstance(m, nn.LayerNorm):
-            nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.weight, 1.0)
-        elif isinstance(m, nn.Conv2d):
-            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            fan_out //= m.groups
-            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
-            if m.bias is not None:
-                m.bias.data.zero_()
-
-    def forward(self, x, H, W):
-        x = self.fc1(x)
-        x = self.act(x)
-        x = self.fc2(x)
-        return x
-
-
 class ClassBlock(nn.Module):
-    def __init__(self, dim, mlp_ratio, norm_layer=nn.LayerNorm, cm_type="mlp"):
-        assert cm_type == "EinFFT"
+    def __init__(self, dim, norm_layer=nn.LayerNorm, **kwargs):
         super().__init__()
-        # self.norm1 = norm_layer(dim)
         self.norm2 = norm_layer(dim)
-        self.attn = MambaLayer(dim)  # MambaBlock(d_model=dim)
-        if cm_type == "EinFFT":
-            self.mlp = EinFFT(dim)
-        else:
-            raise NotImplementedError()
-            self.mlp = FFN(dim, int(dim * mlp_ratio))
+        self.attn = MambaLayer(dim, **kwargs)
+        self.mlp = EinFFT(dim, **kwargs)
+
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -266,21 +194,15 @@ class Block_mamba(nn.Module):
     def __init__(
         self,
         dim,
-        mlp_ratio,
         drop_path=0.0,
         norm_layer=nn.LayerNorm,
-        sr_ratio=1,
-        cm_type="mlp",
+        **kwargs,
     ):
         super().__init__()
-        # self.norm1 = norm_layer(dim)
         self.norm2 = norm_layer(dim, dtype=FP32)
-        self.attn = MambaLayer(dim)  # MambaBlock(d_model=dim)
-        if cm_type == "EinFFT":
-            self.mlp = EinFFT(dim)
-        else:
-            raise NotImplementedError()
-            self.mlp = PVT2FFN(in_features=dim, hidden_features=int(dim * mlp_ratio))
+        self.attn = MambaLayer(dim, **kwargs)
+        self.mlp = EinFFT(dim, **kwargs)
+
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         self.apply(self._init_weights)
 
@@ -306,7 +228,7 @@ class Block_mamba(nn.Module):
 
 
 class DownSamples(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, out_channels, **kwargs):
         super().__init__()
         self.proj = nn.Conv2d(
             in_channels,
@@ -314,7 +236,7 @@ class DownSamples(nn.Module):
             kernel_size=3,
             stride=2,
             padding=1,
-            dtype=PATCH_EMBED_T,  # NOTE new
+            dtype=kwargs["PATCH_EMBED_T"],
         )
         self.norm = nn.LayerNorm(out_channels)
         self.apply(self._init_weights)
@@ -343,27 +265,29 @@ class DownSamples(nn.Module):
 
 
 class Stem(nn.Module):
-    def __init__(self, in_channels, stem_hidden_dim, out_channels):
+    def __init__(self, in_channels, stem_hidden_dim, out_channels, **kwargs):
         super().__init__()
         hidden_dim = stem_hidden_dim
         self.conv = nn.Sequential(
             nn.Conv2d(
-                in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False, dtype=PATCH_EMBED_T
+                in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False, dtype=kwargs["PATCH_EMBED_T"]
             ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(
-                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=PATCH_EMBED_T
+                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=kwargs["PATCH_EMBED_T"]
             ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(
-                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=PATCH_EMBED_T
+                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=kwargs["PATCH_EMBED_T"]
             ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
         )
-        self.proj = nn.Conv2d(hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=PATCH_EMBED_T)
+        self.proj = nn.Conv2d(
+            hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=kwargs["PATCH_EMBED_T"]
+        )
         self.norm = nn.LayerNorm(out_channels, dtype=FP32)
 
         self.apply(self._init_weights)
@@ -403,34 +327,32 @@ class SiMBA(nn.Module):
         drop_path_rate=0.0,
         norm_layer=nn.LayerNorm,
         depths=[3, 4, 6, 3],
-        sr_ratios=[4, 2, 1, 1],
         num_stages=4,
         token_label=True,
         cm_type="mlp",
-        **kwargs,
+        **kwargs: torch.dtype,
     ):
         super().__init__()
         self.num_classes = num_classes
         self.depths = depths
         self.num_stages = num_stages
+        self.AUTOCAST_T: torch.dtype = kwargs["AUTOCAST_T"]
 
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
         for i in range(num_stages):
             if i == 0:
-                patch_embed = Stem(in_chans, stem_hidden_dim, embed_dims[i])
+                patch_embed = Stem(in_chans, stem_hidden_dim, embed_dims[i], **kwargs)
             else:
-                patch_embed = DownSamples(embed_dims[i - 1], embed_dims[i])
+                patch_embed = DownSamples(embed_dims[i - 1], embed_dims[i], **kwargs)
 
             block = nn.ModuleList(
                 [
                     Block_mamba(
                         dim=embed_dims[i],
-                        mlp_ratio=mlp_ratios[i],
                         drop_path=dpr[cur + j],
                         norm_layer=norm_layer,
-                        sr_ratio=sr_ratios[i],
-                        cm_type=cm_type,
+                        **kwargs,
                     )
                     for j in range(depths[i])
                 ]
@@ -447,10 +369,7 @@ class SiMBA(nn.Module):
         self.post_network = nn.ModuleList(
             [
                 ClassBlock(
-                    dim=embed_dims[-1],
-                    mlp_ratio=mlp_ratios[-1],
-                    norm_layer=norm_layer,
-                    cm_type=cm_type,
+                    dim=embed_dims[-1], mlp_ratio=mlp_ratios[-1], norm_layer=norm_layer, cm_type=cm_type, **kwargs
                 )
                 for _ in range(len(post_layers))
             ]
@@ -597,6 +516,46 @@ class DWConv(nn.Module):
 
 @register_model
 def simba_l_bf16(pretrained=False, **kwargs):
+    kwargs = {
+        **kwargs,
+        "EINFFT_ACT_T": BF16,
+        "FFT_ACT_T": FP16,
+        "FFT_WEIGHT_T": FP32,  # Weights before casting
+        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
+        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
+        "PATCH_EMBED_T": FP32,
+        "NORM_T": FP32,
+        "AUTOCAST_T": BF16,
+    }
+
+    model = SiMBA(
+        stem_hidden_dim=64,
+        embed_dims=[96, 192, 384, 512],
+        mlp_ratios=[8, 8, 4, 4],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=[3, 6, 18, 3],
+        sr_ratios=[4, 2, 1, 1],
+        cm_type="EinFFT",
+        **kwargs,
+    )
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
+def simba_l_fp16(pretrained=False, **kwargs):
+    kwargs = {
+        **kwargs,
+        "EINFFT_ACT_T": FP16,
+        "FFT_ACT_T": FP16,
+        "FFT_WEIGHT_T": FP32,  # Weights before casting
+        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
+        "MAMBA_ACT_T": FP16,  # Linear projections, state-update, etc
+        "PATCH_EMBED_T": FP32,
+        "NORM_T": FP32,
+        "AUTOCAST_T": FP16,
+    }
+
     model = SiMBA(
         stem_hidden_dim=64,
         embed_dims=[96, 192, 384, 512],

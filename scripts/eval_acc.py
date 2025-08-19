@@ -9,38 +9,50 @@ import torch
 import torch.amp
 from timm.models import create_model
 
-from simba.simba import simba_l  # noqa: F401
-from simba.simba_bf16 import BF16, FP32, simba_l_bf16  # noqa: F401
+from simba.simba import SiMBA, simba_l  # noqa: F401
+from simba.simba_bf16 import BF16, FP32, simba_l_bf16, simba_l_fp16  # noqa: F401
 
 if __name__ == "__main__":
     from simba.datasets import build_dataset
     from simba.engine import evaluate
 
-# Global parameters for datatypes
-EVAL_AUTOCAST_TYPE = FP32
-EVAL_WEIGHT_DTYPE = BF16
+################# CONFIG #################
 
 MODEL_NAME = "simba_l_bf16"
-CHECKPOINT_DIR = "checkpoints/simba_l_bf16_B"
-BEST_CHECKPOINT = "checkpoints/simba_l_bf16_B/checkpoint-316.pth.tar"  # Should be 83.0% Top-1 acc
+RUN_NAME = "simba_l_bf16_B"
+BEST_CHECKPOINT = 316  # Should be 83.0% Top-1 acc
+
+############### CONFIG END ###############
+
+
+# Global parameters for datatypes
+EVAL_WEIGHT_DTYPE = None  # Not used
 
 # Configuration constants
+GPU_NODE = 0
 DATA_PATH = "dataset/ILSVRC2012"
 BATCH_SIZE = 256
 NUM_WORKERS = 12
 PIN_MEMORY = True
 
 
-def get_checkpoint(checkpoint_dir):
+def get_checkpoint():
+    checkpoint_dir = os.path.join("checkpoints", RUN_NAME)
+
     if BEST_CHECKPOINT:
-        return BEST_CHECKPOINT
+        checkpoint_path = os.path.join(checkpoint_dir, f"checkpoint-{BEST_CHECKPOINT}.pth.tar")
+        if os.path.isfile(checkpoint_path):
+            return checkpoint_path
+        else:
+            logging.error(f"Best checkpoint {BEST_CHECKPOINT} not found in {checkpoint_dir}")
+
     try:
         return max(
             [os.path.join(checkpoint_dir, f) for f in os.listdir(checkpoint_dir) if ".pth" in f],
             key=os.path.getctime,
         )
     except Exception:
-        logging.error(f"No checkpoint fond in directory {checkpoint_dir}")
+        logging.error(f"No checkpoint found in directory {checkpoint_dir}")
         return
 
 
@@ -66,13 +78,12 @@ def load_checkpoint(model, checkpoint_path):
         # raise FileNotFoundError()
 
 
-def main(checkpoint_path=None):
+def main():
     logging.basicConfig(level=logging.INFO)
-    if checkpoint_path is None:
-        checkpoint_path = get_checkpoint(CHECKPOINT_DIR)
+    checkpoint_path = get_checkpoint()
     logging.info(f"Using checkpoint: {checkpoint_path}")
 
-    model: torch.nn.Module = create_model(
+    model: SiMBA = create_model(
         MODEL_NAME,
         pretrained=False,
         num_classes=1000,
@@ -86,9 +97,7 @@ def main(checkpoint_path=None):
     # Set data type # TODO this doesn't work because sensitive weights (e.g. batch norm) must stay in FP32
     # model = model.to(dtype=EVAL_WEIGHT_DTYPE)
 
-    # Explicitly use GPU 0
-    # TODO set t0 1
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device(f"cuda:{GPU_NODE}" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
     # Create dataset and dataloader
@@ -115,11 +124,10 @@ def main(checkpoint_path=None):
     )
 
     # Evaluate
-    with torch.amp.autocast("cuda", dtype=EVAL_AUTOCAST_TYPE):
-        test_stats = evaluate(data_loader, model, device)
+    test_stats = evaluate(data_loader, model, device)
 
     logging.info(
-        f"Accuracy of the network on the {len(dataset_val)} test images ({EVAL_WEIGHT_DTYPE} W, {EVAL_AUTOCAST_TYPE} A):"
+        f"Accuracy of the network on the {len(dataset_val)} test images ({EVAL_WEIGHT_DTYPE} W, {model.AUTOCAST_T} A):"
     )
     logging.info(f"Top-1 accuracy: {test_stats['acc1']:.1f}%")
     logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")
