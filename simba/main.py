@@ -675,7 +675,9 @@ def main(args):
     model_ema = None
     model_without_ddp = model
     if args.distributed:
+        AUTOCAST_T = model.AUTOCAST_T
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+        model.AUTOCAST_T = AUTOCAST_T
         model_without_ddp = model.module
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     _logger.info("number of params: " + str(n_parameters))

@@ -1,14 +1,13 @@
 #!/bin/bash
 
-
-MODEL="simba_l_bf16"
+MODEL="simba_l_fp16"
 
 # Extract RUN_NAME from the config file
 RUN_NAME=$(python3 -c "
 import os
 import sys
 sys.path.insert(0, 'config')
-from simba_l_bf16 import cfg
+from $MODEL import cfg
 print(os.path.basename(cfg['output_dir']))
 ")
 

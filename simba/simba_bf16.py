@@ -16,6 +16,7 @@ from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
 
 
+FP8 = torch.float8_e5m2
 FP16 = torch.float16
 BF16 = torch.bfloat16
 FP32 = torch.float32
@@ -40,7 +41,7 @@ class EinFFT(nn.Module):
                 self.num_blocks,
                 self.block_size,
                 self.block_size,
-                dtype=kwargs["FFT_WEIGHT_T"],
+                dtype=kwargs["EINFFT_WEIGHT_T"],
             )
             * self.scale
         )
@@ -50,19 +51,19 @@ class EinFFT(nn.Module):
                 self.num_blocks,
                 self.block_size,
                 self.block_size,
-                dtype=kwargs["FFT_WEIGHT_T"],
+                dtype=kwargs["EINFFT_WEIGHT_T"],
             )
             * self.scale
         )
         self.complex_bias_1 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["FFT_WEIGHT_T"]) * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
         )
         self.complex_bias_2 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["FFT_WEIGHT_T"]) * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
         )
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
-        return torch.einsum("...bd,bdk->...bk", input.to(self.FFT_ACT_T), weights.to(self.FFT_ACT_T))
+        return torch.einsum("...bd,bdk->...bk", input.to(self.ACT_T), weights.to(self.ACT_T))
 
     def get_pad_size(self, size):
         # Get next power of 2``
@@ -85,36 +86,36 @@ class EinFFT(nn.Module):
         x_real_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[0])
             - self.multiply(x.imag, self.complex_weight_1[1])
-            + self.complex_bias_1[0].to(self.FFT_ACT_T)
+            + self.complex_bias_1[0].to(self.ACT_T)
         )
         x_imag_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[1])
             + self.multiply(x.imag, self.complex_weight_1[0])
-            + self.complex_bias_1[1].to(self.FFT_ACT_T)
+            + self.complex_bias_1[1].to(self.ACT_T)
         )
         x_real_2 = (
             self.multiply(x_real_1, self.complex_weight_2[0])
             - self.multiply(x_imag_1, self.complex_weight_2[1])
-            + self.complex_bias_2[0].to(self.FFT_ACT_T)
+            + self.complex_bias_2[0].to(self.ACT_T)
         )
         x_imag_2 = (
             self.multiply(x_real_1, self.complex_weight_2[1])
             + self.multiply(x_imag_1, self.complex_weight_2[0])
-            + self.complex_bias_2[1].to(self.FFT_ACT_T)
+            + self.complex_bias_2[1].to(self.ACT_T)
         )
 
         x = torch.stack([x_real_2, x_imag_2], dim=-1)
         x = F.softshrink(x.to(FP32), lambd=self.sparsity_threshold) if self.sparsity_threshold else x
-        x = x.to(self.FFT_ACT_T)
 
+        x = x.to(self.FFT_ACT_T)
         x = torch.view_as_complex(x)
         x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
+        x = x.to(self.ACT_T)
 
         # Unpad the output
         x = x[:, :N, : self.num_blocks, :]
 
         x = x.reshape(B, N, C)
-        x = x.to(self.ACT_T)
         return x
 
 
@@ -202,7 +203,6 @@ class Block_mamba(nn.Module):
         self.norm2 = norm_layer(dim, dtype=FP32)
         self.attn = MambaLayer(dim, **kwargs)
         self.mlp = EinFFT(dim, **kwargs)
-
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         self.apply(self._init_weights)
 
@@ -518,9 +518,9 @@ class DWConv(nn.Module):
 def simba_l_bf16(pretrained=False, **kwargs):
     kwargs = {
         **kwargs,
+        "FFT_ACT_T": FP16,  # BF16 not supported
         "EINFFT_ACT_T": BF16,
-        "FFT_ACT_T": FP16,
-        "FFT_WEIGHT_T": FP32,  # Weights before casting
+        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
         "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
         "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
         "PATCH_EMBED_T": FP32,
@@ -546,13 +546,13 @@ def simba_l_bf16(pretrained=False, **kwargs):
 def simba_l_fp16(pretrained=False, **kwargs):
     kwargs = {
         **kwargs,
-        "EINFFT_ACT_T": FP16,
         "FFT_ACT_T": FP16,
-        "FFT_WEIGHT_T": FP32,  # Weights before casting
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
+        "EINFFT_ACT_T": FP16,
+        "EINFFT_WEIGHT_T": FP16,  # Weights before casting
+        "MAMBA_MAIN_T": FP16,  # Weights before casting, non-linear functions
         "MAMBA_ACT_T": FP16,  # Linear projections, state-update, etc
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
+        "PATCH_EMBED_T": FP16,
+        "NORM_T": FP16,
         "AUTOCAST_T": FP16,
     }
 

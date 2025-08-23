@@ -4,13 +4,12 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import re
 import torch
 import torch.amp
 from timm.models import create_model
 
 from simba.simba import SiMBA, simba_l  # noqa: F401
-from simba.simba_bf16 import BF16, FP32, simba_l_bf16, simba_l_fp16  # noqa: F401
+from simba.simba_bf16 import BF16, FP32, simba_l_fp16  # ,  simba_l_bf16     # noqa: F401
 
 if __name__ == "__main__":
     from simba.datasets import build_dataset
@@ -18,7 +17,7 @@ if __name__ == "__main__":
 
 ################# CONFIG #################
 
-MODEL_NAME = "simba_l_bf16"
+MODEL_NAME = "simba_l_fp16"
 RUN_NAME = "simba_l_bf16_B"
 BEST_CHECKPOINT = 316  # Should be 83.0% Top-1 acc
 
@@ -133,20 +132,5 @@ def main():
     logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")
 
 
-def get_checkpoints(checkpoint_dir, min_id=300):
-    checkpoint_pattern = re.compile(r"^checkpoint-(\d+)\.pth\.tar$")
-    checkpoint_files = []
-    for fname in os.listdir(checkpoint_dir):
-        match = checkpoint_pattern.match(fname)
-        if match:
-            checkpoint_id = int(match.group(1))
-            if checkpoint_id > min_id:
-                checkpoint_files.append(os.path.join(checkpoint_dir, fname))
-    return sorted(checkpoint_files)
-
-
 if __name__ == "__main__":
-    # checkpoints = get_checkpoints(CHECKPOINT_DIR, min_id=300)
-    # for checkpoint in checkpoints:
-    #     main(checkpoint)
     main()

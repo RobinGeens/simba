@@ -13,7 +13,6 @@ from timm.data import Mixup
 from timm.utils import ModelEma, accuracy
 from tlt.data import create_token_label_target
 
-from simba.simba import SiMBA
 
 try:
     from simba import utils
@@ -24,7 +23,7 @@ except ImportError:
 
 
 def train_one_epoch(
-    model: SiMBA,
+    model: torch.nn.Module,
     criterion: DistillationLoss,
     data_loader: Iterable,
     optimizer: torch.optim.Optimizer,
@@ -95,7 +94,7 @@ def train_one_epoch(
 
 
 @torch.no_grad()
-def evaluate(data_loader, model: SiMBA, device):
+def evaluate(data_loader, model, device):
     criterion = torch.nn.CrossEntropyLoss()
 
     metric_logger = utils.MetricLogger(delimiter="  ")
