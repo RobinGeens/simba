@@ -2,9 +2,12 @@ import matplotlib.pyplot as plt
 import seaborn
 
 log_files = [
-    {"path": "checkpoints/simba_l_bf16_B/tlog.txt", "label": "Simba-L-BF16"},
-    {"path": "checkpoints/simba_l_FP32_B/tlog.txt", "label": "Simba-L-FP32"},
+    {"path": "checkpoints/simba_l_bf16_B/tlog.txt", "label": "BF16"},
+    {"path": "checkpoints/simba_l_bf16_TL/tlog.txt", "label": "BF16 + token label"},
+    {"path": "checkpoints/simba_l_FP32_B/tlog.txt", "label": "FP32"},
 ]
+
+max_epoch = 15
 
 
 def parse_log_file(filename):
@@ -42,20 +45,21 @@ def make_plot():
     for i, config in enumerate(log_files):
         epochs, acc1, acc5 = parse_log_file(config["path"])
 
-        plt.plot(epochs, acc1, color=colors[i], ls="-", linewidth=2)
-        plt.plot(epochs, acc5, color=colors[i], ls="--", linewidth=2)
-
-    plt.axhline(y=83.9, color="red", linestyle=":", linewidth=2, label="Target")
+        plt.plot(epochs[:max_epoch], acc1[:max_epoch], color=colors[i], ls="-", linewidth=3)
+        plt.plot(epochs[:max_epoch], acc5[:max_epoch], color=colors[i], ls="--", linewidth=3)
 
     for i, config in enumerate(log_files):
         plt.plot([], [], color=colors[i], label=f"{config['label']}")
+
+    plt.axhline(y=83.9, color="red", linestyle=":", linewidth=2, label="Target")
 
     plt.plot([], [], color="gray", label="Top1", ls="-")
     plt.plot([], [], color="gray", label="Top5", ls="--")
 
     plt.xlabel("Epoch", fontsize=14)
     plt.ylabel("Training Accuracy (%)", fontsize=14)
-    plt.legend()
+    plt.xlim(0, max_epoch)
+    plt.legend(ncol=2)
     plt.grid(True)
     plt.savefig("accuracy_plot.png", bbox_inches="tight", pad_inches=0)
     plt.close()

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODEL="simba_l_fp16"
+MODEL="simba_l_bf16"
 
 # Extract RUN_NAME from the config file
 RUN_NAME=$(python3 -c "
@@ -20,6 +20,7 @@ LATEST_CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
 echo "Resuming from checkpoint: $LATEST_CHECKPOINT"
 
 DATA_PATH="dataset/ILSVRC2012"
+TOKEN_LABEL_PATH="dataset/label_top5_train_nfnet/"
 
 CUDA_VISIBLE_DEVICES=0 torchrun  \
    --nproc_per_node=1 \
@@ -35,4 +36,7 @@ CUDA_VISIBLE_DEVICES=0 torchrun  \
    --lr 1e-3 \
    --num_workers 12\
    --pin-mem \
+   --token-label \
+   --token-label-size 7 \
+   --token-label-data $TOKEN_LABEL_PATH \
    --resume $LATEST_CHECKPOINT \
