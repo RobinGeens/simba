@@ -94,7 +94,7 @@ def train_one_epoch(
 
 
 @torch.no_grad()
-def evaluate(data_loader, model, device):
+def evaluate(data_loader, model, device, eval_one_sample=False):
     criterion = torch.nn.CrossEntropyLoss()
 
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -119,6 +119,12 @@ def evaluate(data_loader, model, device):
         metric_logger.update(loss=loss.item())
         metric_logger.meters["acc1"].update(acc1.item(), n=batch_size)
         metric_logger.meters["acc5"].update(acc5.item(), n=batch_size)
+        
+        # Eval only one sample for debugging
+        if eval_one_sample:
+            _logger.info("Eval only one sample to extract data.")
+            break
+
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     _logger.info(

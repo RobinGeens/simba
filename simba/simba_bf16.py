@@ -10,7 +10,21 @@ import torch
 import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
-from mamba_ssm import Mamba
+# from mamba_ssm import Mamba
+# from .mamba_simple import Mamba
+
+import os
+USE_OFFICIAL_MAMBA = os.getenv('USE_OFFICIAL_MAMBA', 'false').lower() == 'true'
+if USE_OFFICIAL_MAMBA:
+    try:
+        from mamba_ssm import Mamba
+        print("Using official mamba_ssm")
+    except ImportError:
+        print("Falling back to local implementation")
+        from .mamba_simple import Mamba
+else:
+    from .mamba_simple import Mamba
+
 from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg

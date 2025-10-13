@@ -8,7 +8,7 @@ import torch
 import torch.amp
 from timm.models import create_model
 
-from simba.simba import SiMBA, simba_l  # noqa: F401
+from simba.simba import SiMBA, simba_l, MambaLayer  # noqa: F401
 from simba.simba_bf16 import BF16, FP32, simba_l_fp16  # ,  simba_l_bf16     # noqa: F401
 
 if __name__ == "__main__":
@@ -100,38 +100,94 @@ def main():
 
     device = torch.device(f"cuda:{GPU_NODE}" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
+    
+    # Observe the model structure and layer names
+    # def list_all_modules(model):
+    #     """List all modules in the model."""
+    #     print("="*80)
+    #     for name, module in model.named_modules():
+    #         # if 'block' in name.lower() or 'proj' in name.lower():
+    #         # if 'in_proj' in name.lower():
+    #         if name.endswith('in_proj') and 'block' in name:
+    #             print(f"{name:60s} {type(module).__name__}")
+    #     print("="*80)
+
+    # list_all_modules(model)
+    
+    
+    # Hooks to log input/output shapes and weight shapes of in_proj layers
+    hook_results = {}
+    hooks = []
+
+    def create_hook(name):
+        def hook_fn(module, input, output):
+            print(f"!!! HOOK TRIGGERED: {name} !!!")
+            hook_results[name] = {
+                'input_shape': input[0].shape if isinstance(input, tuple) else input.shape,
+                'output_shape': output[0].shape if isinstance(output, tuple) else output.shape,
+                # 'weight_shape': module.weight.shape,
+            }
+        return hook_fn
+
+    # register hooks
+    for name, module in model.named_modules():
+        if True:
+        # Note that the implementation of Mamba layers cannot be hooked because they directly use functional calls instead of nn.Module layers
+        # if name.endswith('in_proj') and 'block' in name:
+            print(name, type(module))
+        # if isinstance(module, MambaLayer) and 'block' in name:
+            handle = module.register_forward_hook(create_hook(name))
+            hooks.append(handle)
+    print(f"{len(hooks)} hooks registered.\n")
+
+    with torch.no_grad():
+        with torch.amp.autocast(device_type='cuda', dtype=torch.bfloat16):
+            _ = model(torch.randn(1, 3, 224, 224).to(device))
+        
+    # Print hook results
+    print("\n" + "="*80)
+    print("Hook Results:")
+    print("="*80)
+    for name, info in hook_results.items():
+        # print(f"{name}: {info['input_shape']} → {info['output_shape']} | W: {info['weight_shape']}")
+        print(f"{name}: {info['input_shape']} → {info['output_shape']}")
+    print("="*80)
+    
+    # Clean hooks
+    for h in hooks:
+        h.remove()
 
     # Create dataset and dataloader
-    Args = type(
-        "Args",
-        (),
-        {
-            "data_path": DATA_PATH,
-            "data_set": "IMNET",
-            "use_mcloader": False,
-            "input_size": 224,
-            "color_jitter": None,
-            "aa": None,
-            "train_interpolation": "bicubic",
-            "reprob": 0.0,
-            "remode": None,
-            "recount": 1,
-        },
-    )
-    dataset_val, _ = build_dataset(is_train=False, args=Args)
+    # Args = type(
+    #     "Args",
+    #     (),
+    #     {
+    #         "data_path": DATA_PATH,
+    #         "data_set": "IMNET",
+    #         "use_mcloader": False,
+    #         "input_size": 224,
+    #         "color_jitter": None,
+    #         "aa": None,
+    #         "train_interpolation": "bicubic",
+    #         "reprob": 0.0,
+    #         "remode": None,
+    #         "recount": 1,
+    #     },
+    # )
+    # dataset_val, _ = build_dataset(is_train=False, args=Args)
 
-    data_loader = torch.utils.data.DataLoader(
-        dataset_val, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY, shuffle=False
-    )
+    # data_loader = torch.utils.data.DataLoader(
+    #     dataset_val, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY, shuffle=False
+    # )
 
-    # Evaluate
-    test_stats = evaluate(data_loader, model, device, eval_one_sample=True)
+    # # Evaluate
+    # test_stats = evaluate(data_loader, model, device)
 
-    logging.info(
-        f"Accuracy of the network on the {len(dataset_val)} test images ({EVAL_WEIGHT_DTYPE} W, {model.AUTOCAST_T} A):"
-    )
-    logging.info(f"Top-1 accuracy: {test_stats['acc1']:.1f}%")
-    logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")
+    # logging.info(
+    #     f"Accuracy of the network on the {len(dataset_val)} test images ({EVAL_WEIGHT_DTYPE} W, {model.AUTOCAST_T} A):"
+    # )
+    # logging.info(f"Top-1 accuracy: {test_stats['acc1']:.1f}%")
+    # logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")
 
 
 if __name__ == "__main__":
