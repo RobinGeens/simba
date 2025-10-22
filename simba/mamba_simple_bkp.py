@@ -28,14 +28,8 @@ except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
 
 from .quantizer import FloatQuantizer
-import pickle
-import numpy as np
-from pathlib import Path
 
 class Mamba(nn.Module):
-    
-    _global_layer_counter = 0
-    
     def __init__(
         self,
         d_model,
@@ -66,14 +60,7 @@ class Mamba(nn.Module):
         self.d_inner = int(self.expand * self.d_model)
         self.dt_rank = math.ceil(self.d_model / 16) if dt_rank == "auto" else dt_rank
         self.use_fast_path = use_fast_path
-        # self.layer_idx = layer_idx
-        
-        # Use layer_idx if provided, otherwise use global counter
-        if layer_idx is not None:
-            self.layer_idx = layer_idx
-        else:
-            self.layer_idx = Mamba._global_layer_counter
-            Mamba._global_layer_counter += 1
+        self.layer_idx = layer_idx
 
         self.in_proj = nn.Linear(self.d_model, self.d_inner * 2, bias=bias, **factory_kwargs)
 
@@ -134,17 +121,8 @@ class Mamba(nn.Module):
         self.global_step = 0
         
         # Quantizer
-        self.enable_quant = False
-        if self.enable_quant:
-            print("Enable quantization in Mamba")
-            self.quantizer = FloatQuantizer(e_bits=5, m_bits=2)
-        else:
-            self.quantizer = FloatQuantizer(e_bits=8, m_bits=7) # nn.Identity() ## 
-        # self.quantizer = FloatQuantizer(e_bits=3, m_bits=2)
-             
-        # Profiler
-        self.enable_profile = True
-        self.save_dir = Path("./simba_profile_data")
+        # self.quantizer = FloatQuantizer(e_bits=5, m_bits=2)
+        self.quantizer = FloatQuantizer(e_bits=3, m_bits=2)
 
     def forward(self, hidden_states, inference_params=None):
         """
@@ -162,10 +140,6 @@ class Mamba(nn.Module):
                 return out
 
         # print(hidden_states)
-        
-        if self.enable_profile:
-            self._save_tensor("hidden_states", hidden_states)
-            self._save_tensor("weight_in_proj", self.in_proj.weight)
         
         # We do matmul and transpose BLH -> HBL at the same time
         # xz = rearrange(
@@ -206,9 +180,6 @@ class Mamba(nn.Module):
             )
         else:
             x, z = xz.chunk(2, dim=1)
-            if self.enable_profile:
-                self._save_tensor("x", x)
-                self._save_tensor("z", z)
             # Compute short convolution
             if conv_state is not None:
                 # If we just take x[:, :, -self.d_conv :], it will error if seqlen < self.d_conv
@@ -245,24 +216,16 @@ class Mamba(nn.Module):
             if self.x_proj.bias is not None:
                 x_dbl = x_dbl + self.x_proj.bias.to(self.dtype_act)
                 
-            if self.enable_profile:
-                self._save_tensor("x_proj_weight", self.x_proj.weight)
-                self._save_tensor("x_dbl", x_dbl)
-                
             dt, B, C = torch.split(x_dbl, [self.dt_rank, self.d_state, self.d_state], dim=-1)
             # dt = self.dt_proj.weight @ dt.t()
             # [Note] Chao: Quantize here
             dt = self.quantizer.quantize(self.dt_proj.weight) @ self.quantizer.quantize(dt).t()
-            if self.enable_profile:
-                self._save_tensor("dt_proj_weight", self.dt_proj.weight)
-                self._save_tensor("dt", dt)
-                
             dt = rearrange(dt, "d (b l) -> b d l", l=seqlen)
             B = rearrange(B, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
             C = rearrange(C, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
             assert self.activation in ["silu", "swish"]
 
-            # self._profile_tensors(dt, A)
+            self._profile_tensors(dt, A)
             y = selective_scan_fn(
                 x,
                 dt,
@@ -289,12 +252,6 @@ class Mamba(nn.Module):
             )
             if self.out_proj.bias is not None:
                 out = out + self.out_proj.bias.to(self.dtype_act)
-                
-            if self.enable_profile:
-                self._save_tensor("y", y)
-                self._save_tensor("out", out)
-                self._save_tensor("weight_out_proj", self.out_proj.weight)
-                
         return out
 
     def step(self, hidden_states, conv_state, ssm_state):
@@ -411,22 +368,3 @@ class Mamba(nn.Module):
                 print(f"Warning: {name} is empty at step {self.global_step}")
         if any_logged:
             self.global_step += 1
-            
-    def _save_tensor(self, name, tensor):
-        """Save a single tensor to file"""
-        if not self.enable_profile:
-            return
-        
-        # Create save directory
-        self.save_dir.mkdir(exist_ok=True)
-        
-        # Convert to numpy
-        tensor_np = tensor.detach().cpu().float().numpy()
-        
-        # Filename format: layer_idx_name.npy
-        filename = f"layer_{self.layer_idx:02d}_{name}.npy"
-        filepath = self.save_dir / filename
-        
-        # Save
-        np.save(filepath, tensor_np)
-        print(f"Saved: {filepath} with shape {tensor_np.shape}")

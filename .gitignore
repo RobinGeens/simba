@@ -15,3 +15,4 @@ wandb
 runs
 
 gcc-11.2.0*
+simba_profile_data

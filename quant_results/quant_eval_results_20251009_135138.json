@@ -1,0 +1,188 @@
+{
+  "e8_m7": {
+    "e_bits": 8,
+    "m_bits": 7,
+    "top1_acc": 82.6,
+    "top5_acc": 96.1
+  },
+  "e7_m8": {
+    "e_bits": 7,
+    "m_bits": 8,
+    "top1_acc": 82.7,
+    "top5_acc": 96.1
+  },
+  "e6_m9": {
+    "e_bits": 6,
+    "m_bits": 9,
+    "top1_acc": 82.7,
+    "top5_acc": 96.1
+  },
+  "e5_m10": {
+    "e_bits": 5,
+    "m_bits": 10,
+    "top1_acc": 82.6,
+    "top5_acc": 96.0
+  },
+  "e8_m3": {
+    "e_bits": 8,
+    "m_bits": 3,
+    "top1_acc": 82.7,
+    "top5_acc": 96.0
+  },
+  "e7_m4": {
+    "e_bits": 7,
+    "m_bits": 4,
+    "top1_acc": 82.6,
+    "top5_acc": 96.0
+  },
+  "e6_m5": {
+    "e_bits": 6,
+    "m_bits": 5,
+    "top1_acc": 82.5,
+    "top5_acc": 96.0
+  },
+  "e5_m6": {
+    "e_bits": 5,
+    "m_bits": 6,
+    "top1_acc": 82.8,
+    "top5_acc": 96.1
+  },
+  "e4_m7": {
+    "e_bits": 4,
+    "m_bits": 7,
+    "top1_acc": 69.6,
+    "top5_acc": 88.6
+  },
+  "e3_m8": {
+    "e_bits": 3,
+    "m_bits": 8,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e7_m2": {
+    "e_bits": 7,
+    "m_bits": 2,
+    "top1_acc": 82.5,
+    "top5_acc": 96.0
+  },
+  "e6_m3": {
+    "e_bits": 6,
+    "m_bits": 3,
+    "top1_acc": 82.6,
+    "top5_acc": 96.1
+  },
+  "e5_m4": {
+    "e_bits": 5,
+    "m_bits": 4,
+    "top1_acc": 82.7,
+    "top5_acc": 96.1
+  },
+  "e4_m5": {
+    "e_bits": 4,
+    "m_bits": 5,
+    "top1_acc": 69.7,
+    "top5_acc": 88.5
+  },
+  "e3_m6": {
+    "e_bits": 3,
+    "m_bits": 6,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e2_m7": {
+    "e_bits": 2,
+    "m_bits": 7,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e6_m1": {
+    "e_bits": 6,
+    "m_bits": 1,
+    "top1_acc": 82.2,
+    "top5_acc": 96.0
+  },
+  "e5_m2": {
+    "e_bits": 5,
+    "m_bits": 2,
+    "top1_acc": 82.4,
+    "top5_acc": 96.0
+  },
+  "e4_m3": {
+    "e_bits": 4,
+    "m_bits": 3,
+    "top1_acc": 68.9,
+    "top5_acc": 88.1
+  },
+  "e3_m4": {
+    "e_bits": 3,
+    "m_bits": 4,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e2_m5": {
+    "e_bits": 2,
+    "m_bits": 5,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e1_m6": {
+    "e_bits": 1,
+    "m_bits": 6,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e4_m1": {
+    "e_bits": 4,
+    "m_bits": 1,
+    "top1_acc": 62.3,
+    "top5_acc": 83.1
+  },
+  "e3_m2": {
+    "e_bits": 3,
+    "m_bits": 2,
+    "top1_acc": 0.1,
+    "top5_acc": 0.6
+  },
+  "e2_m3": {
+    "e_bits": 2,
+    "m_bits": 3,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e1_m4": {
+    "e_bits": 1,
+    "m_bits": 4,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e3_m1": {
+    "e_bits": 3,
+    "m_bits": 1,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e2_m2": {
+    "e_bits": 2,
+    "m_bits": 2,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e1_m3": {
+    "e_bits": 1,
+    "m_bits": 3,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e2_m1": {
+    "e_bits": 2,
+    "m_bits": 1,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  },
+  "e1_m2": {
+    "e_bits": 1,
+    "m_bits": 2,
+    "top1_acc": 0.1,
+    "top5_acc": 0.5
+  }
+}
