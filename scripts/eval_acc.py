@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
 ################# CONFIG #################
 
-MODEL_NAME = "simba_l_bf16" # "simba_l_fp16"
-RUN_NAME = "simba_l_bf16" # "simba_l_bf16_B"
+MODEL_NAME = "simba_l_bf16"  # "simba_l_fp16"
+RUN_NAME = "simba_l_bf16_B"  # "simba_l_bf16_B"
 BEST_CHECKPOINT = 316  # Should be 83.0% Top-1 acc
 
 ############### CONFIG END ###############
@@ -28,8 +28,8 @@ BEST_CHECKPOINT = 316  # Should be 83.0% Top-1 acc
 EVAL_WEIGHT_DTYPE = None  # Not used
 
 # Configuration constants
-GPU_NODE = 0 #　either 0 or 1 for which GPU to use on a node
-DATA_PATH = "/users/micas/rgeens/Public/dataset/ILSVRC2012" # "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
+GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
+DATA_PATH = "/users/micas/rgeens/Public/dataset/ILSVRC2012"  # "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
 BATCH_SIZE = 256
 NUM_WORKERS = 12
 PIN_MEMORY = True

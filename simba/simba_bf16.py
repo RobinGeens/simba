@@ -10,14 +10,17 @@ import torch
 import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
+
 # from mamba_ssm import Mamba
 # from .mamba_simple import Mamba
 
 import os
-USE_OFFICIAL_MAMBA = os.getenv('USE_OFFICIAL_MAMBA', 'false').lower() == 'true'
+
+USE_OFFICIAL_MAMBA = os.getenv("USE_OFFICIAL_MAMBA", "false").lower() == "true"
 if USE_OFFICIAL_MAMBA:
     try:
         from mamba_ssm import Mamba
+
         print("Using official mamba_ssm")
     except ImportError:
         print("Falling back to local implementation")
@@ -83,6 +86,62 @@ class EinFFT(nn.Module):
         # Get next power of 2``
         return 2 ** math.ceil(math.log2(size))
 
+    def dft_matrix_real(self, n: int) -> torch.Tensor:
+        """
+        Construct the 2Nx2N real-valued DFT matrix for input [Re(x), Im(x)].
+
+        The matrix structure is:
+        [Re(W)  -Im(W)] [Re(x)]   [Re(X)]
+        [Im(W)   Re(W)] [Im(x)] = [Im(X)]
+
+        where W is the complex DFT matrix W[k,m] = exp(-j 2π k m / N).
+        """
+        device = next(self.parameters()).device
+        k = torch.arange(n).reshape(n, 1)
+        m = torch.arange(n).reshape(1, n)
+        angle = 2 * torch.pi * k * m / n
+        W_real = torch.cos(angle)
+        W_imag = -torch.sin(angle)
+
+        # Construct the 2Nx2N real matrix
+        W_real_matrix = torch.cat([torch.cat([W_real, -W_imag], dim=1), torch.cat([W_imag, W_real], dim=1)], dim=0)
+
+        return W_real_matrix.to(device=device, dtype=self.FFT_ACT_T)
+
+    def fft_matrix_nd(self, x: torch.Tensor):
+        """
+        Compute the DFT using real-valued matrix multiplication on N-D input.
+
+        Args:
+            x: N-D array with FFT applied to the first dimension (axis=0).
+
+        Returns:
+            N-D complex array: the DFT of x along axis=0.
+        """
+        n = x.shape[0]
+        other_dims = x.shape[1:]  # All dimensions except the first
+
+        W_real = self.dft_matrix_real(n)
+
+        # Reshape to (n, ...) where ... represents all other dimensions flattened
+        x_reshaped = x.reshape(n, -1)
+        # Create input vector [Re(x), Im(x)] for all slices
+        x_real_vec = torch.cat([torch.real(x_reshaped), torch.imag(x_reshaped)], dim=0)
+        x_real_vec = x_real_vec.to(device=W_real.device, dtype=self.FFT_ACT_T)
+
+        X_real_vec = torch.matmul(W_real, x_real_vec).to(self.FFT_ACT_T)
+
+        # Split result back into real and imaginary parts
+        X_real = X_real_vec[:n, :]
+        X_imag = X_real_vec[n:, :]
+
+        # Combine into complex array and reshape back to original shape
+        X_complex = torch.view_as_complex(torch.stack([X_real, X_imag], dim=-1))
+        result = X_complex.reshape(n, *other_dims)
+
+        # Apply orthogonal normalization
+        return result / torch.sqrt(torch.tensor(n, dtype=result.dtype, device=result.device))
+
     def forward(self, x: torch.Tensor, H: int, W: int) -> torch.Tensor:
         """Torch's fft is only implemented for FP16, not for BF16
         Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input"""
@@ -95,7 +154,13 @@ class EinFFT(nn.Module):
         pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
         x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
 
-        x = torch.fft.fft2(x, dim=(1, 2), norm="ortho")  # FFT on N dimension
+        # x = torch.fft.fft2(x, dim=(1, 2), norm="ortho")  # FFT on N dimension
+
+        x = torch.view_as_complex(torch.stack([x, torch.zeros_like(x)], dim=-1))
+        # Apply FFT to dimension 1 (N dimension)
+        x = self.fft_matrix_nd(x.transpose(1, 0)).transpose(1, 0)
+        # Apply FFT to dimension 2 (num_blocks dimension)
+        x = self.fft_matrix_nd(x.transpose(2, 0)).transpose(2, 0)
 
         x_real_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[0])
@@ -123,6 +188,12 @@ class EinFFT(nn.Module):
 
         x = x.to(self.FFT_ACT_T)
         x = torch.view_as_complex(x)
+
+        # Pad to power of 2
+        # pad_1 = self.get_pad_size(N) - N
+        # pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
+        # x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
+
         x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
         x = x.to(self.ACT_T)
 
@@ -210,7 +281,7 @@ class Block_mamba(nn.Module):
         self,
         dim,
         drop_path=0.0,
-        norm_layer=nn.LayerNorm,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
         **kwargs,
     ):
         super().__init__()
@@ -339,7 +410,7 @@ class SiMBA(nn.Module):
         embed_dims=[64, 128, 320, 448],
         mlp_ratios=[8, 8, 4, 4],
         drop_path_rate=0.0,
-        norm_layer=nn.LayerNorm,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 6, 3],
         num_stages=4,
         token_label=True,
