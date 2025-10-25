@@ -1,4 +1,6 @@
 #!/bin/bash
+# This script runs main.sh and automatically restarts it when it crashes. As a fail-safe, create a file named
+# main_persistent.stop to break the loop.
 
 STOP_FILE="main_persistent.stop"
 

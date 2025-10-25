@@ -1,4 +1,11 @@
-# Copyright (c) 2023, Tri Dao, Albert Gu.
+"""
+Copyright (c) 2023, Tri Dao, Albert Gu.
+
+Local copy of mamba, where we can more easily change the types. Note that the CUDA kernels still come from the Mamba
+Python package. To change, for example, the exponent implementation, run through the following steps:
+1) Change the kernel source code in mamba sub-module, or ensure the submodule is in the proper commit
+2) Install mamba as a package with `pip install ./mamba --no-build-isolation`
+"""
 
 import math
 
@@ -27,8 +34,7 @@ try:
 except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
 
-from .quantizer import FloatQuantizer
-import pickle
+from .quantizer import FloatQuantizer, QuantizerPassthrough
 import numpy as np
 from pathlib import Path
 
@@ -56,6 +62,7 @@ class Mamba(nn.Module):
         device=None,
         dtype=None,
         dtype_act=None,
+        quant: tuple[int, int] = None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
         self.dtype_act = dtype_act if dtype_act is not None else dtype
@@ -67,7 +74,6 @@ class Mamba(nn.Module):
         self.d_inner = int(self.expand * self.d_model)
         self.dt_rank = math.ceil(self.d_model / 16) if dt_rank == "auto" else dt_rank
         self.use_fast_path = use_fast_path
-        # self.layer_idx = layer_idx
 
         # Use layer_idx if provided, otherwise use global counter
         if layer_idx is not None:
@@ -135,13 +141,9 @@ class Mamba(nn.Module):
         self.global_step = 0
 
         # Quantizer
-        self.enable_quant = True
-        if self.enable_quant:
-            print("Enable quantization in Mamba")
-            self.quantizer = FloatQuantizer(e_bits=5, m_bits=2)
-        else:
-            self.quantizer = FloatQuantizer(e_bits=8, m_bits=7)  # nn.Identity() ##
-        # self.quantizer = FloatQuantizer(e_bits=3, m_bits=2)
+        self.quantizer = QuantizerPassthrough() if quant is None else FloatQuantizer(*quant)
+        if quant is not None:
+            print(f"Quantizing Mamba with e={quant[0]}, m={quant[1]}")
 
         # Profiler
         self.enable_profile = False
@@ -155,89 +157,48 @@ class Mamba(nn.Module):
         batch, seqlen, dim = hidden_states.shape
         hidden_states = hidden_states.to(self.dtype_act)
         conv_state, ssm_state = None, None
-        if inference_params is not None:
-            conv_state, ssm_state = self._get_states_from_cache(inference_params, batch)
-            if inference_params.seqlen_offset > 0:
-                # The states are updated inplace
-                out, _, _ = self.step(hidden_states, conv_state, ssm_state)
-                return out
-
-        # print(hidden_states)
 
         if self.enable_profile:
             self._save_tensor("hidden_states", hidden_states)
             self._save_tensor("weight_in_proj", self.in_proj.weight)
 
         # We do matmul and transpose BLH -> HBL at the same time
-        # xz = rearrange(
-        #     self.in_proj.weight.to(self.dtype_act) @ rearrange(hidden_states, "b l d -> d (b l)"),
-        #     "d (b l) -> b d l",
-        #     l=seqlen,
-        # )
-        # [Note] Chao: Quantize here
+        # [NOTE] Chao: Quantize here
         xz = rearrange(
-            self.quantizer.quantize(self.in_proj.weight).to(self.dtype_act)
+            self.quantizer.quantize(self.in_proj.weight.to(self.dtype_act))
             @ rearrange(self.quantizer.quantize(hidden_states), "b l d -> d (b l)"),
             "d (b l) -> b d l",
             l=seqlen,
         )
 
         if self.in_proj.bias is not None:
-            # xz = xz + rearrange(self.in_proj.bias.to(dtype=xz.dtype), "d -> d 1")
             xz = xz + rearrange(self.in_proj.bias.to(self.dtype_act), "d -> d 1")
 
         A = -torch.exp(self.A_log.float())  # (d_inner, d_state)
         # In the backward pass we write dx and dz next to each other to avoid torch.cat
-        if (
-            self.use_fast_path and causal_conv1d_fn is not None and inference_params is None and False
-        ):  # Doesn't support outputting the states
-            out = mamba_inner_fn(
-                xz,
-                self.conv1d.weight,
-                self.conv1d.bias,
-                self.x_proj.weight,
-                self.dt_proj.weight,
-                self.out_proj.weight,
-                self.out_proj.bias,
-                A,
-                None,  # input-dependent B
-                None,  # input-dependent C
-                self.D.float(),
-                delta_bias=self.dt_proj.bias.float(),
-                delta_softplus=True,
-            )
-        else:
-            x, z = xz.chunk(2, dim=1)
-            if self.enable_profile:
-                self._save_tensor("x", x)
-                self._save_tensor("z", z)
-            # Compute short convolution
-            if conv_state is not None:
-                # If we just take x[:, :, -self.d_conv :], it will error if seqlen < self.d_conv
-                # Instead F.pad will pad with zeros if seqlen < self.d_conv, and truncate otherwise.
-                conv_state.copy_(F.pad(x, (self.d_conv - x.shape[-1], 0)))  # Update state (B D W)
-            if causal_conv1d_fn is None:
-                x: Tensor = self.act(self.conv1d(x)[..., :seqlen])
-            else:
-                assert self.activation in ["silu", "swish"]
-                x: Tensor = causal_conv1d_fn(
-                    x=x,
-                    weight=rearrange(self.conv1d.weight, "d 1 w -> d w").to(self.dtype_act),
-                    bias=self.conv1d.bias.to(self.dtype_act),
-                    activation=self.activation,
-                )
 
-            # We're careful here about the layout, to avoid extra transposes.
-            # We want dt to have d as the slowest moving dimension
-            # and L as the fastest moving dimension, since those are what the ssm_scan kernel expects.
-            # x_dbl = self.x_proj(rearrange(x, "b d l -> (b l) d").to(self.dtype_act))  # (bl d)
-            # x_dbl = rearrange(
-            #     self.x_proj.weight.to(self.dtype_act) @ rearrange(x, "b d l -> d (b l)"),
-            #     "d (b l) -> (b l) d",
-            #     b=x.shape[0],
-            #     l=x.shape[2],
-            # )
-            # [Note] Chao: Quantize here
+        x, z = xz.chunk(2, dim=1)
+        if self.enable_profile:
+            self._save_tensor("x", x)
+            self._save_tensor("z", z)
+
+        # Compute short convolution
+        if conv_state is not None:
+            # If we just take x[:, :, -self.d_conv :], it will error if seqlen < self.d_conv
+            # Instead F.pad will pad with zeros if seqlen < self.d_conv, and truncate otherwise.
+            conv_state.copy_(F.pad(x, (self.d_conv - x.shape[-1], 0)))  # Update state (B D W)
+        if causal_conv1d_fn is None:
+            x: Tensor = self.act(self.conv1d(x)[..., :seqlen])
+        else:
+            assert self.activation in ["silu", "swish"]
+            x: Tensor = causal_conv1d_fn(
+                x=x,
+                weight=rearrange(self.conv1d.weight, "d 1 w -> d w").to(self.dtype_act),
+                bias=self.conv1d.bias.to(self.dtype_act),
+                activation=self.activation,
+            )
+
+            # [NOTE] Chao: Quantize here
             x_dbl = rearrange(
                 self.quantizer.quantize(self.x_proj.weight).to(self.dtype_act)
                 @ rearrange(self.quantizer.quantize(x), "b d l -> d (b l)"),
@@ -253,8 +214,7 @@ class Mamba(nn.Module):
                 self._save_tensor("x_dbl", x_dbl)
 
             dt, B, C = torch.split(x_dbl, [self.dt_rank, self.d_state, self.d_state], dim=-1)
-            # dt = self.dt_proj.weight @ dt.t()
-            # [Note] Chao: Quantize here
+            # [NOTE] Chao: Quantize here
             dt = self.quantizer.quantize(self.dt_proj.weight) @ self.quantizer.quantize(dt).t()
             if self.enable_profile:
                 self._save_tensor("dt_proj_weight", self.dt_proj.weight)
@@ -265,7 +225,6 @@ class Mamba(nn.Module):
             C = rearrange(C, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
             assert self.activation in ["silu", "swish"]
 
-            # self._profile_tensors(dt, A)
             y = selective_scan_fn(
                 x,
                 dt,
@@ -301,120 +260,13 @@ class Mamba(nn.Module):
 
         return out
 
-    def step(self, hidden_states, conv_state, ssm_state):
-        raise NotImplementedError
-        dtype = self.dtype_act  # hidden_states.dtype
-        assert hidden_states.shape[1] == 1, "Only support decoding with 1 token at a time for now"
-
-        hidden_states = hidden_states.to(dtype)
-
-        xz = self.in_proj(hidden_states.squeeze(1))  # (B 2D)
-        x, z = xz.chunk(2, dim=-1)  # (B D)
-
-        # Conv step
-        if causal_conv1d_update is None:
-            conv_state.copy_(torch.roll(conv_state, shifts=-1, dims=-1))  # Update state (B D W)
-            conv_state[:, :, -1] = x
-            x = torch.sum(conv_state * rearrange(self.conv1d.weight, "d 1 w -> d w"), dim=-1).to(dtype)  # (B D)
-            if self.conv1d.bias is not None:
-                x = x + self.conv1d.bias.to(dtype)
-            x = self.act(x).to(dtype=dtype)
-        else:
-            x = causal_conv1d_update(
-                x,
-                conv_state,
-                rearrange(self.conv1d.weight, "d 1 w -> d w").to(dtype),
-                self.conv1d.bias.to(dtype),
-                self.activation,
-            )
-
-        x = x.to(dtype=dtype)
-        x_db = self.x_proj(x)  # (B dt_rank+2*d_state)
-        dt, B, C = torch.split(x_db, [self.dt_rank, self.d_state, self.d_state], dim=-1)
-        # Don't add dt_bias here
-        dt = F.linear(dt, self.dt_proj.weight)  # (B d_inner)
-        A = -torch.exp(self.A_log.float())  # (d_inner, d_state)
-
-        # SSM step
-        if selective_state_update is None:
-            # Discretize A and B
-            dt = F.softplus(dt + self.dt_proj.bias.to(dtype=dt.dtype))
-            dA = torch.exp(torch.einsum("bd,dn->bdn", dt, A))
-            dB = torch.einsum("bd,bn->bdn", dt, B)
-            ssm_state.copy_(ssm_state * dA + rearrange(x, "b d -> b d 1") * dB)
-            y = torch.einsum("bdn,bn->bd", ssm_state.to(dtype), C)
-            y = y + self.D.to(dtype) * x
-            y = y * self.act(z)  # (B D)
-        else:
-            y = selective_state_update(
-                ssm_state, x, dt, A, B, C, self.D, z=z, dt_bias=self.dt_proj.bias, dt_softplus=True
-            )
-
-        out = self.out_proj(y)
-        return out.unsqueeze(1), conv_state, ssm_state
-
     def allocate_inference_cache(self, batch_size, max_seqlen, dtype=None, **kwargs):
         device = self.out_proj.weight.device
-        conv_dtype = self.dtype_act  # self.conv1d.weight.dtype if dtype is None else dtype
+        conv_dtype = self.dtype_act
         conv_state = torch.zeros(batch_size, self.d_model * self.expand, self.d_conv, device=device, dtype=conv_dtype)
-        ssm_dtype = self.dtype_act  # self.dt_proj.weight.dtype if dtype is None else dtype
-        # ssm_dtype = torch.float32
+        ssm_dtype = self.dtype_act
         ssm_state = torch.zeros(batch_size, self.d_model * self.expand, self.d_state, device=device, dtype=ssm_dtype)
         return conv_state, ssm_state
-
-    def _get_states_from_cache(self, inference_params, batch_size, initialize_states=False):
-        assert self.layer_idx is not None
-        if self.layer_idx not in inference_params.key_value_memory_dict:
-            batch_shape = (batch_size,)
-            conv_state = torch.zeros(
-                batch_size,
-                self.d_model * self.expand,
-                self.d_conv,
-                device=self.conv1d.weight.device,
-                dtype=self.dtype_act,
-                # dtype=self.conv1d.weight.dtype,
-            )
-            ssm_state = torch.zeros(
-                batch_size,
-                self.d_model * self.expand,
-                self.d_state,
-                device=self.dt_proj.weight.device,
-                dtype=self.dtype_act,
-                # dtype=self.dt_proj.weight.dtype,
-                # dtype=torch.float32,
-            )
-            inference_params.key_value_memory_dict[self.layer_idx] = (conv_state, ssm_state)
-        else:
-            conv_state, ssm_state = inference_params.key_value_memory_dict[self.layer_idx]
-            # TODO: What if batch size changes between generation, and we reuse the same states?
-            if initialize_states:
-                conv_state.zero_()
-                ssm_state.zero_()
-        return conv_state, ssm_state
-
-    def _profile_tensors(self, dt: Tensor, A: Tensor):
-        any_logged = False
-        if self.global_step % 1000 != 0:
-            self.global_step += 1
-            return
-
-        # This is very slow
-        tensors = {
-            # "dt": dt,
-            # "A": A,
-            # "dA": torch.einsum("bld,dn->bldn", F.softplus(dt + self.dt_proj.bias.to(dtype=dt.dtype)), A),
-        }
-
-        for name, tensor in tensors.items():
-            if tensor.numel() > 0:
-                self.writer.add_histogram(name, tensor, self.global_step)
-                self.writer.add_scalar(f"{name}_mean", tensor.mean(), self.global_step)
-                self.writer.add_scalar(f"{name}_std", tensor.std(), self.global_step)
-                any_logged = True
-            else:
-                print(f"Warning: {name} is empty at step {self.global_step}")
-        if any_logged:
-            self.global_step += 1
 
     def _save_tensor(self, name, tensor):
         """Save a single tensor to file"""

@@ -1,3 +1,7 @@
+"""
+Original (reference) implementation. Not used in this repo
+"""
+
 import math
 from functools import partial
 

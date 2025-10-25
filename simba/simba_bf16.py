@@ -4,6 +4,7 @@ Copy of simba.py but with explicit setting of bfloat16 dtype.
 
 import math
 from functools import partial
+import os
 
 import numpy as np
 import torch
@@ -11,10 +12,8 @@ import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
 
-# from mamba_ssm import Mamba
-# from .mamba_simple import Mamba
 
-import os
+from simba.quantizer import FloatQuantizer, QuantizerPassthrough
 
 USE_OFFICIAL_MAMBA = os.getenv("USE_OFFICIAL_MAMBA", "false").lower() == "true"
 if USE_OFFICIAL_MAMBA:
@@ -51,6 +50,8 @@ class EinFFT(nn.Module):
 
         self.ACT_T = kwargs["EINFFT_ACT_T"]
         self.FFT_ACT_T = kwargs["FFT_ACT_T"]
+        self.FFT_QUANT = kwargs.get("FFT_QUANT", None)
+        self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT", None)
 
         self.complex_weight_1 = nn.Parameter(
             torch.randn(
@@ -79,6 +80,12 @@ class EinFFT(nn.Module):
             torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
         )
 
+        # Quantizer
+        self.fft_quantizer = QuantizerPassthrough() if self.FFT_QUANT is None else FloatQuantizer(*self.FFT_QUANT)
+        self.einfft_quantizer = (
+            QuantizerPassthrough() if self.EINFFT_QUANT is None else FloatQuantizer(*self.EINFFT_QUANT)
+        )
+
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
         return torch.einsum("...bd,bdk->...bk", input.to(self.ACT_T), weights.to(self.ACT_T))
 
@@ -86,7 +93,7 @@ class EinFFT(nn.Module):
         # Get next power of 2``
         return 2 ** math.ceil(math.log2(size))
 
-    def dft_matrix_real(self, n: int) -> torch.Tensor:
+    def get_dft_matrix_real(self, n: int, inverse: bool = False) -> torch.Tensor:
         """
         Construct the 2Nx2N real-valued DFT matrix for input [Re(x), Im(x)].
 
@@ -99,29 +106,22 @@ class EinFFT(nn.Module):
         device = next(self.parameters()).device
         k = torch.arange(n).reshape(n, 1)
         m = torch.arange(n).reshape(1, n)
-        angle = 2 * torch.pi * k * m / n
-        W_real = torch.cos(angle)
-        W_imag = -torch.sin(angle)
+        theta = 2 * torch.pi * k * m / n
+        W_real = torch.cos(theta)
+        # For forward DFT: Im(W) = -sin(theta); for inverse (conj W): +sin(theta)
+        W_imag = (1.0 if inverse else -1.0) * torch.sin(theta)
 
         # Construct the 2Nx2N real matrix
         W_real_matrix = torch.cat([torch.cat([W_real, -W_imag], dim=1), torch.cat([W_imag, W_real], dim=1)], dim=0)
 
         return W_real_matrix.to(device=device, dtype=self.FFT_ACT_T)
 
-    def fft_matrix_nd(self, x: torch.Tensor):
-        """
-        Compute the DFT using real-valued matrix multiplication on N-D input.
-
-        Args:
-            x: N-D array with FFT applied to the first dimension (axis=0).
-
-        Returns:
-            N-D complex array: the DFT of x along axis=0.
-        """
+    def dft(self, x: torch.Tensor, inverse: bool = False) -> torch.Tensor:
+        """Compute the DFT using real-valued matrix multiplication on N-D input."""
         n = x.shape[0]
         other_dims = x.shape[1:]  # All dimensions except the first
 
-        W_real = self.dft_matrix_real(n)
+        W_real = self.get_dft_matrix_real(n, inverse)
 
         # Reshape to (n, ...) where ... represents all other dimensions flattened
         x_reshaped = x.reshape(n, -1)
@@ -129,7 +129,10 @@ class EinFFT(nn.Module):
         x_real_vec = torch.cat([torch.real(x_reshaped), torch.imag(x_reshaped)], dim=0)
         x_real_vec = x_real_vec.to(device=W_real.device, dtype=self.FFT_ACT_T)
 
-        X_real_vec = torch.matmul(W_real, x_real_vec).to(self.FFT_ACT_T)
+        # [NOTE] quantize here
+        X_real_vec = torch.matmul(self.fft_quantizer.quantize(W_real), self.fft_quantizer.quantize(x_real_vec)).to(
+            self.FFT_ACT_T
+        )
 
         # Split result back into real and imaginary parts
         X_real = X_real_vec[:n, :]
@@ -158,9 +161,9 @@ class EinFFT(nn.Module):
 
         x = torch.view_as_complex(torch.stack([x, torch.zeros_like(x)], dim=-1))
         # Apply FFT to dimension 1 (N dimension)
-        x = self.fft_matrix_nd(x.transpose(1, 0)).transpose(1, 0)
+        x = self.dft(x.transpose(1, 0)).transpose(1, 0)
         # Apply FFT to dimension 2 (num_blocks dimension)
-        x = self.fft_matrix_nd(x.transpose(2, 0)).transpose(2, 0)
+        x = self.dft(x.transpose(2, 0)).transpose(2, 0)
 
         x_real_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[0])
@@ -194,7 +197,13 @@ class EinFFT(nn.Module):
         # pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
         # x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
 
-        x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
+        # x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
+
+        # Apply IDFT to dimension 2 (num_blocks dimension)
+        x = self.dft(x.transpose(2, 0), inverse=True).transpose(2, 0)
+        # Apply IDFT to dimension 1 (N dimension)
+        x = self.dft(x.transpose(1, 0), inverse=True).transpose(1, 0)
+
         x = x.to(self.ACT_T)
 
         # Unpad the output
@@ -216,6 +225,7 @@ class MambaLayer(nn.Module):
             expand=expand,
             dtype=kwargs["MAMBA_MAIN_T"],  # NOTE should be enough to put most of Mamba's layer in the correct type
             dtype_act=kwargs["MAMBA_ACT_T"],
+            quant=kwargs["MAMBA_QUANT"],
         )
 
     def forward(self, x):
@@ -586,28 +596,21 @@ class SiMBA(nn.Module):
         return x, H, W
 
 
-class DWConv(nn.Module):
-    def __init__(self, dim=768):
-        super(DWConv, self).__init__()
-        self.dwconv = nn.Conv2d(dim, dim, 3, 1, 1, bias=True, groups=dim, dtype=ACT_T)
-
-    def forward(self, x, H, W):
-        B, N, C = x.shape
-        x = x.transpose(1, 2).view(B, C, H, W)
-        x = self.dwconv(x)
-        x = x.flatten(2).transpose(1, 2)
-        return x
-
-
 @register_model
 def simba_l_bf16(pretrained=False, **kwargs):
+    """Test with BF16. This is our main model."""
     kwargs = {
         **kwargs,
+        # TODO currently, matmul inputs are provided as follows: `quant(in).to(dType)`
+        # TODO What is the effect of omitting the `to(dType)` ?
         "FFT_ACT_T": FP16,  # BF16 not supported
+        "FFT_QUANT": (5, 2),
         "EINFFT_ACT_T": BF16,
         "EINFFT_WEIGHT_T": FP32,  # Weights before casting
+        "EINFFT_QUANT": None,  # TODO not yet implemented
         "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
         "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
+        "MAMBA_QUANT": (5, 2),
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
         "AUTOCAST_T": BF16,
@@ -629,6 +632,7 @@ def simba_l_bf16(pretrained=False, **kwargs):
 
 @register_model
 def simba_l_fp16(pretrained=False, **kwargs):
+    """Test with FP16, only used as an experiment"""
     kwargs = {
         **kwargs,
         "FFT_ACT_T": FP16,
