@@ -241,8 +241,7 @@ class Mamba(nn.Module):
                 y, last_state = y
                 ssm_state.copy_(last_state)
             y = rearrange(y, "b d l -> b l d")
-            # out = self.out_proj(y)
-            # [Note] Chao: Quantize here
+            # [NOTE] Chao: Quantize here
             out = rearrange(
                 self.quantizer.quantize(self.out_proj.weight).to(self.dtype_act)
                 @ rearrange(self.quantizer.quantize(y), "b l d -> d (b l)"),
