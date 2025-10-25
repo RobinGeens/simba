@@ -86,6 +86,9 @@ class FloatQuantizer:
 
         return result
 
+    def __str__(self):
+        return f"E{self.e_bits}M{self.m_bits}"
+
     def get_stats(self, original, quantized):
         """Get quantization statistics"""
         mse = torch.mean((original - quantized) ** 2).item()
@@ -100,6 +103,9 @@ class QuantizerPassthrough(FloatQuantizer):
 
     def quantize(self, tensor):
         return tensor
+
+    def __str__(self):
+        return "Passthrough"
 
 
 # Usage example

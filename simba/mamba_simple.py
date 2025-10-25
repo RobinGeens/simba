@@ -142,8 +142,7 @@ class Mamba(nn.Module):
 
         # Quantizer
         self.quantizer = QuantizerPassthrough() if quant is None else FloatQuantizer(*quant)
-        if quant is not None:
-            print(f"Quantizing Mamba with e={quant[0]}, m={quant[1]}")
+        print(f"Quantizing Mamba: {self.quantizer}")
 
         # Profiler
         self.enable_profile = False
@@ -226,13 +225,13 @@ class Mamba(nn.Module):
             assert self.activation in ["silu", "swish"]
 
             y = selective_scan_fn(
-                x,
-                dt,
-                A,
-                B,
-                C,
-                self.D.float(),
-                z=z,
+                self.quantizer.quantize(x),
+                dt,  # Not a big matrix
+                A,  # External weight, fully tiled
+                self.quantizer.quantize(B),
+                self.quantizer.quantize(C),
+                self.D.float(),  # TODO does this have to be FP32?
+                z=z,  # TODO computed on-the-fly so memory capacity not an issue
                 delta_bias=self.dt_proj.bias.float(),
                 delta_softplus=True,
                 return_last_state=ssm_state is not None,
