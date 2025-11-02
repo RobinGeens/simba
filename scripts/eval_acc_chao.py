@@ -125,7 +125,7 @@ def main():
     )
 
     # Evaluate
-    test_stats = evaluate(data_loader, model, device, eval_one_sample=True)
+    test_stats = evaluate(data_loader, model, device, eval_one_sample=False)
 
     logging.info(
         f"Accuracy of the network on the {len(dataset_val)} test images ({EVAL_WEIGHT_DTYPE} W, {model.AUTOCAST_T} A):"

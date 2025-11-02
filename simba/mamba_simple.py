@@ -27,7 +27,9 @@ try:
 except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
 
-from .quantizer import FloatQuantizer
+# from .quantizer import FloatQuantizer
+# from .quantizer_v2 import FloatQuantizer
+from .quantizer_v3 import FloatQuantizer
 import pickle
 import numpy as np
 from pathlib import Path
@@ -134,16 +136,16 @@ class Mamba(nn.Module):
         self.global_step = 0
         
         # Quantizer
-        self.enable_quant = False
+        self.enable_quant = True
         if self.enable_quant:
             print("Enable quantization in Mamba")
-            self.quantizer = FloatQuantizer(e_bits=5, m_bits=2)
+            self.quantizer = FloatQuantizer(e_bits=4, m_bits=3)
         else:
             self.quantizer = FloatQuantizer(e_bits=8, m_bits=7) # nn.Identity() ## 
         # self.quantizer = FloatQuantizer(e_bits=3, m_bits=2)
              
         # Profiler
-        self.enable_profile = True
+        self.enable_profile = False
         self.save_dir = Path("./simba_profile_data")
 
     def forward(self, hidden_states, inference_params=None):
