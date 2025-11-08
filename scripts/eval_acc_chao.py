@@ -6,10 +6,12 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import torch
 import torch.amp
+from torch import nn
 from timm.models import create_model
 
 from simba.simba import SiMBA, simba_l  # noqa: F401
 from simba.simba_bf16 import BF16, FP32, simba_l_fp16  # ,  simba_l_bf16     # noqa: F401
+from simba.qlinear import replace_linear_with_qlinear
 
 if __name__ == "__main__":
     from simba.datasets import build_dataset
@@ -92,6 +94,8 @@ def main():
     )
 
     load_checkpoint(model, checkpoint_path)
+    
+    model = replace_linear_with_qlinear(model, verbose=True)
     
     print(model)
 

@@ -2,6 +2,27 @@ import torch
 import torch.nn as nn
 from typing import Optional
 
+def replace_linear_with_qlinear(model, verbose=True):
+    modules_to_replace = []
+    for name, module in model.named_modules():
+        if isinstance(module, nn.Linear):
+            modules_to_replace.append(name)
+    
+    for name in modules_to_replace:
+        *parent_path, attr_name = name.split('.')
+        parent = model
+        for part in parent_path:
+            parent = getattr(parent, part)
+        
+        linear_module = getattr(parent, attr_name)
+        qlinear = QLinear.from_linear(linear_module)
+        setattr(parent, attr_name, qlinear)
+        
+        if verbose:
+            print(f"Replaced {name}")
+    
+    return model
+
 class QLinear(nn.Module):
     """
     A quantized linear layer that performs true BF16 accumulation.
