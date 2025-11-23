@@ -29,7 +29,8 @@ except ImportError:
 
 # from .quantizer import FloatQuantizer
 # from .quantizer_v2 import FloatQuantizer
-from .quantizer_v3 import FloatQuantizer
+# from .quantizer_v3 import FloatQuantizer
+from .quantizer_v4 import FloatQuantizer
 import pickle
 import numpy as np
 from pathlib import Path
@@ -139,7 +140,7 @@ class Mamba(nn.Module):
         self.enable_quant = True
         if self.enable_quant:
             print("Enable quantization in Mamba")
-            self.quantizer = FloatQuantizer(e_bits=4, m_bits=3)
+            self.quantizer = FloatQuantizer(e_bits=5, m_bits=2)
         else:
             self.quantizer = FloatQuantizer(e_bits=8, m_bits=7) # nn.Identity() ## 
         # self.quantizer = FloatQuantizer(e_bits=3, m_bits=2)
