@@ -34,7 +34,10 @@ try:
 except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
 
-from .quantizer import FloatQuantizer, QuantizerPassthrough
+
+from .quantizer_v4 import FloatQuantizer
+from .hardware_activations import HardwareSiLU
+import pickle
 import numpy as np
 from pathlib import Path
 
@@ -73,7 +76,6 @@ class Mamba(nn.Module):
         self.expand = expand
         self.d_inner = int(self.expand * self.d_model)
         self.dt_rank = math.ceil(self.d_model / 16) if dt_rank == "auto" else dt_rank
-        self.use_fast_path = use_fast_path
 
         # Use layer_idx if provided, otherwise use global counter
         if layer_idx is not None:
@@ -94,8 +96,40 @@ class Mamba(nn.Module):
             **factory_kwargs,
         )
 
+        # ================================================================
+        # IMPORTANT: Hardware activations configuration
+        # ================================================================
+        self.use_hardware_act = True  # For test
+        self.hw_act_segments = 16
+
+        # ================================================================
+        # IMPORTANT: Disable fused kernel when using hardware activations
+        # Because causal_conv1d_fn doesn't support custom activation objects
+        # ================================================================
+        # self.use_fast_path = use_fast_path
+        if self.use_hardware_act:
+            self.use_fast_path = False  # Force disable fused kernel
+            if layer_idx == 0 or layer_idx is None:
+                print("[Mamba] Hardware activation enabled - disabling fused kernels")
+        else:
+            self.use_fast_path = use_fast_path
+
+        # ================================================================
+        # Activation function selection: Hardware vs Standard
+        # ================================================================
         self.activation = "silu"
-        self.act = nn.SiLU()
+
+        if self.use_hardware_act:
+            # Use hardware SiLU approximation
+            self.act = HardwareSiLU(num_segments=self.hw_act_segments, input_range=(-6.0, 6.0))
+            if self.layer_idx == 0:  # Print only once for first layer
+                print(f"[Mamba] Using HardwareSiLU (segments={self.hw_act_segments})")
+        else:
+            # Use standard PyTorch SiLU
+            self.act = nn.SiLU()
+            if self.layer_idx == 0:
+                print("[Mamba] Using standard nn.SiLU()")
+        # ================================================================
 
         self.x_proj = nn.Linear(self.d_inner, self.dt_rank + self.d_state * 2, bias=False, **factory_kwargs)
         self.dt_proj = nn.Linear(self.dt_rank, self.d_inner, bias=True, **factory_kwargs)
