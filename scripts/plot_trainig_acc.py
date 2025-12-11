@@ -7,7 +7,7 @@ log_files = [
     {"path": "checkpoints/simba_l_FP32_B/tlog.txt", "label": "FP32"},
 ]
 
-max_epoch = 15
+max_epoch = 330
 
 
 def parse_log_file(filename):
@@ -60,7 +60,9 @@ def make_plot():
     plt.ylabel("Training Accuracy (%)", fontsize=14)
     plt.xlim(0, max_epoch)
     plt.legend(ncol=2)
-    plt.grid(True)
+    plt.minorticks_on()
+    plt.grid(True, which="major", linestyle="-", linewidth=0.6, alpha=0.8)
+    plt.grid(True, which="minor", linestyle="--", linewidth=0.3, alpha=0.5)
     plt.savefig("accuracy_plot.png", bbox_inches="tight", pad_inches=0)
     plt.close()
 

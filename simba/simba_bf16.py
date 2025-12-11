@@ -50,8 +50,8 @@ class EinFFT(nn.Module):
 
         self.ACT_T = kwargs["EINFFT_ACT_T"]
         self.FFT_ACT_T = kwargs["FFT_ACT_T"]
-        self.FFT_QUANT = kwargs.get("FFT_QUANT", None)
-        self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT", None)
+        self.FFT_QUANT = kwargs.get("FFT_QUANT")
+        self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT")
 
         self.complex_weight_1 = nn.Parameter(
             torch.randn(
@@ -85,6 +85,8 @@ class EinFFT(nn.Module):
         self.einfft_quantizer = (
             QuantizerPassthrough() if self.EINFFT_QUANT is None else FloatQuantizer(*self.EINFFT_QUANT)
         )
+        print(f"Quantizing FFT: {self.fft_quantizer}")
+        print(f"Quantizing EinFFT: {self.einfft_quantizer}")
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
         # [NOTE] Quantize here for all EinFFT multiplications
@@ -682,7 +684,7 @@ def simba_l_bf16(pretrained=False, **kwargs):
         # TODO currently, matmul inputs are provided as follows: `quant(in).to(dType)`
         # TODO What is the effect of omitting the `to(dType)` ?
         "FFT_ACT_T": FP16,  # BF16 not supported
-        "FFT_QUANT": (5, 2),
+        "FFT_QUANT": (3, 2),
         "EINFFT_ACT_T": BF16,
         "EINFFT_WEIGHT_T": FP32,  # Weights before casting
         "EINFFT_QUANT": (5, 2),
