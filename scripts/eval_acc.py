@@ -5,31 +5,27 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import torch
-import torch.amp
 from timm.models import create_model
 
 from simba.simba import SiMBA, simba_l  # noqa: F401
-from simba.simba_bf16 import BF16, FP32, simba_l_fp16  # ,  simba_l_bf16     # noqa: F401
+from simba.simba_bf16 import BF16, FP32, simba_l_bf16     # noqa: F401
+from simba.qlinear import replace_linear_with_qlinear
 
 if __name__ == "__main__":
     from simba.datasets import build_dataset
     from simba.engine import evaluate
 
-################# CONFIG #################
+################# CONFIG #################b
 
 MODEL_NAME = "simba_l_bf16"  # "simba_l_fp16"
-RUN_NAME = "simba_l_bf16_B"  # "simba_l_bf16_B"
+RUN_NAME = "simba_l_bf16_TL"  # "simba_l_bf16_B"
 BEST_CHECKPOINT = 316  # Should be 83.0% Top-1 acc
+GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
 
 ############### CONFIG END ###############
 
-
-# Global parameters for datatypes
-EVAL_WEIGHT_DTYPE = None  # Not used
-
 # Configuration constants
-GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
-DATA_PATH = "/users/micas/rgeens/Public/dataset/ILSVRC2012"  # "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
+DATA_PATH = "dataset/ILSVRC2012"  # "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
 BATCH_SIZE = 256
 NUM_WORKERS = 12
 PIN_MEMORY = True
@@ -92,9 +88,8 @@ def main():
     )
 
     load_checkpoint(model, checkpoint_path)
+    # model = replace_linear_with_qlinear(model, verbose=True)
 
-    # Set data type # TODO this doesn't work because sensitive weights (e.g. batch norm) must stay in FP32
-    # model = model.to(dtype=EVAL_WEIGHT_DTYPE)
 
     device = torch.device(f"cuda:{GPU_NODE}" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -123,10 +118,10 @@ def main():
     )
 
     # Evaluate
-    test_stats = evaluate(data_loader, model, device)
+    test_stats = evaluate(data_loader, model, device, eval_one_sample=False)
 
     logging.info(
-        f"Accuracy of the network on the {len(dataset_val)} test images ({EVAL_WEIGHT_DTYPE} W, {model.AUTOCAST_T} A):"
+        f"Accuracy of the network on the {len(dataset_val)} test images ({model.AUTOCAST_T}):"
     )
     logging.info(f"Top-1 accuracy: {test_stats['acc1']:.1f}%")
     logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")

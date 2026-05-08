@@ -8,6 +8,7 @@ Python package. To change, for example, the exponent implementation, run through
 """
 
 import math
+from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -17,7 +18,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from einops import rearrange, repeat
 
-from mamba_ssm.ops.selective_scan_interface import selective_scan_fn, mamba_inner_fn
+from mamba_ssm.ops.selective_scan_interface import selective_scan_fn
 
 try:
     from causal_conv1d import causal_conv1d_fn, causal_conv1d_update
@@ -35,12 +36,12 @@ except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
 
 
-from .quantizer_v4 import FloatQuantizer
+from .quantizer_main import FloatQuantizer
+from .quantizer_basic import QuantizerPassthrough
 from .hardware_activations import HardwareSiLU
 import pickle
 import numpy as np
 from pathlib import Path
-
 
 class Mamba(nn.Module):
 
@@ -60,12 +61,13 @@ class Mamba(nn.Module):
         dt_init_floor=1e-4,
         conv_bias=True,
         bias=False,
-        use_fast_path=True,  # Fused kernel options
         layer_idx=None,
         device=None,
-        dtype=None,
-        dtype_act=None,
-        quant: tuple[int, int] = None,
+        *,
+        dtype,
+        dtype_act,
+        quant: Optional[tuple[int, int]],
+        use_hardware_act: bool,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
         self.dtype_act = dtype_act if dtype_act is not None else dtype
@@ -97,38 +99,24 @@ class Mamba(nn.Module):
         )
 
         # ================================================================
-        # IMPORTANT: Hardware activations configuration
+        # Hardware activations configuration
         # ================================================================
-        self.use_hardware_act = True  # For test
-        self.hw_act_segments = 16
-
-        # ================================================================
-        # IMPORTANT: Disable fused kernel when using hardware activations
-        # Because causal_conv1d_fn doesn't support custom activation objects
-        # ================================================================
-        # self.use_fast_path = use_fast_path
-        if self.use_hardware_act:
-            self.use_fast_path = False  # Force disable fused kernel
-            if layer_idx == 0 or layer_idx is None:
-                print("[Mamba] Hardware activation enabled - disabling fused kernels")
-        else:
-            self.use_fast_path = use_fast_path
-
-        # ================================================================
-        # Activation function selection: Hardware vs Standard
-        # ================================================================
+        self.use_hardware_act = use_hardware_act
         self.activation = "silu"
-
+        self.hw_act_segments = 16
+        
         if self.use_hardware_act:
             # Use hardware SiLU approximation
             self.act = HardwareSiLU(num_segments=self.hw_act_segments, input_range=(-6.0, 6.0))
             if self.layer_idx == 0:  # Print only once for first layer
-                print(f"[Mamba] Using HardwareSiLU (segments={self.hw_act_segments})")
+                print("[Init][Mamba]")
+                print(f"  - activation: HardwareSiLU (segments={self.hw_act_segments})")
         else:
             # Use standard PyTorch SiLU
             self.act = nn.SiLU()
             if self.layer_idx == 0:
-                print("[Mamba] Using standard nn.SiLU()")
+                print("[Init][Mamba]")
+                print("  - activation: nn.SiLU()")
         # ================================================================
 
         self.x_proj = nn.Linear(self.d_inner, self.dt_rank + self.d_state * 2, bias=False, **factory_kwargs)
@@ -176,7 +164,8 @@ class Mamba(nn.Module):
 
         # Quantizer
         self.quantizer = QuantizerPassthrough() if quant is None else FloatQuantizer(*quant)
-        print(f"Quantizing Mamba: {self.quantizer}")
+        if self.layer_idx == 0:
+            print(f"  - quantizer: {self.quantizer}")
 
         # Profiler
         self.enable_profile = False
@@ -317,4 +306,4 @@ class Mamba(nn.Module):
 
         # Save
         np.save(filepath, tensor_np)
-        print(f"Saved: {filepath} with shape {tensor_np.shape}")
+        print(f"Saved tensor profile: {filepath} shape={tuple(tensor_np.shape)}")

@@ -99,7 +99,7 @@ class FloatQuantizer:
 
 class QuantizerPassthrough(FloatQuantizer):
     def __init__(self):
-        print("Initializing QuantizerPassthrough")
+        pass
 
     def quantize(self, tensor):
         return tensor

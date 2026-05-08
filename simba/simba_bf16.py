@@ -12,20 +12,8 @@ import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
 
-
-from simba.quantizer import FloatQuantizer, QuantizerPassthrough
-
-USE_OFFICIAL_MAMBA = os.getenv("USE_OFFICIAL_MAMBA", "false").lower() == "true"
-if USE_OFFICIAL_MAMBA:
-    try:
-        from mamba_ssm import Mamba
-
-        print("Using official mamba_ssm")
-    except ImportError:
-        print("Falling back to local implementation")
-        from .mamba_simple import Mamba
-else:
-    from .mamba_simple import Mamba
+from simba.quantizer_basic import FloatQuantizer, QuantizerPassthrough
+from simba.mamba_simple import Mamba
 
 from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
@@ -37,8 +25,9 @@ FP16 = torch.float16
 BF16 = torch.bfloat16
 FP32 = torch.float32
 
-
 class EinFFT(nn.Module):
+    _quantization_logged = False
+
     def __init__(self, dim, **kwargs):
         super().__init__()
         self.hidden_size = dim  # 384
@@ -52,6 +41,7 @@ class EinFFT(nn.Module):
         self.FFT_ACT_T = kwargs["FFT_ACT_T"]
         self.FFT_QUANT = kwargs.get("FFT_QUANT")
         self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT")
+        self.USE_DFT = kwargs.get("USE_DFT", False)
 
         self.complex_weight_1 = nn.Parameter(
             torch.randn(
@@ -85,8 +75,12 @@ class EinFFT(nn.Module):
         self.einfft_quantizer = (
             QuantizerPassthrough() if self.EINFFT_QUANT is None else FloatQuantizer(*self.EINFFT_QUANT)
         )
-        print(f"Quantizing FFT: {self.fft_quantizer}")
-        print(f"Quantizing EinFFT: {self.einfft_quantizer}")
+        if not EinFFT._quantization_logged:
+            print("[Init][EinFFT]")
+            print(f"  - fft quantizer: {self.fft_quantizer}")
+            print(f"  - einfft quantizer: {self.einfft_quantizer}")
+            print(f"  - use dft: {self.USE_DFT}")
+            EinFFT._quantization_logged = True
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
         # [NOTE] Quantize here for all EinFFT multiplications
@@ -238,17 +232,20 @@ class EinFFT(nn.Module):
         x = x.to(self.FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
 
-        # Pad the input # TODO omitting this results in a 0.6% accuracy drop because weights were trained at power-of-2 sizes
-        # pad_1 = self.get_pad_size(N) - N
-        # pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
-        # x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
-        # x = torch.fft.fft2(x, dim=(1, 2), norm="ortho")  # FFT on N dimension
+        # Pad the input to comply with torch fft2 requirements
+        # Without padding, accuracy drops by 0.6% because weights are trained for power-of-2 spectral granularity
+        pad_1 = self.get_pad_size(N) - N
+        pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
+        x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
 
-        x = torch.view_as_complex(torch.stack([x, torch.zeros_like(x)], dim=-1))
-        # Apply FFT to dimension 1 (N dimension)
-        x = self.dft_partitioned(x.transpose(1, 0), L=DFT_PARTITIONS.get(N, 1)).transpose(1, 0)
-        # Apply FFT to dimension 2 (num_blocks dimension)
-        x = self.dft_partitioned(x.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1)).transpose(2, 0)
+        if self.USE_DFT:
+            x = torch.view_as_complex(torch.stack([x, torch.zeros_like(x)], dim=-1))
+            # Apply FFT to dimension 1 (N dimension)
+            x = self.dft_partitioned(x.transpose(1, 0), L=DFT_PARTITIONS.get(N, 1)).transpose(1, 0)
+            # Apply FFT to dimension 2 (num_blocks dimension)
+            x = self.dft_partitioned(x.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1)).transpose(2, 0)
+        else:
+            x = torch.fft.fft2(x, dim=(1, 2), norm="ortho")
 
         x_real_1 = F.relu(
             self.multiply(x.real, self.complex_weight_1[0])
@@ -277,17 +274,18 @@ class EinFFT(nn.Module):
         x = x.to(self.FFT_ACT_T)
         x = torch.view_as_complex(x)
 
-        # x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
-
-        # Apply IDFT to dimension 2 (num_blocks dimension)
-        x = self.dft_partitioned(x.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1), inverse=True).transpose(
-            2, 0
-        )
-        # Apply IDFT to dimension 1 (N dimension)
-        x = self.dft_partitioned(x.transpose(1, 0), L=DFT_PARTITIONS.get(N, 1), inverse=True).transpose(1, 0)
+        if self.USE_DFT:
+            # Apply IDFT to dimension 2 (num_blocks dimension)
+            x = self.dft_partitioned(
+                x.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1), inverse=True
+            ).transpose(2, 0)
+            # Apply IDFT to dimension 1 (N dimension)
+            x = self.dft_partitioned(x.transpose(1, 0), L=DFT_PARTITIONS.get(N, 1), inverse=True).transpose(1, 0)
+        else:
+            x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
 
         # Unpad the output
-        # x = x[:, :N, : self.num_blocks, :]
+        x = x[:, :N, : self.num_blocks, :]
 
         x = x.reshape(B, N, C)
         return x.to(self.ACT_T)
@@ -305,12 +303,11 @@ class MambaLayer(nn.Module):
             expand=expand,
             dtype=kwargs["MAMBA_MAIN_T"],  # NOTE should be enough to put most of Mamba's layer in the correct type
             dtype_act=kwargs["MAMBA_ACT_T"],
-            quant=kwargs["MAMBA_QUANT"],
+            quant=kwargs.get("MAMBA_QUANT"),
+            use_hardware_act=kwargs["MAMBA_USE_HARDWARE_ACT"],
         )
 
     def forward(self, x):
-        # print('x',x.shape)
-        B, L, C = x.shape
         x_norm = self.norm(x)
         x_mamba = self.mamba(x_norm)
         return x_mamba
@@ -681,48 +678,19 @@ def simba_l_bf16(pretrained=False, **kwargs):
     """Test with BF16. This is our main model."""
     kwargs = {
         **kwargs,
-        # TODO currently, matmul inputs are provided as follows: `quant(in).to(dType)`
-        # TODO What is the effect of omitting the `to(dType)` ?
         "FFT_ACT_T": FP16,  # BF16 not supported
-        "FFT_QUANT": (3, 2),
+        "USE_DFT": False,
+        # "FFT_QUANT": (3, 2),
         "EINFFT_ACT_T": BF16,
         "EINFFT_WEIGHT_T": FP32,  # Weights before casting
         "EINFFT_QUANT": (5, 2),
         "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
         "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
         "MAMBA_QUANT": (5, 2),
+        "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
         "AUTOCAST_T": BF16,
-    }
-
-    model = SiMBA(
-        stem_hidden_dim=64,
-        embed_dims=[96, 192, 384, 512],
-        mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        depths=[3, 6, 18, 3],
-        sr_ratios=[4, 2, 1, 1],
-        cm_type="EinFFT",
-        **kwargs,
-    )
-    model.default_cfg = _cfg()
-    return model
-
-
-@register_model
-def simba_l_fp16(pretrained=False, **kwargs):
-    """Test with FP16, only used as an experiment"""
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": FP16,
-        "EINFFT_ACT_T": FP16,
-        "EINFFT_WEIGHT_T": FP16,  # Weights before casting
-        "MAMBA_MAIN_T": FP16,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": FP16,  # Linear projections, state-update, etc
-        "PATCH_EMBED_T": FP16,
-        "NORM_T": FP16,
-        "AUTOCAST_T": FP16,
     }
 
     model = SiMBA(

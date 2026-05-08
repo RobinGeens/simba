@@ -10,6 +10,8 @@ class FloatQuantizer:
     Note: Subnormal numbers are not supported
     """
     
+    _logged_configs = set()
+
     def __init__(self, e_bits, m_bits):
         self.e_bits = e_bits
         self.m_bits = m_bits
@@ -26,10 +28,13 @@ class FloatQuantizer:
         # Calculate minimum representable value (smallest normal number)
         self.min_val = 2.0 ** (-self.bias)
         
-        print(f"Quantization format: E{e_bits}M{m_bits}")
-        print(f"Max exponent: {self.max_exponent}")
-        print(f"Max representable value: {self.max_val}")
-        print(f"Min representable value: {self.min_val}")
+        config_key = (self.e_bits, self.m_bits)
+        if config_key not in FloatQuantizer._logged_configs:
+            print(
+                f"    * config E{e_bits}M{m_bits}: "
+                f"max_exp={self.max_exponent}, max={self.max_val:.6g}, min={self.min_val:.6g}"
+            )
+            FloatQuantizer._logged_configs.add(config_key)
     
     def quantize(self, tensor, debug=False):
         """
@@ -148,6 +153,12 @@ class FloatQuantizer:
             'max_val': self.max_val,
             'min_val': self.min_val
         }
+
+    def __str__(self):
+        return f"E{self.e_bits}M{self.m_bits}"
+
+    def __repr__(self):
+        return f"FloatQuantizer(e_bits={self.e_bits}, m_bits={self.m_bits})"
 
 
 # Usage example

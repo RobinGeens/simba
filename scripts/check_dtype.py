@@ -7,7 +7,8 @@ from timm.models import create_model
 from eval_acc import load_checkpoint
 from simba.simba_bf16 import simba_l_bf16  # noqa: F401
 
-CHECKPOINT_DIR = "checkpoints/simba_l_bf16"
+CHECKPOINT_DIR = "checkpoints/simba_l_bf16_TL"
+checkpoint_path = CHECKPOINT_DIR + "/checkpoint-316.pth.tar"
 
 seen_modules = set()
 
@@ -58,7 +59,6 @@ model: torch.nn.Module = create_model(
 )
 
 # checkpoint_path = get_most_recent_checkpoint(CHECKPOINT_DIR)
-checkpoint_path = CHECKPOINT_DIR + "/checkpoint-316.pth.tar"
 load_checkpoint(model, checkpoint_path)
 
 
