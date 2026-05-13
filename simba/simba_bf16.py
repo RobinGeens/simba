@@ -683,10 +683,10 @@ def simba_l_bf16(pretrained=False, **kwargs):
         # "FFT_QUANT": (3, 2),
         "EINFFT_ACT_T": BF16,
         "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        "EINFFT_QUANT": (5, 2),
+        # "EINFFT_QUANT": (5, 2),
         "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
         "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        "MAMBA_QUANT": (5, 2),
+        # "MAMBA_QUANT": (5, 2),
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,

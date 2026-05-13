@@ -19,27 +19,11 @@ from torch.utils.tensorboard import SummaryWriter
 from einops import rearrange, repeat
 
 from mamba_ssm.ops.selective_scan_interface import selective_scan_fn
+from causal_conv1d import causal_conv1d_fn
 
-try:
-    from causal_conv1d import causal_conv1d_fn, causal_conv1d_update
-except ImportError:
-    causal_conv1d_fn, causal_conv1d_update = None, None
-
-try:
-    from mamba_ssm.ops.triton.selective_state_update import selective_state_update
-except ImportError:
-    selective_state_update = None
-
-try:
-    from mamba_ssm.ops.triton.layer_norm import RMSNorm, layer_norm_fn, rms_norm_fn
-except ImportError:
-    RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
-
-
-from .quantizer_main import FloatQuantizer
-from .quantizer_basic import QuantizerPassthrough
-from .hardware_activations import HardwareSiLU
-import pickle
+from simba.quantizer_main import FloatQuantizer
+from simba.quantizer_basic import QuantizerPassthrough
+from simba.hardware_activations import HardwareSiLU
 import numpy as np
 from pathlib import Path
 
@@ -209,75 +193,71 @@ class Mamba(nn.Module):
             # If we just take x[:, :, -self.d_conv :], it will error if seqlen < self.d_conv
             # Instead F.pad will pad with zeros if seqlen < self.d_conv, and truncate otherwise.
             conv_state.copy_(F.pad(x, (self.d_conv - x.shape[-1], 0)))  # Update state (B D W)
-        if causal_conv1d_fn is None:
-            x: Tensor = self.act(self.conv1d(x)[..., :seqlen])
-        else:
-            assert self.activation in ["silu", "swish"]
-            x: Tensor = causal_conv1d_fn(
-                x=x,
-                weight=rearrange(self.conv1d.weight, "d 1 w -> d w").to(self.dtype_act),
-                bias=self.conv1d.bias.to(self.dtype_act),
-                activation=self.activation,
-            )
 
-            # [NOTE] Chao: Quantize here
-            x_dbl = rearrange(
-                self.quantizer.quantize(self.x_proj.weight).to(self.dtype_act)
-                @ rearrange(self.quantizer.quantize(x), "b d l -> d (b l)"),
-                "d (b l) -> (b l) d",
-                b=x.shape[0],
-                l=x.shape[2],
-            )
-            if self.x_proj.bias is not None:
-                x_dbl = x_dbl + self.x_proj.bias.to(self.dtype_act)
+        x: Tensor = causal_conv1d_fn(
+            x=x,
+            weight=rearrange(self.conv1d.weight, "d 1 w -> d w").to(self.dtype_act),
+            bias=self.conv1d.bias.to(self.dtype_act),
+            activation=self.activation,
+        )
 
-            if self.enable_profile:
-                self._save_tensor("x_proj_weight", self.x_proj.weight)
-                self._save_tensor("x_dbl", x_dbl)
+        # [NOTE] Chao: Quantize here
+        x_dbl = rearrange(
+            self.quantizer.quantize(self.x_proj.weight).to(self.dtype_act)
+            @ rearrange(self.quantizer.quantize(x), "b d l -> d (b l)"),
+            "d (b l) -> (b l) d",
+            b=x.shape[0],
+            l=x.shape[2],
+        )
+        if self.x_proj.bias is not None:
+            x_dbl = x_dbl + self.x_proj.bias.to(self.dtype_act)
 
-            dt, B, C = torch.split(x_dbl, [self.dt_rank, self.d_state, self.d_state], dim=-1)
-            # [NOTE] Chao: Quantize here
-            dt = self.quantizer.quantize(self.dt_proj.weight) @ self.quantizer.quantize(dt).t()
-            if self.enable_profile:
-                self._save_tensor("dt_proj_weight", self.dt_proj.weight)
-                self._save_tensor("dt", dt)
+        if self.enable_profile:
+            self._save_tensor("x_proj_weight", self.x_proj.weight)
+            self._save_tensor("x_dbl", x_dbl)
 
-            dt = rearrange(dt, "d (b l) -> b d l", l=seqlen)
-            B = rearrange(B, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
-            C = rearrange(C, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
-            assert self.activation in ["silu", "swish"]
+        dt, B, C = torch.split(x_dbl, [self.dt_rank, self.d_state, self.d_state], dim=-1)
+        # [NOTE] Chao: Quantize here
+        dt = self.quantizer.quantize(self.dt_proj.weight) @ self.quantizer.quantize(dt).t()
+        if self.enable_profile:
+            self._save_tensor("dt_proj_weight", self.dt_proj.weight)
+            self._save_tensor("dt", dt)
 
-            y = selective_scan_fn(
-                self.quantizer.quantize(x),
-                dt,  # Not a big matrix
-                A,  # External weight, fully tiled
-                self.quantizer.quantize(B),
-                self.quantizer.quantize(C),
-                self.D.float(),  # TODO does this have to be FP32?
-                z=z,  # TODO computed on-the-fly so memory capacity not an issue
-                delta_bias=self.dt_proj.bias.float(),
-                delta_softplus=True,
-                return_last_state=ssm_state is not None,
-            )
-            if ssm_state is not None:
-                y, last_state = y
-                ssm_state.copy_(last_state)
-            y = rearrange(y, "b d l -> b l d")
-            # [NOTE] Chao: Quantize here
-            out = rearrange(
-                self.quantizer.quantize(self.out_proj.weight).to(self.dtype_act)
-                @ rearrange(self.quantizer.quantize(y), "b l d -> d (b l)"),
-                "d (b l) -> b l d",
-                b=y.shape[0],
-                l=y.shape[1],
-            )
-            if self.out_proj.bias is not None:
-                out = out + self.out_proj.bias.to(self.dtype_act)
+        dt = rearrange(dt, "d (b l) -> b d l", l=seqlen)
+        B = rearrange(B, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
+        C = rearrange(C, "(b l) dstate -> b dstate l", l=seqlen).contiguous()
 
-            if self.enable_profile:
-                self._save_tensor("y", y)
-                self._save_tensor("out", out)
-                self._save_tensor("weight_out_proj", self.out_proj.weight)
+        y = selective_scan_fn(
+            self.quantizer.quantize(x),
+            dt,  # Not a big matrix
+            A,  # External weight, fully tiled
+            self.quantizer.quantize(B),
+            self.quantizer.quantize(C),
+            self.D.float(),  # TODO does this have to be FP32?
+            z=z,  # TODO computed on-the-fly so memory capacity not an issue
+            delta_bias=self.dt_proj.bias.float(),
+            delta_softplus=True,
+            return_last_state=ssm_state is not None,
+        )
+        if ssm_state is not None:
+            y, last_state = y
+            ssm_state.copy_(last_state)
+        y = rearrange(y, "b d l -> b l d")
+        # [NOTE] Chao: Quantize here
+        out = rearrange(
+            self.quantizer.quantize(self.out_proj.weight).to(self.dtype_act)
+            @ rearrange(self.quantizer.quantize(y), "b l d -> d (b l)"),
+            "d (b l) -> b l d",
+            b=y.shape[0],
+            l=y.shape[1],
+        )
+        if self.out_proj.bias is not None:
+            out = out + self.out_proj.bias.to(self.dtype_act)
+
+        if self.enable_profile:
+            self._save_tensor("y", y)
+            self._save_tensor("out", out)
+            self._save_tensor("weight_out_proj", self.out_proj.weight)
 
         return out
 
