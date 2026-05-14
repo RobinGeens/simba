@@ -146,31 +146,36 @@ class EinFFT(nn.Module):
         # Apply orthogonal normalization
         return result / torch.sqrt(torch.tensor(n, dtype=result.dtype, device=result.device))
 
-    def dft_partitioned(self, x: torch.Tensor, L: int, inverse: bool = False) -> torch.Tensor:
+    def dft_partitioned(
+        self, x_re: torch.Tensor, x_im: torch.Tensor, L: int, inverse: bool = False
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Compute DFT using matrix partitioning strategy (based on the paper).
         Supports N = M * L factorization, reducing matrix multiply size.
 
+        Real and imaginary parts are passed/returned as separate real tensors so
+        the path is BF16-compatible (torch complex types don't support bfloat16).
+
         Args:
-            x: complex tensor (1D or ND, transform along axis=0)
-            inverse: compute inverse DFT if True
+            x_re, x_im: real and imaginary parts (transform along axis=0)
             L: partition length (divides N)
+            inverse: compute inverse DFT if True
 
         Returns:
-            complex tensor, same shape as input
+            (Xf_re, Xf_im) tuple with the same shape as the inputs.
         """
-        n = x.shape[0]
-        other_dims = x.shape[1:]
+        n = x_re.shape[0]
+        other_dims = x_re.shape[1:]
         assert n % L == 0, f"N must be divisible by L, got N={n}, L={L}"
         M = n // L
 
         # === Step 1: Reshape into MxL ===
-        x = x.reshape(M, L, *other_dims)
+        x_re = x_re.reshape(M, L, *other_dims)
+        x_im = x_im.reshape(M, L, *other_dims)
 
         # === Step 2: Sub-DFTs across each column (size M) ===
         W_M_real = self.get_dft_matrix_real(M, inverse=inverse)
-        x_real = torch.cat([torch.real(x), torch.imag(x)], dim=0)
-        x_real = x_real.reshape(2 * M, L, -1)
+        x_real = torch.cat([x_re, x_im], dim=0)  # (2M, L, ...)
         x_real = x_real.to(device=W_M_real.device, dtype=self.FFT_ACT_T)
 
         # [NOTE] quantize here
@@ -179,26 +184,29 @@ class EinFFT(nn.Module):
             self.fft_quantizer.quantize(W_M_real), self.fft_quantizer.quantize(x_real_reshaped)
         ).to(self.FFT_ACT_T)
         X1_real = X1_real_flat.reshape(2 * M, L, *other_dims)
+        X1_re = X1_real[:M]
+        X1_im = X1_real[M:]
 
         # === Step 3: Apply Hadamard phase correction ===
-        device = x.device
+        device = x_re.device
         k = torch.arange(M, device=device).reshape(M, 1)
         l = torch.arange(L, device=device).reshape(1, L)
         # Twiddle factor: forward uses e^{-j2πkl/N}, inverse uses e^{+j2πkl/N}
         phase_angle = ((1.0) if inverse else (-1.0)) * 2 * torch.pi * k * l / (M * L)
-        phase = torch.complex(torch.cos(phase_angle), torch.sin(phase_angle))
-        X1_complex = torch.view_as_complex(torch.stack([X1_real[:M], X1_real[M:]], dim=-1))
-        # Broadcast phase across all remaining dimensions (other_dims)
-        phase = phase.reshape((M, L) + (1,) * (X1_complex.ndim - 2))
-        X2 = X1_complex * phase  # Hadamard product
+        extra_dims = (1,) * (X1_re.ndim - 2)
+        phase_re = torch.cos(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
+        phase_im = torch.sin(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
+        # Complex multiply: (a+bj)*(c+dj) = (ac-bd) + (ad+bc)j
+        X2_re = X1_re * phase_re - X1_im * phase_im
+        X2_im = X1_re * phase_im + X1_im * phase_re
 
         # === Step 4: Row-wise DFT (size L) ===
         W_L_real = self.get_dft_matrix_real(L, inverse=inverse)
         # Make L the leading axis for the size-L DFT, then stack [Re; Im] along axis 0
-        perm_dims = [1, 0] + list(range(2, X2.ndim))  # [1, 0, 2, 3, ...]
-        X2_L_major = X2.permute(*perm_dims)  # (L, M, ...)
-        X2r = torch.cat([torch.real(X2_L_major), torch.imag(X2_L_major)], dim=0)  # (2L, M, ...)
-        X2r = X2r.reshape(2 * L, M, -1)
+        perm_dims = [1, 0] + list(range(2, X2_re.ndim))  # [1, 0, 2, 3, ...]
+        X2_re = X2_re.permute(*perm_dims)  # (L, M, ...)
+        X2_im = X2_im.permute(*perm_dims)
+        X2r = torch.cat([X2_re, X2_im], dim=0)  # (2L, M, ...)
         X2r = X2r.to(device=W_L_real.device, dtype=self.FFT_ACT_T)
 
         # [NOTE] quantize here - handle tensor contraction like tensordot(W_L_real, X2r, axes=(1, 0))
@@ -209,25 +217,32 @@ class EinFFT(nn.Module):
         ).to(self.FFT_ACT_T)
         Xf_real = Xf_real_flat.reshape(2 * L, M, *other_dims)
 
-        # === Step 5: Recombine ===
-        Xf = torch.view_as_complex(torch.stack([Xf_real[:L], Xf_real[L:]], dim=-1))  # shape (L, M, ...)
-        # Flatten with k = k1 + M*k2 ordering by keeping (L, M, ...) then reshape
-        Xf = Xf.reshape(n, *other_dims)
+        # === Step 5: Recombine (k = k1 + M*k2 ordering preserved by (L, M, ...) layout) ===
+        Xf_re = Xf_real[:L].reshape(n, *other_dims)
+        Xf_im = Xf_real[L:].reshape(n, *other_dims)
 
         # === Step 6: Normalization ===
-        scale = torch.sqrt(torch.tensor(n, dtype=Xf.dtype, device=Xf.device))
-        return Xf / scale
+        scale = torch.sqrt(torch.tensor(n, dtype=Xf_re.dtype, device=Xf_re.device))
+        return Xf_re / scale, Xf_im / scale
 
     def forward(self, x: torch.Tensor, H: int, W: int) -> torch.Tensor:
         """Torch's fft is only implemented for FP16, not for BF16
         Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input"""
         DFT_PARTITIONS = {
+            # Unpadded
             3136: 56,
             784: 28,
             196: 14,
             49: 7,
             4: 1,
+            # Padded
+            4096: 64,
+            1024: 32,
+            256: 16,
+            64: 8,
+            4: 1,
         }
+
         B, N, C = x.shape
         x = x.to(self.FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
@@ -237,24 +252,40 @@ class EinFFT(nn.Module):
         pad_1 = self.get_pad_size(N) - N
         pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
         x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
+        N_fft = x.shape[1]
 
         if self.USE_DFT:
-            x = torch.view_as_complex(torch.stack([x, torch.zeros_like(x)], dim=-1))
+            # Carry real/imag as separate real tensors because torch complex types don't support BF16.
+            x_re = x
+            x_im = torch.zeros_like(x)
             # Apply FFT to dimension 1 (N dimension)
-            x = self.dft_partitioned(x.transpose(1, 0), L=DFT_PARTITIONS.get(N, 1)).transpose(1, 0)
+            x_re, x_im = self.dft_partitioned(
+                x_re.transpose(1, 0), x_im.transpose(1, 0), L=DFT_PARTITIONS.get(N_fft, 1)
+            )
+            x_re = x_re.transpose(1, 0)
+            x_im = x_im.transpose(1, 0)
+
             # Apply FFT to dimension 2 (num_blocks dimension)
-            x = self.dft_partitioned(x.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1)).transpose(2, 0)
+            x_re, x_im = self.dft_partitioned(
+                x_re.transpose(2, 0), x_im.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1)
+            )
+            x_re = x_re.transpose(2, 0)
+            x_im = x_im.transpose(2, 0)
         else:
             x = torch.fft.fft2(x, dim=(1, 2), norm="ortho")
+            x_re = x.real
+            x_im = x.imag
+
+        assert torch.isfinite(x_re).all() and torch.isfinite(x_im).all()
 
         x_real_1 = F.relu(
-            self.multiply(x.real, self.complex_weight_1[0])
-            - self.multiply(x.imag, self.complex_weight_1[1])
+            self.multiply(x_re, self.complex_weight_1[0])
+            - self.multiply(x_im, self.complex_weight_1[1])
             + self.complex_bias_1[0].to(self.ACT_T)
         )
         x_imag_1 = F.relu(
-            self.multiply(x.real, self.complex_weight_1[1])
-            + self.multiply(x.imag, self.complex_weight_1[0])
+            self.multiply(x_re, self.complex_weight_1[1])
+            + self.multiply(x_im, self.complex_weight_1[0])
             + self.complex_bias_1[1].to(self.ACT_T)
         )
         x_real_2 = (
@@ -268,27 +299,42 @@ class EinFFT(nn.Module):
             + self.complex_bias_2[1].to(self.ACT_T)
         )
 
-        x = torch.stack([x_real_2, x_imag_2], dim=-1)
-        x = F.softshrink(x.to(FP32), lambd=self.sparsity_threshold) if self.sparsity_threshold else x
+        if self.sparsity_threshold:
+            x_stacked = torch.stack([x_real_2, x_imag_2], dim=-1)
+            x_stacked = F.softshrink(x_stacked.to(FP32), lambd=self.sparsity_threshold)
+            x_real_2 = x_stacked[..., 0]
+            x_imag_2 = x_stacked[..., 1]
 
-        x = x.to(self.FFT_ACT_T)
-        x = torch.view_as_complex(x)
+        x_re = x_real_2.to(self.FFT_ACT_T)
+        x_im = x_imag_2.to(self.FFT_ACT_T)
 
         if self.USE_DFT:
             # Apply IDFT to dimension 2 (num_blocks dimension)
-            x = self.dft_partitioned(
-                x.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1), inverse=True
-            ).transpose(2, 0)
+            x_re, x_im = self.dft_partitioned(
+                x_re.transpose(2, 0), x_im.transpose(2, 0),
+                L=DFT_PARTITIONS.get(self.num_blocks, 1), inverse=True,
+            )
+            x_re = x_re.transpose(2, 0)
+            x_im = x_im.transpose(2, 0)
             # Apply IDFT to dimension 1 (N dimension)
-            x = self.dft_partitioned(x.transpose(1, 0), L=DFT_PARTITIONS.get(N, 1), inverse=True).transpose(1, 0)
+            x_re, x_im = self.dft_partitioned(
+                x_re.transpose(1, 0), x_im.transpose(1, 0),
+                L=DFT_PARTITIONS.get(N_fft, 1), inverse=True,
+            )
+            x_re = x_re.transpose(1, 0)
+            x_im = x_im.transpose(1, 0)
         else:
-            x = torch.fft.ifft2(x, dim=(1, 2), norm="ortho")
+            x_complex = torch.view_as_complex(torch.stack([x_re, x_im], dim=-1))
+            x_complex = torch.fft.ifft2(x_complex, dim=(1, 2), norm="ortho")
+            x_re = x_complex.real
+            x_im = x_complex.imag
 
-        # Unpad the output
-        x = x[:, :N, : self.num_blocks, :]
+        assert torch.isfinite(x_re).all()
 
-        x = x.reshape(B, N, C)
-        return x.to(self.ACT_T)
+        # Input was real -> output of IFFT is (numerically) real; keep the real part only.
+        x_re = x_re[:, :N, : self.num_blocks, :]
+        x_re = x_re.reshape(B, N, C)
+        return x_re.to(self.ACT_T)
 
 
 class MambaLayer(nn.Module):
@@ -678,7 +724,40 @@ def simba_l_bf16(pretrained=False, **kwargs):
     """Test with BF16. This is our main model."""
     kwargs = {
         **kwargs,
-        "FFT_ACT_T": FP16,  # BF16 not supported
+        "FFT_ACT_T": FP16,  # BF16 not supported for true FFT
+        "USE_DFT": True,
+        # "FFT_QUANT": (3, 2),
+        "EINFFT_ACT_T": BF16,
+        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
+        # "EINFFT_QUANT": (5, 2),
+        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
+        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
+        # "MAMBA_QUANT": (5, 2),
+        "MAMBA_USE_HARDWARE_ACT": False,
+        "PATCH_EMBED_T": FP32,
+        "NORM_T": FP32,
+        "AUTOCAST_T": BF16,
+    }
+
+    model = SiMBA(
+        stem_hidden_dim=64,
+        embed_dims=[96, 192, 384, 512],
+        mlp_ratios=[8, 8, 4, 4],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=[3, 6, 18, 3],
+        sr_ratios=[4, 2, 1, 1],
+        cm_type="EinFFT",
+        **kwargs,
+    )
+    model.default_cfg = _cfg()
+    return model
+
+@register_model
+def simba_cityscapes(pretrained=False, **kwargs):
+    """Test with BF16. This is our main model."""
+    kwargs = {
+        **kwargs,
+        "FFT_ACT_T": FP32,  # BF16 not supported
         "USE_DFT": False,
         # "FFT_QUANT": (3, 2),
         "EINFFT_ACT_T": BF16,
