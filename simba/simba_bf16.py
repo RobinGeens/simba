@@ -102,15 +102,18 @@ class EinFFT(nn.Module):
         [Re(W)  -Im(W)] [Re(x)]   [Re(X)]
         [Im(W)   Re(W)] [Im(x)] = [Im(X)]
 
-        where W is the complex DFT matrix W[k,m] = exp(-j 2π k m / N).
+        where W is the complex DFT matrix W[k,m] = exp(-j 2π k m / N), pre-scaled
+        by 1/sqrt(n) so the matmul output is already ortho-normalized. This keeps
+        the accumulated dot-product magnitudes bounded for large n, preventing overflow.
         """
         device = next(self.parameters()).device
         k = torch.arange(n).reshape(n, 1)
         m = torch.arange(n).reshape(1, n)
         theta = 2 * torch.pi * k * m / n
-        W_real = torch.cos(theta)
+        inv_sqrt_n = 1.0 / math.sqrt(n)
+        W_real = torch.cos(theta) * inv_sqrt_n
         # For forward DFT: Im(W) = -sin(theta); for inverse (conj W): +sin(theta)
-        W_imag = (1.0 if inverse else -1.0) * torch.sin(theta)
+        W_imag = (1.0 if inverse else -1.0) * torch.sin(theta) * inv_sqrt_n
 
         # Construct the 2Nx2N real matrix
         W_real_matrix = torch.cat([torch.cat([W_real, -W_imag], dim=1), torch.cat([W_imag, W_real], dim=1)], dim=0)
@@ -143,8 +146,8 @@ class EinFFT(nn.Module):
         X_complex = torch.view_as_complex(torch.stack([X_real, X_imag], dim=-1))
         result = X_complex.reshape(n, *other_dims)
 
-        # Apply orthogonal normalization
-        return result / torch.sqrt(torch.tensor(n, dtype=result.dtype, device=result.device))
+        # Orthogonal normalization (1/sqrt(n)) is already baked into W_real.
+        return result
 
     def dft_partitioned(
         self, x_re: torch.Tensor, x_im: torch.Tensor, L: int, inverse: bool = False
@@ -221,9 +224,9 @@ class EinFFT(nn.Module):
         Xf_re = Xf_real[:L].reshape(n, *other_dims)
         Xf_im = Xf_real[L:].reshape(n, *other_dims)
 
-        # === Step 6: Normalization ===
-        scale = torch.sqrt(torch.tensor(n, dtype=Xf_re.dtype, device=Xf_re.device))
-        return Xf_re / scale, Xf_im / scale
+        # Ortho normalization: W_M contributes 1/sqrt(M), W_L contributes 1/sqrt(L),
+        # so the combined output already carries the 1/sqrt(M*L) = 1/sqrt(n) factor.
+        return Xf_re, Xf_im
 
     def forward(self, x: torch.Tensor, H: int, W: int) -> torch.Tensor:
         """Torch's fft is only implemented for FP16, not for BF16
@@ -724,7 +727,7 @@ def simba_l_bf16(pretrained=False, **kwargs):
     """Test with BF16. This is our main model."""
     kwargs = {
         **kwargs,
-        "FFT_ACT_T": FP16,  # BF16 not supported for true FFT
+        "FFT_ACT_T": BF16,  # BF16 not supported for true FFT
         "USE_DFT": True,
         # "FFT_QUANT": (3, 2),
         "EINFFT_ACT_T": BF16,
