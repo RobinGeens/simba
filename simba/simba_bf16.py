@@ -25,6 +25,7 @@ FP16 = torch.float16
 BF16 = torch.bfloat16
 FP32 = torch.float32
 
+
 class EinFFT(nn.Module):
     _quantization_logged = False
 
@@ -244,6 +245,12 @@ class EinFFT(nn.Module):
             256: 16,
             64: 8,
             4: 1,
+            # Cityscapes
+            32768: 256,
+            8192: 128,
+            2048: 64,
+            512: 32,
+            131072: 512,
         }
 
         B, N, C = x.shape
@@ -314,15 +321,19 @@ class EinFFT(nn.Module):
         if self.USE_DFT:
             # Apply IDFT to dimension 2 (num_blocks dimension)
             x_re, x_im = self.dft_partitioned(
-                x_re.transpose(2, 0), x_im.transpose(2, 0),
-                L=DFT_PARTITIONS.get(self.num_blocks, 1), inverse=True,
+                x_re.transpose(2, 0),
+                x_im.transpose(2, 0),
+                L=DFT_PARTITIONS.get(self.num_blocks, 1),
+                inverse=True,
             )
             x_re = x_re.transpose(2, 0)
             x_im = x_im.transpose(2, 0)
             # Apply IDFT to dimension 1 (N dimension)
             x_re, x_im = self.dft_partitioned(
-                x_re.transpose(1, 0), x_im.transpose(1, 0),
-                L=DFT_PARTITIONS.get(N_fft, 1), inverse=True,
+                x_re.transpose(1, 0),
+                x_im.transpose(1, 0),
+                L=DFT_PARTITIONS.get(N_fft, 1),
+                inverse=True,
             )
             x_re = x_re.transpose(1, 0)
             x_im = x_im.transpose(1, 0)
@@ -755,13 +766,14 @@ def simba_l_bf16(pretrained=False, **kwargs):
     model.default_cfg = _cfg()
     return model
 
+
 @register_model
 def simba_cityscapes(pretrained=False, **kwargs):
     """Test with BF16. This is our main model."""
     kwargs = {
         **kwargs,
-        "FFT_ACT_T": FP32,  # BF16 not supported
-        "USE_DFT": False,
+        "FFT_ACT_T": BF16,
+        "USE_DFT": True,
         # "FFT_QUANT": (3, 2),
         "EINFFT_ACT_T": BF16,
         "EINFFT_WEIGHT_T": FP32,  # Weights before casting
