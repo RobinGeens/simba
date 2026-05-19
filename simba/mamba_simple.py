@@ -21,8 +21,7 @@ from einops import rearrange, repeat
 from mamba_ssm.ops.selective_scan_interface import selective_scan_fn
 from causal_conv1d import causal_conv1d_fn
 
-from simba.quantizer_main import FloatQuantizer
-from simba.quantizer_basic import QuantizerPassthrough
+from simba.quantizer import FloatQuantizer, QuantizerPassthrough
 from simba.hardware_activations import HardwareSiLU
 import numpy as np
 from pathlib import Path
