@@ -25,7 +25,7 @@ GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
 ############### CONFIG END ###############
 
 # Configuration constants
-DATA_PATH = "dataset/ILSVRC2012"  # "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
+DATA_PATH = "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
 BATCH_SIZE = 256
 NUM_WORKERS = 12
 PIN_MEMORY = True

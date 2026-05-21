@@ -12,8 +12,8 @@ import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
 
-from simba.quantizer import QuantizerPassthrough, FloatQuantizer
-from simba.mamba_simple import Mamba
+from quantizer import QuantizerPassthrough, FloatQuantizer
+from mamba_simple import Mamba
 
 from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
@@ -761,6 +761,40 @@ def simba_l_bf16(pretrained=False, **kwargs):
         depths=[3, 6, 18, 3],
         sr_ratios=[4, 2, 1, 1],
         cm_type="EinFFT",
+        **kwargs,
+    )
+    model.default_cfg = _cfg()
+    return model
+
+@register_model
+def simba_b_bf16(pretrained=False, **kwargs):
+    """Test with BF16. This is our main model."""
+    kwargs = {
+        **kwargs,
+        "FFT_ACT_T": BF16,  # BF16 not supported for true FFT
+        "USE_DFT": True,
+        # "FFT_QUANT": (5, 2),
+        "EINFFT_ACT_T": BF16,
+        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
+        # "EINFFT_QUANT": (5, 2),
+        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
+        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
+        # "MAMBA_QUANT": (5, 2),
+        "MAMBA_USE_HARDWARE_ACT": False,
+        "PATCH_EMBED_T": FP32,
+        "NORM_T": FP32,
+        "AUTOCAST_T": BF16,
+    }
+
+    # Simba-B (23M params)
+    model = SiMBA(
+        stem_hidden_dim=64,
+        embed_dims=[64, 128, 320, 512],
+        mlp_ratios=[8, 8, 4, 4],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=[3, 4, 12, 3],
+        sr_ratios=[4, 2, 1, 1],
+        cm_type="mlp",
         **kwargs,
     )
     model.default_cfg = _cfg()

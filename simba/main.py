@@ -38,7 +38,6 @@ from tlt.data import create_token_label_dataset, create_token_label_loader
 from util.checkpoint_saver import CheckpointSaver2
 from util.flops_counter import get_model_complexity_info
 
-import simba  # noqa: F401
 import wandb  # Add wandb import
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True

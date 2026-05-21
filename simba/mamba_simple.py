@@ -14,15 +14,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from torch.utils.tensorboard import SummaryWriter
 
 from einops import rearrange, repeat
 
 from mamba_ssm.ops.selective_scan_interface import selective_scan_fn
 from causal_conv1d import causal_conv1d_fn
 
-from simba.quantizer import FloatQuantizer, QuantizerPassthrough
-from simba.hardware_activations import HardwareSiLU
+from quantizer import FloatQuantizer, QuantizerPassthrough
+from hardware_activations import HardwareSiLU
 import numpy as np
 from pathlib import Path
 
@@ -140,10 +139,6 @@ class Mamba(nn.Module):
         self.D._no_weight_decay = True
 
         self.out_proj = nn.Linear(self.d_inner, self.d_model, bias=bias, **factory_kwargs)
-
-        # TensorBoard writer for profiling
-        self.writer = SummaryWriter(log_dir="runs/mamba_profile")
-        self.global_step = 0
 
         # Quantizer
         self.quantizer = QuantizerPassthrough() if quant is None else FloatQuantizer(*quant)
