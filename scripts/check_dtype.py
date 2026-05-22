@@ -5,7 +5,7 @@ from timm.models import create_model
 
 # from eval_acc import get_most_recent_checkpoint, load_checkpoint
 from eval_acc import load_checkpoint
-from simba.simba_bf16 import simba_l_bf16  # noqa: F401
+from simba.simba_configs import simba_l_bf16  # noqa: F401
 
 CHECKPOINT_DIR = "checkpoints/simba_l_bf16_TL"
 checkpoint_path = CHECKPOINT_DIR + "/checkpoint-316.pth.tar"

@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 
 # import models
-import simba_bf16  # noqa: F401
+import simba_configs  # noqa: F401
 import timm
 import torch
 import torch.backends.cudnn as cudnn

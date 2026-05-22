@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODEL="simba_b_bf16"
+MODEL="simba_l_fp8"
 
 # Extract RUN_NAME from the config file
 # RUN_NAME=$(python3 -c "
@@ -10,13 +10,13 @@ MODEL="simba_b_bf16"
 # from $MODEL import cfg
 # print(os.path.basename(cfg['output_dir']))
 # ")
-RUN_NAME="simba_b_bf16_TL"
+RUN_NAME="simba_l_finetune_fp8"
 
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
 NGPUS=${NGPUS:-1}
 TOTAL_BATCH=128
 PER_GPU_BATCH=$(( TOTAL_BATCH / NGPUS ))
-# Use first NGPUs
+# Use first N GPUs
 CUDA_VISIBLE_DEVICES=$(seq -s, 0 $(( NGPUS - 1 )))
 export CUDA_VISIBLE_DEVICES
 
@@ -27,8 +27,8 @@ echo "Running on GPU(s) $CUDA_VISIBLE_DEVICES (NGPUS=$NGPUS, per-GPU batch=$PER_
 nvidia-smi
 source env/bin/activate
 
-CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
-# CHECKPOINT=checkpoints/simba_l_bf16_TL/checkpoint-316.pth.tar
+# CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
+CHECKPOINT=checkpoints/exp_approx/checkpoint-317.pth.tar
 echo "Resuming from checkpoint: $CHECKPOINT"
 
 DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
@@ -42,7 +42,7 @@ torchrun  \
    --run-name $RUN_NAME \
    --output_dir checkpoints/$RUN_NAME \
    --data-path $DATA_PATH \
-   --epochs 330  \
+   --epochs 347  \
    --batch-size $PER_GPU_BATCH \
    --drop-path 0.05 \
    --weight-decay 0.05 \

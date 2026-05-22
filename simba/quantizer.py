@@ -97,20 +97,24 @@ class FloatQuantizer:
 
     def quantize(self, tensor: Tensor) -> Tensor:
         """
-        Quantize input. BF16 inputs take the fast LUT path; other dtypes use
-        the reference implementation to avoid a lossy BF16 round-trip that
-        would double-round at quantization midpoints.
+        Quantize input. BF16 inputs take the fast LUT path; other dtypes use the reference implementation to avoid a
+        lossy BF16 round-trip that would double-round at quantization midpoints.
+
+        Backward uses a straight-through estimator: forward returns the quantized value, backward passes the upstream 
+        gradient through unchanged. Without STE the LUT gather / frexp ops sever autograd and any upstream parameters 
+        never receive a gradient.
         """
         if tensor.dtype == torch.bfloat16:
             x = tensor if tensor.is_contiguous() else tensor.contiguous()
             lut = self._get_lut(x.device)
             # Reinterpret BF16 bits as int16, mask to unsigned 16-bit index, gather.
             idx = x.view(torch.int16).to(torch.long) & 0xFFFF
-            return lut[idx]
+            q = lut[idx]
+        else:
+            # FP16/FP32 fallback: identical math to the original quantizer.
+            q = self._quantize_reference(tensor).to(tensor.dtype)
 
-        # FP16/FP32 fallback: identical math to the original quantizer.
-        result = self._quantize_reference(tensor)
-        return result.to(tensor.dtype)
+        return tensor + (q - tensor).detach()
 
     def get_stats(self, original: Tensor, quantized: Tensor):
         """Get quantization statistics"""

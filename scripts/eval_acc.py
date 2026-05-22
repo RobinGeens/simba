@@ -8,7 +8,8 @@ import torch
 from timm.models import create_model
 
 from simba.simba import SiMBA, simba_l  # noqa: F401
-from simba.simba_bf16 import BF16, FP32, simba_l_bf16     # noqa: F401
+from simba.simba_bf16 import BF16, FP32  # noqa: F401
+from simba.simba_configs import simba_l_bf16  # noqa: F401
 from simba.qlinear import replace_linear_with_qlinear
 
 if __name__ == "__main__":
