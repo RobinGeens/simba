@@ -3,18 +3,19 @@ import logging
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# Mirror main.py's import convention: put simba/ on sys.path so its modules can be
+# imported by bare name (they use bare imports internally, e.g. `from quantizer import ...`).
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "simba")))
 import torch
 from timm.models import create_model
 
-from simba.simba import SiMBA, simba_l  # noqa: F401
-from simba.simba_bf16 import BF16, FP32  # noqa: F401
-from simba.simba_configs import simba_l_bf16  # noqa: F401
-from simba.qlinear import replace_linear_with_qlinear
+from simba_bf16 import SiMBA  # noqa: F401
+import simba_configs  # noqa: F401  - registers simba_l_bf16 etc. with timm
+from qlinear import replace_linear_with_qlinear  # noqa: F401
 
 if __name__ == "__main__":
-    from simba.datasets import build_dataset
-    from simba.engine import evaluate
+    from datasets import build_dataset
+    from engine import evaluate
 
 ################# CONFIG #################b
 

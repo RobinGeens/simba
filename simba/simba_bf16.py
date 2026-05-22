@@ -23,6 +23,25 @@ BF16 = torch.bfloat16
 FP32 = torch.float32
 
 
+def make_norm_layer(norm_type: str = "layernorm", eps: float = 1e-6):
+    """Return a partial that constructs the requested norm layer.
+
+    "layernorm" -> nn.LayerNorm (mean-centered, has bias)
+    "rmsnorm"   -> nn.RMSNorm (no mean-centering, no bias)
+    """
+    norm_type = norm_type.lower()
+    if norm_type == "layernorm":
+        return partial(nn.LayerNorm, eps=eps)
+    if norm_type == "rmsnorm":
+        return partial(nn.RMSNorm, eps=eps)
+    raise ValueError(f"Unknown norm_type: {norm_type!r} (expected 'layernorm' or 'rmsnorm')")
+
+
+def _resolve_norm_layer(kwargs):
+    """Pick the norm-layer factory from kwargs, defaulting to LayerNorm."""
+    return kwargs.get("NORM_LAYER", partial(nn.LayerNorm, eps=1e-6))
+
+
 class EinFFT(nn.Module):
     _quantization_logged = False
 
@@ -352,7 +371,7 @@ class MambaLayer(nn.Module):
     def __init__(self, dim, d_state=64, d_conv=4, expand=2, **kwargs):
         super().__init__()
         self.dim = dim
-        self.norm = nn.LayerNorm(dim, dtype=FP32)
+        self.norm = _resolve_norm_layer(kwargs)(dim, dtype=FP32)
         self.mamba = Mamba(
             d_model=dim,
             d_state=d_state,
@@ -406,6 +425,8 @@ class ClassBlock(nn.Module):
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
+        elif isinstance(m, nn.RMSNorm):
+            nn.init.constant_(m.weight, 1.0)
         elif isinstance(m, nn.Conv2d):
             fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
             fan_out //= m.groups
@@ -443,6 +464,8 @@ class Block_mamba(nn.Module):
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
+        elif isinstance(m, nn.RMSNorm):
+            nn.init.constant_(m.weight, 1.0)
         elif isinstance(m, nn.Conv2d):
             fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
             fan_out //= m.groups
@@ -467,7 +490,7 @@ class DownSamples(nn.Module):
             padding=1,
             dtype=kwargs["PATCH_EMBED_T"],
         )
-        self.norm = nn.LayerNorm(out_channels)
+        self.norm = _resolve_norm_layer(kwargs)(out_channels)
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -477,6 +500,8 @@ class DownSamples(nn.Module):
                 nn.init.constant_(m.bias, 0)
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
+        elif isinstance(m, nn.RMSNorm):
             nn.init.constant_(m.weight, 1.0)
         elif isinstance(m, nn.Conv2d):
             fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
@@ -517,7 +542,7 @@ class Stem(nn.Module):
         self.proj = nn.Conv2d(
             hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=kwargs["PATCH_EMBED_T"]
         )
-        self.norm = nn.LayerNorm(out_channels, dtype=FP32)
+        self.norm = _resolve_norm_layer(kwargs)(out_channels, dtype=FP32)
 
         self.apply(self._init_weights)
 
@@ -528,6 +553,8 @@ class Stem(nn.Module):
                 nn.init.constant_(m.bias, 0)
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
+        elif isinstance(m, nn.RMSNorm):
             nn.init.constant_(m.weight, 1.0)
         elif isinstance(m, nn.Conv2d):
             fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
@@ -566,6 +593,13 @@ class SiMBA(nn.Module):
         self.depths = depths
         self.num_stages = num_stages
         self.AUTOCAST_T: torch.dtype = kwargs["AUTOCAST_T"]
+
+        # Resolve norm_layer (caller may either pass it directly or via NORM_TYPE in kwargs)
+        norm_type = kwargs.pop("NORM_TYPE", None)
+        if norm_type is not None:
+            norm_layer = make_norm_layer(norm_type, eps=1e-6)
+        # Make the chosen factory visible to submodules that take **kwargs only.
+        kwargs["NORM_LAYER"] = norm_layer
 
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
@@ -624,6 +658,8 @@ class SiMBA(nn.Module):
                 nn.init.constant_(m.bias, 0)
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
+        elif isinstance(m, nn.RMSNorm):
             nn.init.constant_(m.weight, 1.0)
         elif isinstance(m, nn.Conv2d):
             fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels

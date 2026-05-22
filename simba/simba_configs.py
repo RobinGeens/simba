@@ -20,6 +20,7 @@ def simba_l_bf16(pretrained=False, **kwargs):
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
+        "NORM_TYPE": "rmsnorm",  # "layernorm" or "rmsnorm"
         "AUTOCAST_T": BF16,
     }
 
@@ -53,6 +54,7 @@ def simba_l_fp8(pretrained=False, **kwargs):
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
+        "NORM_TYPE": "layernorm",  # "layernorm" or "rmsnorm"
         "AUTOCAST_T": BF16,
     }
 
@@ -86,6 +88,7 @@ def simba_b_bf16(pretrained=False, **kwargs):
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
+        "NORM_TYPE": "rmsnorm",  # "layernorm" or "rmsnorm"
         "AUTOCAST_T": BF16,
     }
 
@@ -120,6 +123,7 @@ def simba_cityscapes(pretrained=False, **kwargs):
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
+        "NORM_TYPE": "layernorm",  # "layernorm" or "rmsnorm"
         "AUTOCAST_T": BF16,
     }
 

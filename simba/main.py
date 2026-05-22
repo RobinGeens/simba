@@ -44,6 +44,46 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
 
 
+def _fold_norm_bias_into_weight(checkpoint_state_dict, model):
+    """Fold LayerNorm bias into the matching weight when the target lacks a bias.
+
+    For each '.bias' key in the checkpoint that is absent in the target model
+    but whose paired '.weight' key IS present in both, replace the weight with
+    `weight + bias` and drop the bias key. Intended to soften the load shock
+    when initializing an RMSNorm-configured model from a LayerNorm checkpoint:
+    instead of discarding the learned per-channel offset, it is absorbed into
+    the per-channel scale.
+
+    Caveat: this is a heuristic, not a math-equivalent conversion. LayerNorm
+    additionally subtracts the per-token mean which RMSNorm does not, so
+    fine-tuning is still required to recover accuracy.
+    """
+    model_keys = set(model.state_dict().keys())
+    folded = []
+    for k in list(checkpoint_state_dict.keys()):
+        if not k.endswith(".bias"):
+            continue
+        if k in model_keys:
+            continue
+        weight_key = k[: -len(".bias")] + ".weight"
+        if weight_key not in model_keys or weight_key not in checkpoint_state_dict:
+            continue
+        w = checkpoint_state_dict[weight_key]
+        b = checkpoint_state_dict[k]
+        checkpoint_state_dict[weight_key] = (w + b.to(w.dtype)).to(w.dtype)
+        del checkpoint_state_dict[k]
+        folded.append(k)
+    if folded:
+        logging.getLogger(__name__).warning(
+            "Folded %d '.bias' entries into the paired '.weight' (LayerNorm -> "
+            "RMSNorm: new_weight = weight + bias). This is a heuristic, not a "
+            "math-equivalent conversion; fine-tuning is required. Examples: %s",
+            len(folded),
+            folded[:5],
+        )
+    return checkpoint_state_dict
+
+
 def get_args_parser():
     parser = argparse.ArgumentParser("PVT training and evaluation script", add_help=False)
     parser.add_argument("--fp32-resume", action="store_true", default=False)
@@ -656,6 +696,7 @@ def main(args):
                 _logger.info(f"Removing key {k} from pretrained checkpoint")
                 del checkpoint_model[k]
 
+        checkpoint_model = _fold_norm_bias_into_weight(checkpoint_model, model)
         model.load_state_dict(checkpoint_model, strict=False)
 
     model.to(device)
@@ -731,19 +772,30 @@ def main(args):
             # Tells Pytorch that the checkpoint is safe to load
             torch.serialization.add_safe_globals([argparse.Namespace])
             checkpoint = torch.load(args.resume, map_location="cpu", weights_only=False)
-        if "model" in checkpoint:
-            msg = model_without_ddp.load_state_dict(checkpoint["model"]["state_dict"])
-        else:
-            msg = model_without_ddp.load_state_dict(checkpoint["state_dict"])
+        resume_state_dict = (
+            checkpoint["model"]["state_dict"] if "model" in checkpoint else checkpoint["state_dict"]
+        )
+        resume_state_dict = _fold_norm_bias_into_weight(resume_state_dict, model_without_ddp)
+        msg = model_without_ddp.load_state_dict(resume_state_dict, strict=False)
         _logger.info(msg)
         if not args.eval and "optimizer" in checkpoint and "epoch" in checkpoint:
-            optimizer.load_state_dict(checkpoint["optimizer"])
-            # lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
-            args.start_epoch = checkpoint["epoch"] + 1
-            # if args.model_ema:
-            #     utils._load_checkpoint_for_ema(model_ema, checkpoint['model_ema'])
-            if "scaler" in checkpoint:
-                loss_scaler.load_state_dict(checkpoint["scaler"])
+            try:
+                optimizer.load_state_dict(checkpoint["optimizer"])
+                # lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
+                args.start_epoch = checkpoint["epoch"] + 1
+                # if args.model_ema:
+                #     utils._load_checkpoint_for_ema(model_ema, checkpoint['model_ema'])
+                if "scaler" in checkpoint:
+                    loss_scaler.load_state_dict(checkpoint["scaler"])
+            except ValueError as e:
+                _logger.warning(
+                    "Optimizer state in checkpoint does not match the current model's "
+                    "parameter layout (%s). This is expected when the architecture has "
+                    "changed (e.g. LayerNorm -> RMSNorm dropped the bias params). "
+                    "Starting from a fresh optimizer at epoch 0; consider using "
+                    "--finetune instead of --resume for architecture migrations.",
+                    e,
+                )
 
     if args.eval:
         test_stats = evaluate(data_loader_val, model, device)

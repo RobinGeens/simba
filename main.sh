@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODEL="simba_l_fp8"
+MODEL="simba_l_bf16"
 
 # Extract RUN_NAME from the config file
 # RUN_NAME=$(python3 -c "
@@ -10,7 +10,7 @@ MODEL="simba_l_fp8"
 # from $MODEL import cfg
 # print(os.path.basename(cfg['output_dir']))
 # ")
-RUN_NAME="simba_l_finetune_fp8"
+RUN_NAME="simba_l_replace_rms"
 
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
 NGPUS=${NGPUS:-1}
