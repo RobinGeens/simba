@@ -32,7 +32,7 @@ source env/bin/activate
 # CHECKPOINT=checkpoints/exp_approx/checkpoint-317.pt`h.tar
 # echo "Resuming from checkpoint: $CHECKPOINT"
 
-DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
+DATA_PATH="/scratch/leuven/379/vsc37999/imagenet"
 TOKEN_LABEL_PATH="/volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/"
 
 torchrun  \

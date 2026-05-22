@@ -339,7 +339,7 @@ def get_args_parser():
     # Dataset parameters
     parser.add_argument(
         "--data-path",
-        default="/datasets01/imagenet_full_size/061417/",
+        default="/scratch/leuven/379/vsc37999/imagenet",
         type=str,
         help="dataset path",
     )
