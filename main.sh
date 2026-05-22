@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODEL="simba_l_bf16"
+MODEL="simba_b_bf16"
 
 # Extract RUN_NAME from the config file
 # RUN_NAME=$(python3 -c "
@@ -10,7 +10,7 @@ MODEL="simba_l_bf16"
 # from $MODEL import cfg
 # print(os.path.basename(cfg['output_dir']))
 # ")
-RUN_NAME="simba_l_replace_rms"
+RUN_NAME="simba_b_bf16_rms"
 
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
 NGPUS=${NGPUS:-1}
@@ -27,9 +27,10 @@ echo "Running on GPU(s) $CUDA_VISIBLE_DEVICES (NGPUS=$NGPUS, per-GPU batch=$PER_
 nvidia-smi
 source env/bin/activate
 
+# TODO restore this if you have an initial checkpoint
 # CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
-CHECKPOINT=checkpoints/exp_approx/checkpoint-317.pth.tar
-echo "Resuming from checkpoint: $CHECKPOINT"
+# CHECKPOINT=checkpoints/exp_approx/checkpoint-317.pt`h.tar
+# echo "Resuming from checkpoint: $CHECKPOINT"
 
 DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
 TOKEN_LABEL_PATH="/volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/"
@@ -52,4 +53,4 @@ torchrun  \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   --resume $CHECKPOINT \
+   # --resume $CHECKPOINT \ # <- TODO restore this if you have an initial checkpoint
