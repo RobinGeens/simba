@@ -20,8 +20,8 @@ if __name__ == "__main__":
 ################# CONFIG #################b
 
 MODEL_NAME = "simba_l_bf16"  # "simba_l_fp16"
-RUN_NAME = "exp_approx"  # "simba_l_bf16_B"
-BEST_CHECKPOINT = 317  # Should be 83.0% Top-1 acc
+RUN_NAME = "simba_l_bf16"
+BEST_CHECKPOINT = 317  # Should be 82.9% Top-1 acc
 GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
 
 ############### CONFIG END ###############
