@@ -1,10 +1,29 @@
 #!/bin/bash
+#SBATCH --cluster=wice
+#SBATCH --partition=gpu_h100
+#SBATCH --account=lp_marianslab
+#SBATCH --job-name=simba_b_bf16
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:2
+#SBATCH --mem=160G
+#SBATCH --time=72:00:00
+#SBATCH --mail-type=FAIL,END
+#SBATCH --mail-user=chao.fang@kuleuven.be
+#SBATCH --output=slurm_logs/slurm-%j.out
+#SBATCH --error=slurm_logs/slurm-%j.err
+
+# Submit:  mkdir -p slurm_logs && sbatch main.sh
+# Local:   NGPUS=2 ./main.sh
+# When submitted via sbatch, NGPUS defaults to 2 to match --gres=gpu:2 below.
 
 MODEL="simba_s_bf16"
 RUN_NAME="simba_s_bf16"
 
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
-NGPUS=${NGPUS:-1}
+# Under sbatch, default NGPUS to whatever --gres=gpu:N gave us; otherwise 1.
+NGPUS=${NGPUS:-${SLURM_GPUS_ON_NODE:-1}}
 TOTAL_BATCH=128
 PER_GPU_BATCH=$(( TOTAL_BATCH / NGPUS ))
 # Use first N GPUs
@@ -18,12 +37,18 @@ echo "Running on GPU(s) $CUDA_VISIBLE_DEVICES (NGPUS=$NGPUS, per-GPU batch=$PER_
 nvidia-smi
 source env/bin/activate
 
-CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
-# CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-50.pth.tar
-echo "Resuming from checkpoint: $CHECKPOINT"
+# Auto-resume from the latest checkpoint if one exists (first run starts from scratch).
+CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar 2>/dev/null | tail -n1)
+RESUME_ARG=""
+if [ -n "$CHECKPOINT" ]; then
+    echo "Resuming from checkpoint: $CHECKPOINT"
+    RESUME_ARG="--resume $CHECKPOINT"
+else
+    echo "No checkpoint found in checkpoints/$RUN_NAME — training from scratch."
+fi
 
 DATA_PATH="/scratch/leuven/379/vsc37999/imagenet"
-TOKEN_LABEL_PATH="/volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/"
+TOKEN_LABEL_PATH="/scratch/leuven/379/vsc37999/label_top5_train_nfnet/"
 
 torchrun  \
    --nproc_per_node=$NGPUS \
@@ -45,6 +70,4 @@ torchrun  \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   # --resume $CHECKPOINT \ # <- TODO restore this if you have an initial checkpoint
-   # --drop-path 0.05 \
-   # --finetune $CHECKPOINT \
+   $RESUME_ARG
