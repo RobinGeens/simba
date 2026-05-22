@@ -1,20 +1,63 @@
-timm==0.4.5
-tlt==0.1.0
-pyyaml
-mmcv==1.7.0
-numpy
-torch
-triton
+# Aligned with the working venv from the other machine (torch 2.8.0+cu12x).
+# Versions pinned where the source venv pinned them; left loose otherwise.
+# mamba_ssm is installed separately via scripts/install_mamba.sh (from submodule).
+
+# Core DL stack — must match the other venv for mamba ABI compatibility
+torch==2.8.0
+torchvision==0.23.0
+triton==3.4.0
+
+# Build / runtime tooling
 ninja
-transformers
 packaging
 setuptools>=61.0.0
-nvidia-cudnn-cu11
 wheel
+
+# nvcc + CUDA headers/libs inside the venv (cu12 has real wheels; cu13 doesn't yet)
+nvidia-cuda-nvcc-cu12
+nvidia-cuda-cccl-cu12
+nvidia-cuda-runtime-cu12
+nvidia-cuda-nvrtc-cu12
+nvidia-cudnn-cu12
+nvidia-cublas-cu12
+nvidia-cusparse-cu12
+nvidia-cusparselt-cu12
+nvidia-curand-cu12
+nvidia-cusolver-cu12
+nvidia-cufft-cu12
+nvidia-nccl-cu12
+nvidia-nvjitlink-cu12
+nvidia-nvtx-cu12
+nvidia-cuda-cupti-cu12
+nvidia-cufile-cu12
+
+# Models / data
+timm==0.4.5
+tlt==0.1.0
+transformers==4.56.2
+tokenizers
+safetensors
+huggingface-hub
 einops
+# mmcv==1.7.0  # build fails on new setuptools (pkg_resources removed); not actually imported by simba/. Add back manually if a script needs it.
+
+# Numerics / plotting / data
+numpy
+scipy
+pandas
+matplotlib
+seaborn
+opencv-python
+pillow
+
+# Utilities
+pyyaml
+addict
+yapf
+tqdm
+regex
+typing_extensions
+
+# Experiment tracking
 wandb
 tensorboard
-# mamba_ssm # installing as package doesn't work -> install manually from repo with --no-build-isolation
-
-
-

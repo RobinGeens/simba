@@ -1,8 +1,10 @@
 #!/bin/bash
 # Download and install Python 3.11.9 manually to make sure Python.h is present. This is needed to build mamba
 PYVER=3.11.9
-INSTALL_DIR=/volume1/users/cfang/simba/Python-$PYVER 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+INSTALL_DIR="$ROOT/Python-$PYVER"
 
+cd "$ROOT"
 wget https://www.python.org/ftp/python/$PYVER/Python-$PYVER.tgz
 tar -xzf Python-$PYVER.tgz
 cd Python-$PYVER

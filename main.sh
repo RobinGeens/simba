@@ -22,7 +22,7 @@ CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
 # CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-50.pth.tar
 echo "Resuming from checkpoint: $CHECKPOINT"
 
-DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
+DATA_PATH="/scratch/leuven/379/vsc37999/imagenet"
 TOKEN_LABEL_PATH="/volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/"
 
 torchrun  \
