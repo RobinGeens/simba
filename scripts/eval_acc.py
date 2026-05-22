@@ -19,9 +19,9 @@ if __name__ == "__main__":
 
 ################# CONFIG #################b
 
-MODEL_NAME = "simba_l_fp8"  # "simba_l_fp16"
-RUN_NAME = "simba_l_finetune_fp8"  # "simba_l_bf16_B"
-BEST_CHECKPOINT = 0
+MODEL_NAME = "simba_s_bf16"
+RUN_NAME = "simba_s_bf16"
+BEST_CHECKPOINT = 0  
 GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
 
 ############### CONFIG END ###############
