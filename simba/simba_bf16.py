@@ -11,8 +11,8 @@ import torch.fft
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .quantizer import QuantizerPassthrough, FloatQuantizer
-from .mamba_simple import Mamba
+from quantizer import QuantizerPassthrough, FloatQuantizer
+from mamba_simple import Mamba
 
 from timm.models.layers import DropPath, trunc_normal_
 
