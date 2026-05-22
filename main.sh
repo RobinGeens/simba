@@ -12,27 +12,38 @@ MODEL="simba_b_bf16"
 # ")
 RUN_NAME="simba_b_bf16_TL"
 
-echo "Running on GPU $CUDA_VISIBLE_DEVICES"
+# Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
+NGPUS=${NGPUS:-1}
+TOTAL_BATCH=128
+PER_GPU_BATCH=$(( TOTAL_BATCH / NGPUS ))
+# Use first NGPUs
+CUDA_VISIBLE_DEVICES=$(seq -s, 0 $(( NGPUS - 1 )))
+export CUDA_VISIBLE_DEVICES
+
+# Random port so concurrent runs on the same host don't collide on the rendezvous endpoint.
+MASTER_PORT=${MASTER_PORT:-$(( 29500 + RANDOM % 1000 ))}
+
+echo "Running on GPU(s) $CUDA_VISIBLE_DEVICES (NGPUS=$NGPUS, per-GPU batch=$PER_GPU_BATCH, total batch=$TOTAL_BATCH)"
 nvidia-smi
 source env/bin/activate
 
-# ! Change this in next run
-# CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
+CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
 # CHECKPOINT=checkpoints/simba_l_bf16_TL/checkpoint-316.pth.tar
-# echo "Resuming from checkpoint: $CHECKPOINT"
+echo "Resuming from checkpoint: $CHECKPOINT"
 
 DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
 TOKEN_LABEL_PATH="/volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/"
 
-CUDA_VISIBLE_DEVICES=0 torchrun  \
-   --nproc_per_node=1 \
+torchrun  \
+   --nproc_per_node=$NGPUS \
+   --master_port=$MASTER_PORT \
    simba/main.py \
    --config config/$MODEL.py \
    --run-name $RUN_NAME \
    --output_dir checkpoints/$RUN_NAME \
    --data-path $DATA_PATH \
    --epochs 330  \
-   --batch-size 128 \
+   --batch-size $PER_GPU_BATCH \
    --drop-path 0.05 \
    --weight-decay 0.05 \
    --lr 1e-3 \
@@ -41,4 +52,4 @@ CUDA_VISIBLE_DEVICES=0 torchrun  \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   # --resume $CHECKPOINT \
+   --resume $CHECKPOINT \
