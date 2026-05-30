@@ -19,7 +19,7 @@ nvidia-smi
 source env/bin/activate
 
 # CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
-CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-2.pth.tar
+CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-35.pth.tar
 echo "Resuming from checkpoint: $CHECKPOINT"
 
 DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
@@ -33,12 +33,13 @@ torchrun  \
    --run-name $RUN_NAME \
    --output_dir checkpoints/$RUN_NAME \
    --data-path $DATA_PATH \
-   --epochs 30  \
+   --epochs 60  \
    --batch-size $PER_GPU_BATCH \
    --drop-path 0.05 \
    --weight-decay 0.05 \
    --lr 5e-5 \
    --warmup-lr 1e-7 \
+   --min-lr 1e-7 \
    --num_workers 32\
    --pin-mem \
    --token-label \

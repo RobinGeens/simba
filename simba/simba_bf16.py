@@ -34,7 +34,9 @@ def make_norm_layer(norm_type: str = "layernorm", eps: float = 1e-6):
         return partial(nn.LayerNorm, eps=eps)
     if norm_type == "rmsnorm":
         return partial(nn.RMSNorm, eps=eps)
-    raise ValueError(f"Unknown norm_type: {norm_type!r} (expected 'layernorm' or 'rmsnorm')")
+    raise ValueError(
+        f"Unknown norm_type: {norm_type!r} (expected 'layernorm' or 'rmsnorm')"
+    )
 
 
 def _resolve_norm_layer(kwargs):
@@ -81,16 +83,28 @@ class EinFFT(nn.Module):
             * self.scale
         )
         self.complex_bias_1 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
+            torch.randn(
+                2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]
+            )
+            * self.scale
         )
         self.complex_bias_2 = nn.Parameter(
-            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
+            torch.randn(
+                2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]
+            )
+            * self.scale
         )
 
         # Quantizer
-        self.fft_quantizer = QuantizerPassthrough() if self.FFT_QUANT is None else FloatQuantizer(*self.FFT_QUANT)
+        self.fft_quantizer = (
+            QuantizerPassthrough()
+            if self.FFT_QUANT is None
+            else FloatQuantizer(*self.FFT_QUANT)
+        )
         self.einfft_quantizer = (
-            QuantizerPassthrough() if self.EINFFT_QUANT is None else FloatQuantizer(*self.EINFFT_QUANT)
+            QuantizerPassthrough()
+            if self.EINFFT_QUANT is None
+            else FloatQuantizer(*self.EINFFT_QUANT)
         )
         if not EinFFT._quantization_logged:
             print("[Init][EinFFT]")
@@ -133,7 +147,10 @@ class EinFFT(nn.Module):
         W_imag = (1.0 if inverse else -1.0) * torch.sin(theta) * inv_sqrt_n
 
         # Construct the 2Nx2N real matrix
-        W_real_matrix = torch.cat([torch.cat([W_real, -W_imag], dim=1), torch.cat([W_imag, W_real], dim=1)], dim=0)
+        W_real_matrix = torch.cat(
+            [torch.cat([W_real, -W_imag], dim=1), torch.cat([W_imag, W_real], dim=1)],
+            dim=0,
+        )
 
         return W_real_matrix.to(device=device, dtype=self.FFT_ACT_T)
 
@@ -151,9 +168,9 @@ class EinFFT(nn.Module):
         x_real_vec = x_real_vec.to(device=W_real.device, dtype=self.FFT_ACT_T)
 
         # [NOTE] quantize here
-        X_real_vec = torch.matmul(self.fft_quantizer.quantize(W_real), self.fft_quantizer.quantize(x_real_vec)).to(
-            self.FFT_ACT_T
-        )
+        X_real_vec = torch.matmul(
+            self.fft_quantizer.quantize(W_real), self.fft_quantizer.quantize(x_real_vec)
+        ).to(self.FFT_ACT_T)
 
         # Split result back into real and imaginary parts
         X_real = X_real_vec[:n, :]
@@ -201,7 +218,8 @@ class EinFFT(nn.Module):
         # [NOTE] quantize here
         x_real_reshaped = x_real.reshape(2 * M, -1)  # (2M, L * num_features)
         X1_real_flat = torch.matmul(
-            self.fft_quantizer.quantize(W_M_real), self.fft_quantizer.quantize(x_real_reshaped)
+            self.fft_quantizer.quantize(W_M_real),
+            self.fft_quantizer.quantize(x_real_reshaped),
         ).to(self.FFT_ACT_T)
         X1_real = X1_real_flat.reshape(2 * M, L, *other_dims)
         X1_re = X1_real[:M]
@@ -214,8 +232,12 @@ class EinFFT(nn.Module):
         # Twiddle factor: forward uses e^{-j2πkl/N}, inverse uses e^{+j2πkl/N}
         phase_angle = ((1.0) if inverse else (-1.0)) * 2 * torch.pi * k * l / (M * L)
         extra_dims = (1,) * (X1_re.ndim - 2)
-        phase_re = torch.cos(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
-        phase_im = torch.sin(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
+        phase_re = (
+            torch.cos(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
+        )
+        phase_im = (
+            torch.sin(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
+        )
         # Complex multiply: (a+bj)*(c+dj) = (ac-bd) + (ad+bc)j
         X2_re = X1_re * phase_re - X1_im * phase_im
         X2_im = X1_re * phase_im + X1_im * phase_re
@@ -233,7 +255,8 @@ class EinFFT(nn.Module):
         # This means multiply W_L_real[i,j] with X2r[j, k, ...] to get result[i, k, ...]
         X2r_reshaped = X2r.reshape(2 * L, -1)  # (2L, M * num_features)
         Xf_real_flat = torch.matmul(
-            self.fft_quantizer.quantize(W_L_real), self.fft_quantizer.quantize(X2r_reshaped)
+            self.fft_quantizer.quantize(W_L_real),
+            self.fft_quantizer.quantize(X2r_reshaped),
         ).to(self.FFT_ACT_T)
         Xf_real = Xf_real_flat.reshape(2 * L, M, *other_dims)
 
@@ -247,7 +270,8 @@ class EinFFT(nn.Module):
 
     def forward(self, x: torch.Tensor, H: int, W: int) -> torch.Tensor:
         """Torch's fft is only implemented for FP16, not for BF16
-        Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input"""
+        Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input
+        """
         DFT_PARTITIONS = {
             # Unpadded
             3136: 56,
@@ -260,12 +284,13 @@ class EinFFT(nn.Module):
             1024: 32,
             256: 16,
             64: 8,
-            4: 1,
             # Cityscapes
-            32768: 256,
-            8192: 128,
-            2048: 64,
             512: 32,
+            2048: 64,
+            8192: 128,
+            16384: 128,
+            32768: 256,
+            65536: 256,
             131072: 512,
         }
 
@@ -286,14 +311,18 @@ class EinFFT(nn.Module):
             x_im = torch.zeros_like(x)
             # Apply FFT to dimension 1 (N dimension)
             x_re, x_im = self.dft_partitioned(
-                x_re.transpose(1, 0), x_im.transpose(1, 0), L=DFT_PARTITIONS.get(N_fft, 1)
+                x_re.transpose(1, 0),
+                x_im.transpose(1, 0),
+                L=DFT_PARTITIONS.get(N_fft, 1),
             )
             x_re = x_re.transpose(1, 0)
             x_im = x_im.transpose(1, 0)
 
             # Apply FFT to dimension 2 (num_blocks dimension)
             x_re, x_im = self.dft_partitioned(
-                x_re.transpose(2, 0), x_im.transpose(2, 0), L=DFT_PARTITIONS.get(self.num_blocks, 1)
+                x_re.transpose(2, 0),
+                x_im.transpose(2, 0),
+                L=DFT_PARTITIONS.get(self.num_blocks, 1),
             )
             x_re = x_re.transpose(2, 0)
             x_im = x_im.transpose(2, 0)
@@ -377,7 +406,9 @@ class MambaLayer(nn.Module):
             d_state=d_state,
             d_conv=d_conv,
             expand=expand,
-            dtype=kwargs["MAMBA_MAIN_T"],  # NOTE should be enough to put most of Mamba's layer in the correct type
+            dtype=kwargs[
+                "MAMBA_MAIN_T"
+            ],  # NOTE should be enough to put most of Mamba's layer in the correct type
             dtype_act=kwargs["MAMBA_ACT_T"],
             quant=kwargs.get("MAMBA_QUANT"),
             use_hardware_act=kwargs["MAMBA_USE_HARDWARE_ACT"],
@@ -524,23 +555,46 @@ class Stem(nn.Module):
         hidden_dim = stem_hidden_dim
         self.conv = nn.Sequential(
             nn.Conv2d(
-                in_channels, hidden_dim, kernel_size=7, stride=2, padding=3, bias=False, dtype=kwargs["PATCH_EMBED_T"]
+                in_channels,
+                hidden_dim,
+                kernel_size=7,
+                stride=2,
+                padding=3,
+                bias=False,
+                dtype=kwargs["PATCH_EMBED_T"],
             ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(
-                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=kwargs["PATCH_EMBED_T"]
+                hidden_dim,
+                hidden_dim,
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                bias=False,
+                dtype=kwargs["PATCH_EMBED_T"],
             ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
             nn.Conv2d(
-                hidden_dim, hidden_dim, kernel_size=3, stride=1, padding=1, bias=False, dtype=kwargs["PATCH_EMBED_T"]
+                hidden_dim,
+                hidden_dim,
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                bias=False,
+                dtype=kwargs["PATCH_EMBED_T"],
             ),  # 112x112
             nn.BatchNorm2d(hidden_dim),
             nn.ReLU(inplace=True),
         )
         self.proj = nn.Conv2d(
-            hidden_dim, out_channels, kernel_size=3, stride=2, padding=1, dtype=kwargs["PATCH_EMBED_T"]
+            hidden_dim,
+            out_channels,
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            dtype=kwargs["PATCH_EMBED_T"],
         )
         self.norm = _resolve_norm_layer(kwargs)(out_channels, dtype=FP32)
 
@@ -601,7 +655,9 @@ class SiMBA(nn.Module):
         # Make the chosen factory visible to submodules that take **kwargs only.
         kwargs["NORM_LAYER"] = norm_layer
 
-        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
+        dpr = [
+            x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))
+        ]  # stochastic depth decay rule
         cur = 0
         for i in range(num_stages):
             if i == 0:
@@ -632,21 +688,31 @@ class SiMBA(nn.Module):
         self.post_network = nn.ModuleList(
             [
                 ClassBlock(
-                    dim=embed_dims[-1], mlp_ratio=mlp_ratios[-1], norm_layer=norm_layer, cm_type=cm_type, **kwargs
+                    dim=embed_dims[-1],
+                    mlp_ratio=mlp_ratios[-1],
+                    norm_layer=norm_layer,
+                    cm_type=cm_type,
+                    **kwargs,
                 )
                 for _ in range(len(post_layers))
             ]
         )
 
         # classification head
-        self.head = nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
+        self.head = (
+            nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
+        )
         ##################################### token_label #####################################
         self.return_dense = token_label
         self.mix_token = token_label
         self.beta = 1.0
         self.pooling_scale = 8
         if self.return_dense:
-            self.aux_head = nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
+            self.aux_head = (
+                nn.Linear(embed_dims[-1], num_classes)
+                if num_classes > 0
+                else nn.Identity()
+            )
         ##################################### token_label #####################################
 
         self.apply(self._init_weights)
@@ -709,7 +775,9 @@ class SiMBA(nn.Module):
                     x.shape[1] // self.pooling_scale,
                     x.shape[2] // self.pooling_scale,
                 )
-                bbx1, bby1, bbx2, bby2 = rand_bbox(x.size(), lam, scale=self.pooling_scale)
+                bbx1, bby1, bbx2, bby2 = rand_bbox(
+                    x.size(), lam, scale=self.pooling_scale
+                )
                 temp_x = x.clone()
                 sbbx1, sbby1, sbbx2, sbby2 = (
                     self.pooling_scale * bbx1,
@@ -717,25 +785,35 @@ class SiMBA(nn.Module):
                     self.pooling_scale * bbx2,
                     self.pooling_scale * bby2,
                 )
-                temp_x[:, sbbx1:sbbx2, sbby1:sbby2, :] = x.flip(0)[:, sbbx1:sbbx2, sbby1:sbby2, :]
+                temp_x[:, sbbx1:sbbx2, sbby1:sbby2, :] = x.flip(0)[
+                    :, sbbx1:sbbx2, sbby1:sbby2, :
+                ]
                 x = temp_x
             else:
                 bbx1, bby1, bbx2, bby2 = 0, 0, 0, 0
             x = self.forward_tokens(x, H, W)
             x_cls = self.head(x[:, 0])
-            x_aux = self.aux_head(x[:, 1:])  # generate classes in all feature tokens, see token labeling
+            x_aux = self.aux_head(
+                x[:, 1:]
+            )  # generate classes in all feature tokens, see token labeling
 
             if not self.training:
                 return x_cls + 0.5 * x_aux.max(1)[0]
 
-            if self.mix_token and self.training:  # reverse "mix token", see token labeling for details.
+            if (
+                self.mix_token and self.training
+            ):  # reverse "mix token", see token labeling for details.
                 x_aux = x_aux.reshape(x_aux.shape[0], patch_h, patch_w, x_aux.shape[-1])
 
                 temp_x = x_aux.clone()
-                temp_x[:, bbx1:bbx2, bby1:bby2, :] = x_aux.flip(0)[:, bbx1:bbx2, bby1:bby2, :]
+                temp_x[:, bbx1:bbx2, bby1:bby2, :] = x_aux.flip(0)[
+                    :, bbx1:bbx2, bby1:bby2, :
+                ]
                 x_aux = temp_x
 
-                x_aux = x_aux.reshape(x_aux.shape[0], patch_h * patch_w, x_aux.shape[-1])
+                x_aux = x_aux.reshape(
+                    x_aux.shape[0], patch_h * patch_w, x_aux.shape[-1]
+                )
 
             return x_cls, x_aux, (bbx1, bby1, bbx2, bby2)
 
@@ -764,5 +842,3 @@ class SiMBA(nn.Module):
         x, H, W = patch_embed(x)
         x = x.view(x.size(0), H, W, -1)
         return x, H, W
-
-

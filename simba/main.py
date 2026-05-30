@@ -805,7 +805,7 @@ def main(args):
     _logger.info(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
-    extra_epoch = 20
+    extra_epoch = 0
     print(f"Start training for extra_epoch{extra_epoch} epochs")
     for epoch in range(args.start_epoch, (args.epochs + extra_epoch)):
         if args.fp32_resume and epoch > args.start_epoch + 1:
