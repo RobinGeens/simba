@@ -684,7 +684,9 @@ def main(args):
         if args.finetune.startswith("https"):
             checkpoint = torch.hub.load_state_dict_from_url(args.finetune, map_location="cpu", check_hash=True)
         else:
-            checkpoint = torch.load(args.finetune, map_location="cpu")
+            # Our checkpoints pickle an argparse.Namespace, so disable PyTorch 2.6's weights_only default.
+            torch.serialization.add_safe_globals([argparse.Namespace])
+            checkpoint = torch.load(args.finetune, map_location="cpu", weights_only=False)
 
         if "model" in checkpoint:
             checkpoint_model = checkpoint["model"]["state_dict"]
@@ -826,7 +828,7 @@ def main(args):
             args.clip_grad,
             model_ema,
             mixup_fn,
-            set_training_mode=args.finetune == "",  # keep in eval mode during finetuning
+            set_training_mode=True,  # token-label loss needs the train-mode 3-tuple output, even when finetuning
             args=args,
         )
 

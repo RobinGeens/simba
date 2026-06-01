@@ -54,7 +54,7 @@ def simba_l_fp8(pretrained=False, **kwargs):
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
-        "NORM_TYPE": "layernorm",  # "layernorm" or "rmsnorm"
+        "NORM_TYPE": "rmsnorm",  # match the rmsnorm checkpoint we finetune from (drop-in FP8 over the bf16/rmsnorm model)
         "AUTOCAST_T": BF16,
     }
 
