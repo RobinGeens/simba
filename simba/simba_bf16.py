@@ -639,7 +639,6 @@ class SiMBA(nn.Module):
         depths=[3, 4, 6, 3],
         num_stages=4,
         token_label=True,
-        cm_type="mlp",
         **kwargs: torch.dtype,
     ):
         super().__init__()
@@ -691,7 +690,6 @@ class SiMBA(nn.Module):
                     dim=embed_dims[-1],
                     mlp_ratio=mlp_ratios[-1],
                     norm_layer=norm_layer,
-                    cm_type=cm_type,
                     **kwargs,
                 )
                 for _ in range(len(post_layers))
