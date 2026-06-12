@@ -30,6 +30,19 @@ MODEL="simba_b_bf16"
 # ")
 RUN_NAME="simba_b_bf16_rms"
 
+# Self-resubmit chain: queue the next job to start after this one ends, so training
+# can survive multiple walltime hits unattended. Skipped when running locally
+# (no SLURM_JOB_ID) or when training has already completed (DONE sentinel exists).
+DONE_FLAG="checkpoints/$RUN_NAME/DONE"
+if [ -f "$DONE_FLAG" ]; then
+    echo "Found $DONE_FLAG — training already complete, exiting."
+    exit 0
+fi
+if [ -n "$SLURM_JOB_ID" ]; then
+    NEXT_JID=$(sbatch --parsable --dependency=afterany:$SLURM_JOB_ID main.sh)
+    echo "Queued next job $NEXT_JID with dependency afterany:$SLURM_JOB_ID"
+fi
+
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
 # Under sbatch, default NGPUS to whatever --gres=gpu:N gave us; otherwise 1.
 NGPUS=${NGPUS:-${SLURM_GPUS_ON_NODE:-1}}
@@ -58,6 +71,7 @@ fi
 
 DATA_PATH="/scratch/leuven/379/vsc37999/imagenet"
 TOKEN_LABEL_PATH="/scratch/leuven/379/vsc37999/label_top5_train_nfnet/"
+GRAD_LOG_PATH="/scratch/leuven/379/vsc37999/grad_stats.log"
 
 torchrun  \
    --nproc_per_node=$NGPUS \
@@ -77,4 +91,5 @@ torchrun  \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
+   --grad-log-path $GRAD_LOG_PATH \
    $RESUME_ARG
