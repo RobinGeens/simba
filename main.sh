@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MODEL="simba_l_fp8"
-RUN_NAME="simba_l_finetune_fp8"
+MODEL="simba_s_bf16"
+RUN_NAME="simba_s_bf16"
 
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
 NGPUS=${NGPUS:-1}
@@ -18,8 +18,8 @@ echo "Running on GPU(s) $CUDA_VISIBLE_DEVICES (NGPUS=$NGPUS, per-GPU batch=$PER_
 nvidia-smi
 source env/bin/activate
 
-# CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
-CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-50.pth.tar
+CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
+# CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-50.pth.tar
 echo "Resuming from checkpoint: $CHECKPOINT"
 
 DATA_PATH="/volume1/users/rgeens/simba/dataset/ILSVRC2012"
@@ -33,17 +33,18 @@ torchrun  \
    --run-name $RUN_NAME \
    --output_dir checkpoints/$RUN_NAME \
    --data-path $DATA_PATH \
-   --epochs 10  \
+   --epochs 310  \
    --batch-size $PER_GPU_BATCH \
-   --drop-path 0.05 \
    --weight-decay 0.05 \
-   --lr 2e-5 \
-   --warmup-lr 1e-7 \
-   --warmup-epochs 1 \
-   --min-lr 1e-7 \
+   --lr 1e-3 \
+   --warmup-lr 1e-6 \
+   --warmup-epochs 5 \
+   --min-lr 1e-5 \
    --num_workers 32\
    --pin-mem \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   --finetune $CHECKPOINT \
+   # --resume $CHECKPOINT \ # <- TODO restore this if you have an initial checkpoint
+   # --drop-path 0.05 \
+   # --finetune $CHECKPOINT \
