@@ -369,6 +369,11 @@ def get_args_parser():
     )
 
     parser.add_argument("--output_dir", default="", help="path where to save, empty for no saving")
+    parser.add_argument(
+        "--grad-log-path",
+        default="",
+        help="file path to append per-step aggregate grad stats (empty = disabled)",
+    )
     parser.add_argument("--device", default="cuda", help="device to use for training / testing")
     parser.add_argument("--seed", default=0, type=int)
     parser.add_argument("--resume", default="", help="resume from checkpoint")
@@ -868,6 +873,10 @@ def main(args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     _logger.info("Training time {}".format(total_time_str))
+
+    # Sentinel for self-resubmit chain in main.sh: presence means training finished all epochs.
+    if args.output_dir and utils.is_main_process():
+        Path(args.output_dir, "DONE").touch()
 
     # Close wandb
     if utils.is_main_process():

@@ -76,10 +76,33 @@ def train_one_epoch(
         # this attribute is added by timm on one optimizer (adahessian)
         is_second_order = hasattr(optimizer, "is_second_order") and optimizer.is_second_order
         loss_scaler(loss, optimizer, clip_grad=max_norm, parameters=model.parameters(), create_graph=is_second_order)
-        with open("grad_stats.log", "a") as f:
-            for name, param in model.named_parameters():
-                if param.grad is not None:
-                    f.write(f"{name} grad mean: {param.grad.abs().mean().item():.3e}\n")
+        # === grad logging: aggregate stats every 100 steps to args.grad_log_path (was: per-param every step to ./grad_stats.log) ===
+        # with open("grad_stats.log", "a") as f:
+        #     for name, param in model.named_parameters():
+        #         if param.grad is not None:
+        #             f.write(f"{name} grad mean: {param.grad.abs().mean().item():.3e}\n")
+        if getattr(args, "grad_log_path", "") and utils.is_main_process():
+            train_one_epoch._grad_log_counter = getattr(train_one_epoch, "_grad_log_counter", 0) + 1
+            if train_one_epoch._grad_log_counter % 100 == 1:
+                sq_sum = 0.0
+                abs_sum = 0.0
+                abs_max = 0.0
+                n_elem = 0
+                for param in model.parameters():
+                    if param.grad is not None:
+                        g = param.grad.detach()
+                        sq_sum += g.pow(2).sum().item()
+                        abs_sum += g.abs().sum().item()
+                        abs_max = max(abs_max, g.abs().max().item())
+                        n_elem += g.numel()
+                global_norm = math.sqrt(sq_sum)
+                mean_abs = abs_sum / n_elem if n_elem > 0 else 0.0
+                with open(args.grad_log_path, "a") as f:
+                    f.write(
+                        f"epoch={epoch} gstep={train_one_epoch._grad_log_counter} "
+                        f"global_norm={global_norm:.3e} mean_abs={mean_abs:.3e} max_abs={abs_max:.3e}\n"
+                    )
+        # === end grad logging ===
 
         torch.cuda.synchronize()
         if model_ema is not None:
