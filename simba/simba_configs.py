@@ -113,7 +113,7 @@ def simba_cityscapes(pretrained=False, **kwargs):
         **kwargs,
         "FFT_ACT_T": BF16,
         "USE_DFT": True,
-        # "FFT_QUANT": (3, 2),
+        # "FFT_QUANT": (5, 2),
         "EINFFT_ACT_T": BF16,
         "EINFFT_WEIGHT_T": FP32,  # Weights before casting
         # "EINFFT_QUANT": (5, 2),
@@ -123,7 +123,7 @@ def simba_cityscapes(pretrained=False, **kwargs):
         "MAMBA_USE_HARDWARE_ACT": False,
         "PATCH_EMBED_T": FP32,
         "NORM_T": FP32,
-        "NORM_TYPE": "layernorm",  # "layernorm" or "rmsnorm"
+        "NORM_TYPE": "rmsnorm", 
         "AUTOCAST_T": BF16,
     }
 

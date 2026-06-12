@@ -20,8 +20,8 @@ if __name__ == "__main__":
 ################# CONFIG #################b
 
 MODEL_NAME = "simba_l_fp8"  # "simba_l_fp16"
-RUN_NAME = "simba_l_replace_rms"  # "simba_l_bf16_B"
-BEST_CHECKPOINT = 50 
+RUN_NAME = "simba_l_finetune_fp8"  # "simba_l_bf16_B"
+BEST_CHECKPOINT = 0
 GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
 
 ############### CONFIG END ###############
@@ -36,7 +36,7 @@ PIN_MEMORY = True
 def get_checkpoint():
     checkpoint_dir = os.path.join("checkpoints", RUN_NAME)
 
-    if BEST_CHECKPOINT:
+    if BEST_CHECKPOINT is not None:
         checkpoint_path = os.path.join(checkpoint_dir, f"checkpoint-{BEST_CHECKPOINT}.pth.tar")
         if os.path.isfile(checkpoint_path):
             return checkpoint_path

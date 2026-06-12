@@ -108,7 +108,7 @@ class FloatQuantizer:
             x = tensor if tensor.is_contiguous() else tensor.contiguous()
             lut = self._get_lut(x.device)
             # Reinterpret BF16 bits as int16, mask to unsigned 16-bit index, gather.
-            idx = x.view(torch.int16).to(torch.long) & 0xFFFF
+            idx = x.view(torch.int16).to(torch.int32) & 0xFFFF
             q = lut[idx]
         else:
             # FP16/FP32 fallback: identical math to the original quantizer.
