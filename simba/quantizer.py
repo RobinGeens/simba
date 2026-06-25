@@ -25,7 +25,7 @@ class FloatQuantizer:
         self.bias = self.max_exponent
 
         # max_val = 2^max_exp * (2 - 2^(-m_bits))
-        self.max_val = (2 ** self.max_exponent) * (2.0 - 2.0 ** (-m_bits))
+        self.max_val = (2**self.max_exponent) * (2.0 - 2.0 ** (-m_bits))
 
         # Smallest normal value
         self.min_val = 2.0 ** (-self.bias)
@@ -64,14 +64,16 @@ class FloatQuantizer:
         exponent = exp_frexp - 1
 
         mantissa_frac = mantissa - 1.0
-        levels = 2 ** self.m_bits
+        levels = 2**self.m_bits
         mantissa_q = torch.round(mantissa_frac * levels) / levels + 1.0
 
         exponent_q = torch.clamp(exponent, -self.bias, self.max_exponent)
 
         result = sign * torch.ldexp(mantissa_q, exponent_q.int())
 
-        result = torch.where(zero_mask | underflow_mask, torch.zeros_like(result), result)
+        result = torch.where(
+            zero_mask | underflow_mask, torch.zeros_like(result), result
+        )
         result = torch.where(nan_mask, torch.full_like(result, float("nan")), result)
         return result
 
@@ -100,16 +102,19 @@ class FloatQuantizer:
         Quantize input. BF16 inputs take the fast LUT path; other dtypes use the reference implementation to avoid a
         lossy BF16 round-trip that would double-round at quantization midpoints.
 
-        Backward uses a straight-through estimator: forward returns the quantized value, backward passes the upstream 
-        gradient through unchanged. Without STE the LUT gather / frexp ops sever autograd and any upstream parameters 
+        Backward uses a straight-through estimator: forward returns the quantized value, backward passes the upstream
+        gradient through unchanged. Without STE the LUT gather / frexp ops sever autograd and any upstream parameters
         never receive a gradient.
         """
         if tensor.dtype == torch.bfloat16:
             x = tensor if tensor.is_contiguous() else tensor.contiguous()
             lut = self._get_lut(x.device)
-            # Reinterpret BF16 bits as int16, mask to unsigned 16-bit index, gather.
-            idx = x.view(torch.int16).to(torch.int32) & 0xFFFF
-            q = lut[idx]
+            # Reinterpret BF16 bits as int16, widen to int32, mask to unsigned 16-bit index.
+            # index_select avoids the int64 index upcast that advanced indexing (lut[idx]) forces,
+            # and the in-place mask avoids a second int32 temporary: peak ~7x -> ~3x input.
+            idx = x.view(torch.int16).to(torch.int32)
+            idx &= 0xFFFF
+            q = lut.index_select(0, idx.view(-1)).view(x.shape)
         else:
             # FP16/FP32 fallback: identical math to the original quantizer.
             q = self._quantize_reference(tensor).to(tensor.dtype)

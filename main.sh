@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MODEL="simba_s_bf16"
-RUN_NAME="simba_s_bf16"
+MODEL="simba_xs_bf16"
+RUN_NAME="simba_xs_bf16"
 
 # Multi-GPU config. Total batch is held constant at TOTAL_BATCH so the LR auto-scaling (lr * batch_size * world_size / 512) is unchanged.
 NGPUS=${NGPUS:-1}
@@ -45,6 +45,6 @@ torchrun  \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   # --resume $CHECKPOINT \ # <- TODO restore this if you have an initial checkpoint
+   --resume "$CHECKPOINT"
    # --drop-path 0.05 \
    # --finetune $CHECKPOINT \

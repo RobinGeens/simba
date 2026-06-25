@@ -861,8 +861,13 @@ def main(args):
         if args.output_dir and utils.is_main_process():
             with (output_dir / "tlog.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
-            # Log metrics to wandb
-            wandb.log(log_stats)
+            # Log metrics to wandb. Never let a wandb hiccup (e.g. the core
+            # service dying mid-run -> BrokenPipeError) kill a multi-day train;
+            # metrics are already persisted to tlog.txt above.
+            try:
+                wandb.log(log_stats)
+            except Exception as e:
+                _logger.warning(f"wandb.log failed, continuing training: {e}")
         _logger.info(log_stats)
 
     total_time = time.time() - start_time
