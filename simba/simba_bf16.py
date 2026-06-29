@@ -44,6 +44,31 @@ def _resolve_norm_layer(kwargs):
     return kwargs.get("NORM_LAYER", partial(nn.LayerNorm, eps=1e-6))
 
 
+# Cooley-Tukey partition length L (N = M * L) used by dft_partitioned, keyed by the
+# (power-of-two) transform length. Missing keys fall back to L=1 (single matmul DFT).
+_DFT_PARTITIONS = {
+    # Unpadded
+    3136: 56,
+    784: 28,
+    196: 14,
+    49: 7,
+    4: 1,
+    # Padded
+    4096: 64,
+    1024: 32,
+    256: 16,
+    64: 8,
+    # Cityscapes
+    512: 32,
+    2048: 64,
+    8192: 128,
+    16384: 128,
+    32768: 256,
+    65536: 256,
+    131072: 512,
+}
+
+
 class EinFFT(nn.Module):
     _quantization_logged = False
 
@@ -61,6 +86,13 @@ class EinFFT(nn.Module):
         self.FFT_QUANT = kwargs.get("FFT_QUANT")
         self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT")
         self.USE_DFT = kwargs.get("USE_DFT", False)
+        self.FFT_WINDOW_SIZE = kwargs.get("FFT_WINDOW_SIZE")
+        self.FFT_WINDOW_THRESHOLD = (
+            kwargs.get("FFT_WINDOW_THRESHOLD") or self.FFT_WINDOW_SIZE
+        )
+        if self.FFT_WINDOW_SIZE is not None:
+            w = self.FFT_WINDOW_SIZE
+            assert w & (w - 1) == 0, f"FFT_WINDOW_SIZE must be a power of 2, got {w}"
 
         self.complex_weight_1 = nn.Parameter(
             torch.randn(
@@ -111,6 +143,8 @@ class EinFFT(nn.Module):
             print(f"  - fft quantizer: {self.fft_quantizer}")
             print(f"  - einfft quantizer: {self.einfft_quantizer}")
             print(f"  - use dft: {self.USE_DFT}")
+            print(f"  - fft window size: {self.FFT_WINDOW_SIZE}")
+            print(f"  - fft window threshold: {self.FFT_WINDOW_THRESHOLD}")
             EinFFT._quantization_logged = True
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
@@ -124,6 +158,17 @@ class EinFFT(nn.Module):
     def get_pad_size(self, size):
         # Get next power of 2``
         return 2 ** math.ceil(math.log2(size))
+
+    def window_size_for(self, n: int) -> "int | None":
+        """Window length to use for a token-axis of length ``n``, or None for a
+        full-sequence DFT. Single source of truth for the windowing decision,
+        shared by dft_router (folds each window) and forward (pads the axis to a
+        whole number of windows)."""
+        win = self.FFT_WINDOW_SIZE
+        threshold = self.FFT_WINDOW_THRESHOLD
+        if win is not None and threshold is not None and n > threshold and n > win:
+            return win
+        return None
 
     def get_dft_matrix_real(self, n: int, inverse: bool = False) -> torch.Tensor:
         """
@@ -201,10 +246,10 @@ class EinFFT(nn.Module):
         Returns:
             (Xf_re, Xf_im) tuple with the same shape as the inputs.
         """
-        n = x_re.shape[0]
+        N = x_re.shape[0]
         other_dims = x_re.shape[1:]
-        assert n % L == 0, f"N must be divisible by L, got N={n}, L={L}"
-        M = n // L
+        assert N % L == 0, f"N must be divisible by L, got N={N}, L={L}"
+        M = N // L
 
         # === Step 1: Reshape into MxL ===
         x_re = x_re.reshape(M, L, *other_dims)
@@ -261,75 +306,94 @@ class EinFFT(nn.Module):
         Xf_real = Xf_real_flat.reshape(2 * L, M, *other_dims)
 
         # === Step 5: Recombine (k = k1 + M*k2 ordering preserved by (L, M, ...) layout) ===
-        Xf_re = Xf_real[:L].reshape(n, *other_dims)
-        Xf_im = Xf_real[L:].reshape(n, *other_dims)
+        Xf_re = Xf_real[:L].reshape(N, *other_dims)
+        Xf_im = Xf_real[L:].reshape(N, *other_dims)
 
         # Ortho normalization: W_M contributes 1/sqrt(M), W_L contributes 1/sqrt(L),
         # so the combined output already carries the 1/sqrt(M*L) = 1/sqrt(n) factor.
         return Xf_re, Xf_im
 
+    def dft_router(
+        self,
+        x_re: torch.Tensor,
+        x_im: torch.Tensor,
+        axis: int,
+        inverse: bool = False,
+        window: bool = False,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """(Inverse) DFT of one ``axis``, dispatching to dft_partitioned (USE_DFT)
+        or torch.fft, with optional windowing.
+
+        When ``window`` is set and the axis is longer than FFT_WINDOW_THRESHOLD, the
+        axis is split into contiguous windows of FFT_WINDOW_SIZE and each window is
+        transformed independently. The windows are folded into the batch dim, the
+        transform runs, then they are unfolded back here -- so the fold and its
+        inverse live together rather than being spread across forward(). The axis is
+        assumed already padded to a whole number of windows (forward() pads once and
+        crops once); the learnable filter has no N-frequency dependence, so the same
+        weights apply at any window size.
+        """
+        B_orig = x_re.shape[0]
+        win = self.window_size_for(x_re.shape[axis]) if window else None
+
+        if win is not None:
+            assert axis == 1, "windowing is only defined for the token (N) axis"
+            # Fold windows of `win` consecutive tokens into the batch dim:
+            # (B, N, G, D) -> (B * N/win, win, G, D)
+            x_re = x_re.reshape(B_orig * (x_re.shape[1] // win), win, *x_re.shape[2:])
+            x_im = x_im.reshape(B_orig * (x_im.shape[1] // win), win, *x_im.shape[2:])
+
+        if self.USE_DFT:
+            n = x_re.shape[axis]
+            x_re, x_im = self.dft_partitioned(
+                x_re.transpose(axis, 0),
+                x_im.transpose(axis, 0),
+                L=_DFT_PARTITIONS.get(n, 1),
+                inverse=inverse,
+            )
+            x_re = x_re.transpose(axis, 0)
+            x_im = x_im.transpose(axis, 0)
+        else:
+            # torch.fft has no BF16/complex-BF16 support -> compute in float32.
+            orig_dtype = x_re.dtype
+            x_complex = torch.complex(x_re.to(FP32), x_im.to(FP32))
+            fft_fn = torch.fft.ifft if inverse else torch.fft.fft
+            x_complex = fft_fn(x_complex, dim=axis, norm="ortho")
+            x_re = x_complex.real.to(orig_dtype)
+            x_im = x_complex.imag.to(orig_dtype)
+
+        if win is not None:
+            # Unfold the windows back into the axis: (B*N/win, win, G, D) -> (B, N, G, D)
+            x_re = x_re.reshape(B_orig, -1, *x_re.shape[2:])
+            x_im = x_im.reshape(B_orig, -1, *x_im.shape[2:])
+        return x_re, x_im
+
     def forward(self, x: torch.Tensor, H: int, W: int) -> torch.Tensor:
         """Torch's fft is only implemented for FP16, not for BF16
         Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input
         """
-        DFT_PARTITIONS = {
-            # Unpadded
-            3136: 56,
-            784: 28,
-            196: 14,
-            49: 7,
-            4: 1,
-            # Padded
-            4096: 64,
-            1024: 32,
-            256: 16,
-            64: 8,
-            # Cityscapes
-            512: 32,
-            2048: 64,
-            8192: 128,
-            16384: 128,
-            32768: 256,
-            65536: 256,
-            131072: 512,
-        }
-
         B, N, C = x.shape
         x = x.to(self.FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
 
-        # Pad the input to comply with torch fft2 requirements
-        # Without padding, accuracy drops by 0.6% because weights are trained for power-of-2 spectral granularity
-        pad_1 = self.get_pad_size(N) - N
+        # Pad the token axis once for the whole forward+inverse round trip; we crop
+        # back at the end. Padding lives here (not in dft_router) because the padded
+        # spectrum must survive between the forward and inverse transforms, while
+        # dft_router is a single-direction primitive. Target length: a whole number of
+        # windows when windowing, else the next power of two (the weights are trained
+        # for power-of-2 spectral granularity).
+        win = self.window_size_for(N)
+        N_target = math.ceil(N / win) * win if win is not None else self.get_pad_size(N)
+        pad_1 = N_target - N
         pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
         x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
-        N_fft = x.shape[1]
 
-        if self.USE_DFT:
-            # Carry real/imag as separate real tensors because torch complex types don't support BF16.
-            x_re = x
-            x_im = torch.zeros_like(x)
-            # Apply FFT to dimension 1 (N dimension)
-            x_re, x_im = self.dft_partitioned(
-                x_re.transpose(1, 0),
-                x_im.transpose(1, 0),
-                L=DFT_PARTITIONS.get(N_fft, 1),
-            )
-            x_re = x_re.transpose(1, 0)
-            x_im = x_im.transpose(1, 0)
-
-            # Apply FFT to dimension 2 (num_blocks dimension)
-            x_re, x_im = self.dft_partitioned(
-                x_re.transpose(2, 0),
-                x_im.transpose(2, 0),
-                L=DFT_PARTITIONS.get(self.num_blocks, 1),
-            )
-            x_re = x_re.transpose(2, 0)
-            x_im = x_im.transpose(2, 0)
-        else:
-            x = torch.fft.fft2(x, dim=(1, 2), norm="ortho")
-            x_re = x.real
-            x_im = x.imag
+        # Carry real/imag as separate real tensors because torch complex types don't support BF16.
+        x_re = x
+        x_im = torch.zeros_like(x)
+        # Forward transform: token (N) axis, windowed, then num_blocks axis.
+        x_re, x_im = self.dft_router(x_re, x_im, axis=1, window=True)
+        x_re, x_im = self.dft_router(x_re, x_im, axis=2, window=False)
 
         assert torch.isfinite(x_re).all() and torch.isfinite(x_im).all()
 
@@ -363,34 +427,14 @@ class EinFFT(nn.Module):
         x_re = x_real_2.to(self.FFT_ACT_T)
         x_im = x_imag_2.to(self.FFT_ACT_T)
 
-        if self.USE_DFT:
-            # Apply IDFT to dimension 2 (num_blocks dimension)
-            x_re, x_im = self.dft_partitioned(
-                x_re.transpose(2, 0),
-                x_im.transpose(2, 0),
-                L=DFT_PARTITIONS.get(self.num_blocks, 1),
-                inverse=True,
-            )
-            x_re = x_re.transpose(2, 0)
-            x_im = x_im.transpose(2, 0)
-            # Apply IDFT to dimension 1 (N dimension)
-            x_re, x_im = self.dft_partitioned(
-                x_re.transpose(1, 0),
-                x_im.transpose(1, 0),
-                L=DFT_PARTITIONS.get(N_fft, 1),
-                inverse=True,
-            )
-            x_re = x_re.transpose(1, 0)
-            x_im = x_im.transpose(1, 0)
-        else:
-            x_complex = torch.view_as_complex(torch.stack([x_re, x_im], dim=-1))
-            x_complex = torch.fft.ifft2(x_complex, dim=(1, 2), norm="ortho")
-            x_re = x_complex.real
-            x_im = x_complex.imag
+        # Inverse transform: num_blocks axis then token (N) axis, windowed.
+        x_re, x_im = self.dft_router(x_re, x_im, axis=2, window=False, inverse=True)
+        x_re, x_im = self.dft_router(x_re, x_im, axis=1, window=True, inverse=True)
 
         assert torch.isfinite(x_re).all()
 
         # Input was real -> output of IFFT is (numerically) real; keep the real part only.
+        # Drop the token-axis padding and the num_blocks padding, then restore (B, N, C).
         x_re = x_re[:, :N, : self.num_blocks, :]
         x_re = x_re.reshape(B, N, C)
         return x_re.to(self.ACT_T)
