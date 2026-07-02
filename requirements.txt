@@ -6,7 +6,7 @@ numpy
 torch
 triton
 ninja
-transformers
+transformers==4.40.2  # mamba_ssm 2.2.4 imports GreedySearchDecoderOnlyOutput/SampleDecoderOnlyOutput, removed in transformers>=4.41
 packaging
 setuptools>=61.0.0
 nvidia-cudnn-cu11
