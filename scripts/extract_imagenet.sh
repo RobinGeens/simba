@@ -7,7 +7,7 @@ SIMBA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck disable=SC1091
 source "$SIMBA_ROOT/env/bin/activate"
 
-ROOT="/scratch/leuven/379/vsc37999/imagenet"
+ROOT="/scratch/leuven/379/vsc39144/imagenet"
 TARS="$ROOT/tars"
 TRAIN_DIR="$ROOT/train"
 VAL_DIR="$ROOT/val"
