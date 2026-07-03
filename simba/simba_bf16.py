@@ -86,13 +86,27 @@ class EinFFT(nn.Module):
         self.FFT_QUANT = kwargs.get("FFT_QUANT")
         self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT")
         self.USE_DFT = kwargs.get("USE_DFT", False)
+        # FFT_WINDOW_SIZE is a (win_seq, win_lines) tuple.
         self.FFT_WINDOW_SIZE = kwargs.get("FFT_WINDOW_SIZE")
-        self.FFT_WINDOW_THRESHOLD = (
-            kwargs.get("FFT_WINDOW_THRESHOLD") or self.FFT_WINDOW_SIZE
-        )
         if self.FFT_WINDOW_SIZE is not None:
-            w = self.FFT_WINDOW_SIZE
-            assert w & (w - 1) == 0, f"FFT_WINDOW_SIZE must be a power of 2, got {w}"
+            if isinstance(self.FFT_WINDOW_SIZE, int):
+                # Back-compat: a bare int is a 1D window over the token sequence.
+                self.FFT_WINDOW_SIZE = (self.FFT_WINDOW_SIZE, 1)
+            self.FFT_WINDOW_SIZE = tuple(self.FFT_WINDOW_SIZE)
+            assert len(self.FFT_WINDOW_SIZE) == 2, (
+                f"FFT_WINDOW_SIZE must be a (win_seq, win_lines) tuple, "
+                f"got {self.FFT_WINDOW_SIZE}"
+            )
+            for w in self.FFT_WINDOW_SIZE:
+                assert w >= 1 and w & (w - 1) == 0, (
+                    f"FFT_WINDOW_SIZE entries must be powers of 2, "
+                    f"got {self.FFT_WINDOW_SIZE}"
+                )
+        self.FFT_WINDOW_THRESHOLD = kwargs.get("FFT_WINDOW_THRESHOLD") or (
+            self.FFT_WINDOW_SIZE[0] * self.FFT_WINDOW_SIZE[1]
+            if self.FFT_WINDOW_SIZE is not None
+            else None
+        )
 
         self.complex_weight_1 = nn.Parameter(
             torch.randn(
@@ -159,15 +173,15 @@ class EinFFT(nn.Module):
         # Get next power of 2``
         return 2 ** math.ceil(math.log2(size))
 
-    def window_size_for(self, n: int) -> "int | None":
-        """Window length to use for a token-axis of length ``n``, or None for a
-        full-sequence DFT. Single source of truth for the windowing decision,
-        shared by dft_router (folds each window) and forward (pads the axis to a
-        whole number of windows)."""
+    def window_size_for(self, n: int) -> "tuple[int, int] | None":
+        """Window shape (win_seq, win_lines) to use for a token-axis of length
+        ``n``, or None for a full-sequence DFT"""
         win = self.FFT_WINDOW_SIZE
         threshold = self.FFT_WINDOW_THRESHOLD
-        if win is not None and threshold is not None and n > threshold and n > win:
-            return win
+        if win is not None and threshold is not None:
+            win_len = win[0] * win[1]
+            if n > threshold and n > win_len:
+                return win
         return None
 
     def get_dft_matrix_real(self, n: int, inverse: bool = False) -> torch.Tensor:
@@ -325,23 +339,28 @@ class EinFFT(nn.Module):
         or torch.fft, with optional windowing.
 
         When ``window`` is set and the axis is longer than FFT_WINDOW_THRESHOLD, the
-        axis is split into contiguous windows of FFT_WINDOW_SIZE and each window is
-        transformed independently. The windows are folded into the batch dim, the
-        transform runs, then they are unfolded back here -- so the fold and its
-        inverse live together rather than being spread across forward(). The axis is
-        assumed already padded to a whole number of windows (forward() pads once and
-        crops once); the learnable filter has no N-frequency dependence, so the same
-        weights apply at any window size.
+        axis is split into contiguous windows of win_seq * win_lines tokens and each
+        window is transformed independently. The windows are folded into the batch
+        dim, the transform runs, then they are unfolded back here. The axis is
+        assumed already prepared by forward() (asserted to be a whole number of
+        windows, and reordered window-major for 2D windows so that each window's
+        tokens are spatially near each other); the learnable filter has no
+        N-frequency dependence, so the same weights apply at any window size.
         """
         B_orig = x_re.shape[0]
         win = self.window_size_for(x_re.shape[axis]) if window else None
 
         if win is not None:
             assert axis == 1, "windowing is only defined for the token (N) axis"
-            # Fold windows of `win` consecutive tokens into the batch dim:
-            # (B, N, G, D) -> (B * N/win, win, G, D)
-            x_re = x_re.reshape(B_orig * (x_re.shape[1] // win), win, *x_re.shape[2:])
-            x_im = x_im.reshape(B_orig * (x_im.shape[1] // win), win, *x_im.shape[2:])
+            win_len = win[0] * win[1]
+            # Fold windows of `win_len` consecutive tokens into the batch dim:
+            # (B, N, G, D) -> (B * N/win_len, win_len, G, D)
+            x_re = x_re.reshape(
+                B_orig * (x_re.shape[1] // win_len), win_len, *x_re.shape[2:]
+            )
+            x_im = x_im.reshape(
+                B_orig * (x_im.shape[1] // win_len), win_len, *x_im.shape[2:]
+            )
 
         if self.USE_DFT:
             n = x_re.shape[axis]
@@ -376,17 +395,39 @@ class EinFFT(nn.Module):
         x = x.to(self.FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
 
-        # Pad the token axis once for the whole forward+inverse round trip; we crop
-        # back at the end. Padding lives here (not in dft_router) because the padded
-        # spectrum must survive between the forward and inverse transforms, while
-        # dft_router is a single-direction primitive. Target length: a whole number of
-        # windows when windowing, else the next power of two (the weights are trained
-        # for power-of-2 spectral granularity).
+        # Windows must tile the actual raster exactly. 
+        # Only the unwindowed full-sequence DFT still pads the token axis to the next
+        # power of two; that pad is cropped back at the end of the round trip.
         win = self.window_size_for(N)
-        N_target = math.ceil(N / win) * win if win is not None else self.get_pad_size(N)
-        pad_1 = N_target - N
         pad_2 = self.get_pad_size(self.num_blocks) - self.num_blocks
-        x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
+        G_pad = self.num_blocks + pad_2
+        spatial = win is not None and win[1] > 1
+        if spatial:
+            # 2D window: view the tokens as the (H, W) raster and reorder
+            # window-major so every win_lines x win_seq spatial block occupies
+            # win_len consecutive tokens. Undone after the inverse transform below.
+            win_seq, win_lines = win
+            assert N == H * W, f"2D FFT windows need the raster token axis, got N={N}, HxW={H}x{W}"
+            assert H % win_lines == 0 and W % win_seq == 0, (
+                f"FFT_WINDOW_SIZE (win_seq, win_lines)={win} must tile the "
+                f"raster exactly, got HxW={H}x{W}"
+            )
+            x = x.view(B, H, W, self.num_blocks, self.block_size)
+            x = F.pad(x, (0, 0, 0, pad_2))
+            x = x.view(B, H // win_lines, win_lines, W // win_seq, win_seq, G_pad, self.block_size)
+            x = x.permute(0, 1, 3, 2, 4, 5, 6).reshape(B, N, G_pad, self.block_size)
+        else:
+            if win is not None:
+                # 1D window (win_lines == 1): must divide the token axis exactly.
+                win_len = win[0] * win[1]
+                assert N % win_len == 0, (
+                    f"FFT_WINDOW_SIZE {win} (= {win_len} tokens) must divide the "
+                    f"token axis exactly, got N={N}"
+                )
+                pad_1 = 0
+            else:
+                pad_1 = self.get_pad_size(N) - N
+            x = F.pad(x, (0, 0, 0, pad_2, 0, pad_1))
 
         # Carry real/imag as separate real tensors because torch complex types don't support BF16.
         x_re = x
@@ -435,7 +476,13 @@ class EinFFT(nn.Module):
 
         # Input was real -> output of IFFT is (numerically) real; keep the real part only.
         # Drop the token-axis padding and the num_blocks padding, then restore (B, N, C).
-        x_re = x_re[:, :N, : self.num_blocks, :]
+        if spatial:
+            # Undo the window-major reorder.
+            x_re = x_re.view(B, H // win_lines, W // win_seq, win_lines, win_seq, G_pad, self.block_size)
+            x_re = x_re.permute(0, 1, 3, 2, 4, 5, 6).reshape(B, N, G_pad, self.block_size)
+            x_re = x_re[:, :, : self.num_blocks, :]
+        else:
+            x_re = x_re[:, :N, : self.num_blocks, :]
         x_re = x_re.reshape(B, N, C)
         return x_re.to(self.ACT_T)
 
