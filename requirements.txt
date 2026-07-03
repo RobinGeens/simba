@@ -2,6 +2,7 @@ timm==0.4.5
 tlt==0.1.0
 pyyaml
 mmcv==1.7.0
+mmengine
 numpy
 torch
 triton

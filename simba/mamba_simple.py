@@ -1,7 +1,7 @@
 """
 Copyright (c) 2023, Tri Dao, Albert Gu.
 
-Local copy of mamba, where we can more easily change the types. Note that the CUDA kernels still come from the Mamba
+Local copy of mamba with changed datatypes. Note that the CUDA kernels still come from the Mamba
 Python package. To change, for example, the exponent implementation, run through the following steps:
 1) Change the kernel source code in mamba sub-module, or ensure the submodule is in the proper commit
 2) Install mamba as a package with `pip install ./mamba --no-build-isolation`
@@ -223,12 +223,12 @@ class Mamba(nn.Module):
 
         y = selective_scan_fn(
             self.quantizer.quantize(x),
-            dt,  # Not a big matrix
-            A,  # External weight, fully tiled
+            dt,
+            A,
             self.quantizer.quantize(B),
             self.quantizer.quantize(C),
-            self.D.float(),  # TODO does this have to be FP32?
-            z=z,  # TODO computed on-the-fly so memory capacity not an issue
+            self.D.float(),
+            z=z,
             delta_bias=self.dt_proj.bias.float(),
             delta_softplus=True,
             return_last_state=ssm_state is not None,
@@ -237,7 +237,7 @@ class Mamba(nn.Module):
             y, last_state = y
             ssm_state.copy_(last_state)
         y = rearrange(y, "b d l -> b l d")
-        # [NOTE] Chao: Quantize here
+        # [HW] quantized
         out = rearrange(
             self.quantizer.quantize(self.out_proj.weight).to(self.dtype_act)
             @ rearrange(self.quantizer.quantize(y), "b l d -> d (b l)"),
