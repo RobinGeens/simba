@@ -34,9 +34,7 @@ def make_norm_layer(norm_type: str = "layernorm", eps: float = 1e-6):
         return partial(nn.LayerNorm, eps=eps)
     if norm_type == "rmsnorm":
         return partial(nn.RMSNorm, eps=eps)
-    raise ValueError(
-        f"Unknown norm_type: {norm_type!r} (expected 'layernorm' or 'rmsnorm')"
-    )
+    raise ValueError(f"Unknown norm_type: {norm_type!r} (expected 'layernorm' or 'rmsnorm')")
 
 
 def _resolve_norm_layer(kwargs):
@@ -86,6 +84,12 @@ class EinFFT(nn.Module):
         self.FFT_QUANT = kwargs.get("FFT_QUANT")
         self.EINFFT_QUANT = kwargs.get("EINFFT_QUANT")
         self.USE_DFT = kwargs.get("USE_DFT", False)
+        # Video: number of frames flattened (spatial-first) into the token axis.
+        # The FFT runs per frame, never across frames. Default 1 (single image).
+        self.FFT_BATCH = kwargs.get("FFT_BATCH") or 1
+        assert (
+            isinstance(self.FFT_BATCH, int) and self.FFT_BATCH >= 1
+        ), f"FFT_BATCH must be a positive int, got {self.FFT_BATCH!r}"
         # FFT_WINDOW_SIZE is a (win_seq, win_lines) tuple.
         self.FFT_WINDOW_SIZE = kwargs.get("FFT_WINDOW_SIZE")
         if self.FFT_WINDOW_SIZE is not None:
@@ -94,18 +98,14 @@ class EinFFT(nn.Module):
                 self.FFT_WINDOW_SIZE = (self.FFT_WINDOW_SIZE, 1)
             self.FFT_WINDOW_SIZE = tuple(self.FFT_WINDOW_SIZE)
             assert len(self.FFT_WINDOW_SIZE) == 2, (
-                f"FFT_WINDOW_SIZE must be a (win_seq, win_lines) tuple, "
-                f"got {self.FFT_WINDOW_SIZE}"
+                f"FFT_WINDOW_SIZE must be a (win_seq, win_lines) tuple, " f"got {self.FFT_WINDOW_SIZE}"
             )
             for w in self.FFT_WINDOW_SIZE:
                 assert w >= 1 and w & (w - 1) == 0, (
-                    f"FFT_WINDOW_SIZE entries must be powers of 2, "
-                    f"got {self.FFT_WINDOW_SIZE}"
+                    f"FFT_WINDOW_SIZE entries must be powers of 2, " f"got {self.FFT_WINDOW_SIZE}"
                 )
         self.FFT_WINDOW_THRESHOLD = kwargs.get("FFT_WINDOW_THRESHOLD") or (
-            self.FFT_WINDOW_SIZE[0] * self.FFT_WINDOW_SIZE[1]
-            if self.FFT_WINDOW_SIZE is not None
-            else None
+            self.FFT_WINDOW_SIZE[0] * self.FFT_WINDOW_SIZE[1] if self.FFT_WINDOW_SIZE is not None else None
         )
 
         self.complex_weight_1 = nn.Parameter(
@@ -129,28 +129,16 @@ class EinFFT(nn.Module):
             * self.scale
         )
         self.complex_bias_1 = nn.Parameter(
-            torch.randn(
-                2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]
-            )
-            * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
         )
         self.complex_bias_2 = nn.Parameter(
-            torch.randn(
-                2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]
-            )
-            * self.scale
+            torch.randn(2, self.num_blocks, self.block_size, dtype=kwargs["EINFFT_WEIGHT_T"]) * self.scale
         )
 
         # Quantizer
-        self.fft_quantizer = (
-            QuantizerPassthrough()
-            if self.FFT_QUANT is None
-            else FloatQuantizer(*self.FFT_QUANT)
-        )
+        self.fft_quantizer = QuantizerPassthrough() if self.FFT_QUANT is None else FloatQuantizer(*self.FFT_QUANT)
         self.einfft_quantizer = (
-            QuantizerPassthrough()
-            if self.EINFFT_QUANT is None
-            else FloatQuantizer(*self.EINFFT_QUANT)
+            QuantizerPassthrough() if self.EINFFT_QUANT is None else FloatQuantizer(*self.EINFFT_QUANT)
         )
         if not EinFFT._quantization_logged:
             print("[Init][EinFFT]")
@@ -159,6 +147,7 @@ class EinFFT(nn.Module):
             print(f"  - use dft: {self.USE_DFT}")
             print(f"  - fft window size: {self.FFT_WINDOW_SIZE}")
             print(f"  - fft window threshold: {self.FFT_WINDOW_THRESHOLD}")
+            print(f"  - fft batch (frames): {self.FFT_BATCH}")
             EinFFT._quantization_logged = True
 
     def multiply(self, input: torch.Tensor, weights: torch.Tensor):
@@ -227,9 +216,9 @@ class EinFFT(nn.Module):
         x_real_vec = x_real_vec.to(device=W_real.device, dtype=self.FFT_ACT_T)
 
         # [NOTE] quantize here
-        X_real_vec = torch.matmul(
-            self.fft_quantizer.quantize(W_real), self.fft_quantizer.quantize(x_real_vec)
-        ).to(self.FFT_ACT_T)
+        X_real_vec = torch.matmul(self.fft_quantizer.quantize(W_real), self.fft_quantizer.quantize(x_real_vec)).to(
+            self.FFT_ACT_T
+        )
 
         # Split result back into real and imaginary parts
         X_real = X_real_vec[:n, :]
@@ -291,12 +280,8 @@ class EinFFT(nn.Module):
         # Twiddle factor: forward uses e^{-j2πkl/N}, inverse uses e^{+j2πkl/N}
         phase_angle = ((1.0) if inverse else (-1.0)) * 2 * torch.pi * k * l / (M * L)
         extra_dims = (1,) * (X1_re.ndim - 2)
-        phase_re = (
-            torch.cos(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
-        )
-        phase_im = (
-            torch.sin(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
-        )
+        phase_re = torch.cos(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
+        phase_im = torch.sin(phase_angle).to(dtype=self.FFT_ACT_T).reshape((M, L) + extra_dims)
         # Complex multiply: (a+bj)*(c+dj) = (ac-bd) + (ad+bc)j
         X2_re = X1_re * phase_re - X1_im * phase_im
         X2_im = X1_re * phase_im + X1_im * phase_re
@@ -355,12 +340,8 @@ class EinFFT(nn.Module):
             win_len = win[0] * win[1]
             # Fold windows of `win_len` consecutive tokens into the batch dim:
             # (B, N, G, D) -> (B * N/win_len, win_len, G, D)
-            x_re = x_re.reshape(
-                B_orig * (x_re.shape[1] // win_len), win_len, *x_re.shape[2:]
-            )
-            x_im = x_im.reshape(
-                B_orig * (x_im.shape[1] // win_len), win_len, *x_im.shape[2:]
-            )
+            x_re = x_re.reshape(B_orig * (x_re.shape[1] // win_len), win_len, *x_re.shape[2:])
+            x_im = x_im.reshape(B_orig * (x_im.shape[1] // win_len), win_len, *x_im.shape[2:])
 
         if self.USE_DFT:
             n = x_re.shape[axis]
@@ -391,11 +372,20 @@ class EinFFT(nn.Module):
         """Torch's fft is only implemented for FP16, not for BF16
         Moreover, FP16 FFTs only accept power-of-2 dimensions for some reason -> Pad the input
         """
+        B_in, N_in, C = x.shape
+        # Video: the token axis holds FFT_BATCH frames, flattened spatial-first.
+        # Fold the frames into the batch dim so every transform below stays
+        # within one frame (no FFT over time); unfolded again at the end.
+        if self.FFT_BATCH > 1 and N_in > 1:
+            assert N_in % self.FFT_BATCH == 0, (
+                f"FFT_BATCH={self.FFT_BATCH} must divide the token axis " f"exactly, got N={N_in}"
+            )
+            x = x.reshape(B_in * self.FFT_BATCH, N_in // self.FFT_BATCH, C)
         B, N, C = x.shape
         x = x.to(self.FFT_ACT_T)
         x = x.view(B, N, self.num_blocks, self.block_size)
 
-        # Windows must tile the actual raster exactly. 
+        # Windows must tile the raster exactly.
         # Only the unwindowed full-sequence DFT still pads the token axis to the next
         # power of two; that pad is cropped back at the end of the round trip.
         win = self.window_size_for(N)
@@ -409,8 +399,7 @@ class EinFFT(nn.Module):
             win_seq, win_lines = win
             assert N == H * W, f"2D FFT windows need the raster token axis, got N={N}, HxW={H}x{W}"
             assert H % win_lines == 0 and W % win_seq == 0, (
-                f"FFT_WINDOW_SIZE (win_seq, win_lines)={win} must tile the "
-                f"raster exactly, got HxW={H}x{W}"
+                f"FFT_WINDOW_SIZE (win_seq, win_lines)={win} must tile the " f"raster exactly, got HxW={H}x{W}"
             )
             x = x.view(B, H, W, self.num_blocks, self.block_size)
             x = F.pad(x, (0, 0, 0, pad_2))
@@ -421,8 +410,7 @@ class EinFFT(nn.Module):
                 # 1D window (win_lines == 1): must divide the token axis exactly.
                 win_len = win[0] * win[1]
                 assert N % win_len == 0, (
-                    f"FFT_WINDOW_SIZE {win} (= {win_len} tokens) must divide the "
-                    f"token axis exactly, got N={N}"
+                    f"FFT_WINDOW_SIZE {win} (= {win_len} tokens) must divide the " f"token axis exactly, got N={N}"
                 )
                 pad_1 = 0
             else:
@@ -483,7 +471,8 @@ class EinFFT(nn.Module):
             x_re = x_re[:, :, : self.num_blocks, :]
         else:
             x_re = x_re[:, :N, : self.num_blocks, :]
-        x_re = x_re.reshape(B, N, C)
+        # Unfold the frames back into the token axis (no-op when FFT_BATCH == 1).
+        x_re = x_re.reshape(B_in, N_in, C)
         return x_re.to(self.ACT_T)
 
 
@@ -497,9 +486,7 @@ class MambaLayer(nn.Module):
             d_state=d_state,
             d_conv=d_conv,
             expand=expand,
-            dtype=kwargs[
-                "MAMBA_MAIN_T"
-            ],  # NOTE should be enough to put most of Mamba's layer in the correct type
+            dtype=kwargs["MAMBA_MAIN_T"],  # NOTE should be enough to put most of Mamba's layer in the correct type
             dtype_act=kwargs["MAMBA_ACT_T"],
             quant=kwargs.get("MAMBA_QUANT"),
             use_hardware_act=kwargs["MAMBA_USE_HARDWARE_ACT"],
@@ -745,9 +732,7 @@ class SiMBA(nn.Module):
         # Make the chosen factory visible to submodules that take **kwargs only.
         kwargs["NORM_LAYER"] = norm_layer
 
-        dpr = [
-            x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))
-        ]  # stochastic depth decay rule
+        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
         for i in range(num_stages):
             if i == 0:
@@ -788,20 +773,14 @@ class SiMBA(nn.Module):
         )
 
         # classification head
-        self.head = (
-            nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
-        )
+        self.head = nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
         ##################################### token_label #####################################
         self.return_dense = token_label
         self.mix_token = token_label
         self.beta = 1.0
         self.pooling_scale = 8
         if self.return_dense:
-            self.aux_head = (
-                nn.Linear(embed_dims[-1], num_classes)
-                if num_classes > 0
-                else nn.Identity()
-            )
+            self.aux_head = nn.Linear(embed_dims[-1], num_classes) if num_classes > 0 else nn.Identity()
         ##################################### token_label #####################################
 
         self.apply(self._init_weights)
@@ -864,9 +843,7 @@ class SiMBA(nn.Module):
                     x.shape[1] // self.pooling_scale,
                     x.shape[2] // self.pooling_scale,
                 )
-                bbx1, bby1, bbx2, bby2 = rand_bbox(
-                    x.size(), lam, scale=self.pooling_scale
-                )
+                bbx1, bby1, bbx2, bby2 = rand_bbox(x.size(), lam, scale=self.pooling_scale)
                 temp_x = x.clone()
                 sbbx1, sbby1, sbbx2, sbby2 = (
                     self.pooling_scale * bbx1,
@@ -874,35 +851,25 @@ class SiMBA(nn.Module):
                     self.pooling_scale * bbx2,
                     self.pooling_scale * bby2,
                 )
-                temp_x[:, sbbx1:sbbx2, sbby1:sbby2, :] = x.flip(0)[
-                    :, sbbx1:sbbx2, sbby1:sbby2, :
-                ]
+                temp_x[:, sbbx1:sbbx2, sbby1:sbby2, :] = x.flip(0)[:, sbbx1:sbbx2, sbby1:sbby2, :]
                 x = temp_x
             else:
                 bbx1, bby1, bbx2, bby2 = 0, 0, 0, 0
             x = self.forward_tokens(x, H, W)
             x_cls = self.head(x[:, 0])
-            x_aux = self.aux_head(
-                x[:, 1:]
-            )  # generate classes in all feature tokens, see token labeling
+            x_aux = self.aux_head(x[:, 1:])  # generate classes in all feature tokens, see token labeling
 
             if not self.training:
                 return x_cls + 0.5 * x_aux.max(1)[0]
 
-            if (
-                self.mix_token and self.training
-            ):  # reverse "mix token", see token labeling for details.
+            if self.mix_token and self.training:  # reverse "mix token", see token labeling for details.
                 x_aux = x_aux.reshape(x_aux.shape[0], patch_h, patch_w, x_aux.shape[-1])
 
                 temp_x = x_aux.clone()
-                temp_x[:, bbx1:bbx2, bby1:bby2, :] = x_aux.flip(0)[
-                    :, bbx1:bbx2, bby1:bby2, :
-                ]
+                temp_x[:, bbx1:bbx2, bby1:bby2, :] = x_aux.flip(0)[:, bbx1:bbx2, bby1:bby2, :]
                 x_aux = temp_x
 
-                x_aux = x_aux.reshape(
-                    x_aux.shape[0], patch_h * patch_w, x_aux.shape[-1]
-                )
+                x_aux = x_aux.reshape(x_aux.shape[0], patch_h * patch_w, x_aux.shape[-1])
 
             return x_cls, x_aux, (bbx1, bby1, bbx2, bby2)
 
