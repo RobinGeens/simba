@@ -37,17 +37,11 @@ DATA_PATH=$(pick /volume1/users/rgeens/simba/dataset/ILSVRC2012 \
 TOKEN_LABEL_PATH=$(pick /volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/ \
                      /scratch/leuven/391/vsc39144/simba/dataset/label_top5_train_nfnet/)
 
-# Self-resubmit chain: queue the next job to start after this one ends, so training
-# can survive multiple walltime hits unattended. Skipped when running locally
-# (no SLURM_JOB_ID) or when training has already completed (DONE exists).
-DONE_FLAG="../out/$RUN_NAME/DONE"
-if [ -f "$DONE_FLAG" ]; then
-    echo "Found $DONE_FLAG — training already complete, exiting."
-    exit 0
-fi
-if [ -n "$SLURM_JOB_ID" ]; then
-    NEXT_JID=$(sbatch --parsable --dependency=afterany:$SLURM_JOB_ID main.sh)
-    echo "Queued next job $NEXT_JID with dependency afterany:$SLURM_JOB_ID"
+# Self-resubmit chain
+OUTPUT_DIR="checkpoints/$RUN_NAME"
+if [ -f ../slurm_chain.sh ]; then
+    source ../slurm_chain.sh
+    self_resubmit main.sh "$OUTPUT_DIR"
 fi
 
 # Random port so concurrent runs on the same host don't collide on the rendezvous endpoint.
@@ -88,4 +82,6 @@ torchrun  \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   "${CKPT_ARGS[@]}"
+   "${CKPT_ARGS[@]}" 
+
+touch "$OUTPUT_DIR/DONE"
