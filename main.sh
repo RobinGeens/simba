@@ -2,7 +2,7 @@
 #SBATCH --cluster=wice
 #SBATCH --partition=gpu_h100
 #SBATCH --account=lp_marianslab
-#SBATCH --job-name=simba_xs_bf16
+#SBATCH --job-name=simba_s_finetune_fp8
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
@@ -19,8 +19,9 @@
 
 set -e
 
-MODEL="simba_xs_bf16"
-RUN_NAME="simba_xs_bf16"
+MODEL="simba_s_fp8"
+RUN_NAME="simba_s_finetune_fp8"
+FINETUNE_CKPT="checkpoints/simba_s_bf16/checkpoint-307.pth.tar"
 
 # Multi-GPU config. Total batch is held constant
 NGPUS=${NGPUS:-${SLURM_GPUS_ON_NODE:-1}}
@@ -56,9 +57,16 @@ echo "Running on GPU(s) $CUDA_VISIBLE_DEVICES (NGPUS=$NGPUS, per-GPU batch=$PER_
 nvidia-smi
 source env/bin/activate
 
-CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar | tail -n1)
-# CHECKPOINT=checkpoints/simba_l_replace_rms/checkpoint-50.pth.tar
-echo "Resuming from checkpoint: $CHECKPOINT"
+# Resume from the run's own latest checkpoint if one exists; otherwise start
+# the finetune from the bf16 checkpoint (first run of the chain).
+CHECKPOINT=$(ls -v checkpoints/$RUN_NAME/checkpoint-*.pth.tar 2>/dev/null | tail -n1 || true)
+if [ -n "$CHECKPOINT" ]; then
+    echo "Resuming from checkpoint: $CHECKPOINT"
+    CKPT_ARGS=(--resume "$CHECKPOINT")
+else
+    echo "Finetuning from checkpoint: $FINETUNE_CKPT"
+    CKPT_ARGS=(--finetune "$FINETUNE_CKPT")
+fi
 
 torchrun  \
    --nproc_per_node=$NGPUS \
@@ -68,18 +76,16 @@ torchrun  \
    --run-name $RUN_NAME \
    --output_dir checkpoints/$RUN_NAME \
    --data-path $DATA_PATH \
-   --epochs 310  \
+   --epochs 10  \
    --batch-size $PER_GPU_BATCH \
    --weight-decay 0.05 \
-   --lr 1e-3 \
-   --warmup-lr 1e-6 \
-   --warmup-epochs 5 \
-   --min-lr 1e-5 \
+   --lr 2e-5 \
+   --warmup-lr 1e-7 \
+   --warmup-epochs 1 \
+   --min-lr 1e-7 \
    --num_workers 32\
    --pin-mem \
    --token-label \
    --token-label-size 7 \
    --token-label-data $TOKEN_LABEL_PATH \
-   --resume "$CHECKPOINT"
-   # --drop-path 0.05 \
-   # --finetune $CHECKPOINT \
+   "${CKPT_ARGS[@]}"

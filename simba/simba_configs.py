@@ -7,23 +7,30 @@ from timm.models.vision_transformer import _cfg
 from simba_bf16 import BF16, FP32, SiMBA
 
 
+BF16_KWARGS = {
+    "FFT_ACT_T": BF16,  # BF16 not supported for true FFT
+    "USE_DFT": True,
+    "EINFFT_ACT_T": BF16,
+    "EINFFT_WEIGHT_T": FP32,  # Weights before casting
+    "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
+    "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
+    "MAMBA_USE_HARDWARE_ACT": False,
+    "PATCH_EMBED_T": FP32,
+    "NORM_T": FP32,
+    "NORM_TYPE": "rmsnorm",  # "layernorm" or "rmsnorm"
+    "AUTOCAST_T": BF16,
+}
+
+FP8_KWARGS = {
+    **BF16_KWARGS,
+    "FFT_QUANT": (5, 2),
+    "EINFFT_QUANT": (5, 2),
+    "MAMBA_QUANT": (5, 2),
+}
+
+
 @register_model
 def simba_l_bf16(pretrained=False, **kwargs):
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": BF16,  # BF16 not supported for true FFT
-        "USE_DFT": True,
-        "EINFFT_ACT_T": BF16,
-        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        "MAMBA_USE_HARDWARE_ACT": False,
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
-        "NORM_TYPE": "rmsnorm",  # "layernorm" or "rmsnorm"
-        "AUTOCAST_T": BF16,
-    }
-
     model = SiMBA(
         stem_hidden_dim=64,
         embed_dims=[96, 192, 384, 512],
@@ -31,7 +38,7 @@ def simba_l_bf16(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 6, 18, 3],
         sr_ratios=[4, 2, 1, 1],
-        **kwargs,
+        **{**kwargs, **BF16_KWARGS},
     )
     model.default_cfg = _cfg()
     return model
@@ -39,24 +46,6 @@ def simba_l_bf16(pretrained=False, **kwargs):
 
 @register_model
 def simba_l_fp8(pretrained=False, **kwargs):
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": BF16,
-        "USE_DFT": True,
-        "FFT_QUANT": (5, 2),
-        "EINFFT_ACT_T": BF16,
-        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        "EINFFT_QUANT": (5, 2),
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        "MAMBA_QUANT": (5, 2),
-        "MAMBA_USE_HARDWARE_ACT": False,
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
-        "NORM_TYPE": "rmsnorm",  # match the rmsnorm checkpoint we finetune from (drop-in FP8 over the bf16/rmsnorm model)
-        "AUTOCAST_T": BF16,
-    }
-
     model = SiMBA(
         stem_hidden_dim=64,
         embed_dims=[96, 192, 384, 512],
@@ -64,7 +53,7 @@ def simba_l_fp8(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 6, 18, 3],
         sr_ratios=[4, 2, 1, 1],
-        **kwargs,
+        **{**kwargs, **FP8_KWARGS},
     )
     model.default_cfg = _cfg()
     return model
@@ -72,24 +61,6 @@ def simba_l_fp8(pretrained=False, **kwargs):
 
 @register_model
 def simba_b_bf16(pretrained=False, **kwargs):
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": BF16,  # BF16 not supported for true FFT
-        "USE_DFT": True,
-        # "FFT_QUANT": (5, 2),
-        "EINFFT_ACT_T": BF16,
-        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        # "EINFFT_QUANT": (5, 2),
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        # "MAMBA_QUANT": (5, 2),
-        "MAMBA_USE_HARDWARE_ACT": False,
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
-        "NORM_TYPE": "rmsnorm",  # "layernorm" or "rmsnorm"
-        "AUTOCAST_T": BF16,
-    }
-
     # Simba-B (23M params)
     model = SiMBA(
         stem_hidden_dim=64,
@@ -98,64 +69,14 @@ def simba_b_bf16(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 12, 3],
         sr_ratios=[4, 2, 1, 1],
-        **kwargs,
+        **{**kwargs, **BF16_KWARGS},
     )
     model.default_cfg = _cfg()
     return model
 
-
-@register_model
-def simba_cityscapes(pretrained=False, **kwargs):
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": BF16,
-        "USE_DFT": True,
-        # "FFT_QUANT": (5, 2),
-        "EINFFT_ACT_T": BF16,
-        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        # "EINFFT_QUANT": (5, 2),
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        # "MAMBA_QUANT": (5, 2),
-        "MAMBA_USE_HARDWARE_ACT": False,
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
-        "NORM_TYPE": "rmsnorm", 
-        "AUTOCAST_T": BF16,
-    }
-
-    model = SiMBA(
-        stem_hidden_dim=64,
-        embed_dims=[96, 192, 384, 512],
-        mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        depths=[3, 6, 18, 3],
-        sr_ratios=[4, 2, 1, 1],
-        **kwargs,
-    )
-    model.default_cfg = _cfg()
-    return model
 
 @register_model
 def simba_s_bf16(pretrained=False, **kwargs):
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": BF16, 
-        "USE_DFT": True,
-        # "FFT_QUANT": (5, 2),
-        "EINFFT_ACT_T": BF16,
-        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        # "EINFFT_QUANT": (5, 2),
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        # "MAMBA_QUANT": (5, 2),
-        "MAMBA_USE_HARDWARE_ACT": False,
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
-        "NORM_TYPE": "rmsnorm",  
-        "AUTOCAST_T": BF16,
-    }
-
     # Simba-S (15M params)
     model = SiMBA(
         stem_hidden_dim=32,
@@ -164,7 +85,23 @@ def simba_s_bf16(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 6, 3],
         sr_ratios=[4, 2, 1, 1],
-        **kwargs,
+        **{**kwargs, **BF16_KWARGS},
+    )
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
+def simba_s_fp8(pretrained=False, **kwargs):
+    # Simba-S (15M params)
+    model = SiMBA(
+        stem_hidden_dim=32,
+        embed_dims=[64, 128, 320, 448],
+        mlp_ratios=[8, 8, 4, 4],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=[3, 4, 6, 3],
+        sr_ratios=[4, 2, 1, 1],
+        **{**kwargs, **FP8_KWARGS},
     )
     model.default_cfg = _cfg()
     return model
@@ -172,23 +109,6 @@ def simba_s_bf16(pretrained=False, **kwargs):
 
 @register_model
 def simba_xs_bf16(pretrained=False, **kwargs):
-    kwargs = {
-        **kwargs,
-        "FFT_ACT_T": BF16,
-        "USE_DFT": True,
-        # "FFT_QUANT": (5, 2),
-        "EINFFT_ACT_T": BF16,
-        "EINFFT_WEIGHT_T": FP32,  # Weights before casting
-        # "EINFFT_QUANT": (5, 2),
-        "MAMBA_MAIN_T": FP32,  # Weights before casting, non-linear functions
-        "MAMBA_ACT_T": BF16,  # Linear projections, state-update, etc
-        # "MAMBA_QUANT": (5, 2),
-        "MAMBA_USE_HARDWARE_ACT": False,
-        "PATCH_EMBED_T": FP32,
-        "NORM_T": FP32,
-        "NORM_TYPE": "rmsnorm",
-        "AUTOCAST_T": BF16,
-    }
     model = SiMBA(
         stem_hidden_dim=32,
         embed_dims=[48, 96, 224, 320],  # ~0.7x Simba-S width -> ~0.5x compute
@@ -196,7 +116,7 @@ def simba_xs_bf16(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[2, 3, 5, 2],  # 16 -> 12 blocks
         sr_ratios=[4, 2, 1, 1],
-        **kwargs,
+        **{**kwargs, **BF16_KWARGS},
     )
     model.default_cfg = _cfg()
     return model
