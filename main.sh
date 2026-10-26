@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --cluster=wice
-#SBATCH --partition=gpu_h100
+#SBATCH --partition=gpu_h100,gpu_a100
 #SBATCH --account=lp_marianslab
-#SBATCH --job-name=simba_s_finetune_fp8
+#SBATCH --job-name=simba_b_finetune_fp8
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
@@ -11,21 +11,21 @@
 #SBATCH --time=72:00:00
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=robin.geens@kuleuven.be
-#SBATCH --output=slurm_logs/slurm-simba.out
-#SBATCH --error=slurm_logs/slurm-simba.err
+#SBATCH --output=slurm_logs/slurm-simba-%j.out
+#SBATCH --error=slurm_logs/slurm-simba-%j.err
 # 
 # Submit:  mkdir -p slurm_logs && sbatch main.sh
 # Local:   NGPUS=1 ./main.sh
 
 set -e
 
-MODEL="simba_s_fp8"
-RUN_NAME="simba_s_finetune_fp8"
-FINETUNE_CKPT="checkpoints/simba_s_bf16/checkpoint-307.pth.tar"
+MODEL="simba_b_fp8"
+RUN_NAME="simba_b_finetune_fp8"
+FINETUNE_CKPT="checkpoints/simba_b_bf16_rms/checkpoint-346.pth.tar"
 
 # Multi-GPU config. Total batch is held constant
-NGPUS=${NGPUS:-${SLURM_GPUS_ON_NODE:-1}}
 TOTAL_BATCH=128
+NGPUS=${NGPUS:-2}  # keep in sync with #SBATCH --gres=gpu: above
 PER_GPU_BATCH=$(( TOTAL_BATCH / NGPUS ))
 CUDA_VISIBLE_DEVICES=$(seq -s, 0 $(( NGPUS - 1 )))
 export CUDA_VISIBLE_DEVICES
@@ -33,9 +33,18 @@ export CUDA_VISIBLE_DEVICES
 # Paths: server-agnostic
 pick() { for p in "$@"; do [ -e "$p" ] && { echo "$p"; return; }; done; }
 DATA_PATH=$(pick /volume1/users/rgeens/simba/dataset/ILSVRC2012 \
-                 /scratch/leuven/391/vsc39144/simba/dataset/ILSVRC2012)
+                 /lustre1/project/stg_00218/simba/dataset/ILSVRC2012)
 TOKEN_LABEL_PATH=$(pick /volume1/users/rgeens/simba/dataset/label_top5_train_nfnet/ \
                      /scratch/leuven/391/vsc39144/simba/dataset/label_top5_train_nfnet/)
+
+# pick() only checks that a path exists. Fail here, before the chain queues the
+# next job, if the data is missing or a partial copy (empty class dirs).
+for p in "$DATA_PATH/train" "$DATA_PATH/val" "$TOKEN_LABEL_PATH"; do
+    if [ -z "$(find -L "$p" -type f -print -quit 2>/dev/null)" ]; then
+        echo "ERROR: no files under '$p' (DATA_PATH='$DATA_PATH', TOKEN_LABEL_PATH='$TOKEN_LABEL_PATH')" >&2
+        exit 1
+    fi
+done
 
 # Self-resubmit chain
 OUTPUT_DIR="checkpoints/$RUN_NAME"

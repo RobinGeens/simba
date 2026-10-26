@@ -76,6 +76,22 @@ def simba_b_bf16(pretrained=False, **kwargs):
 
 
 @register_model
+def simba_b_fp8(pretrained=False, **kwargs):
+    # Simba-B (23M params)
+    model = SiMBA(
+        stem_hidden_dim=64,
+        embed_dims=[64, 128, 320, 512],
+        mlp_ratios=[8, 8, 4, 4],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=[3, 4, 12, 3],
+        sr_ratios=[4, 2, 1, 1],
+        **{**kwargs, **FP8_KWARGS},
+    )
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
 def simba_s_bf16(pretrained=False, **kwargs):
     # Simba-S (15M params)
     model = SiMBA(
@@ -117,6 +133,21 @@ def simba_xs_bf16(pretrained=False, **kwargs):
         depths=[2, 3, 5, 2],  # 16 -> 12 blocks
         sr_ratios=[4, 2, 1, 1],
         **{**kwargs, **BF16_KWARGS},
+    )
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
+def simba_xs_fp8(pretrained=False, **kwargs):
+    model = SiMBA(
+        stem_hidden_dim=32,
+        embed_dims=[48, 96, 224, 320],
+        mlp_ratios=[8, 8, 4, 4],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=[2, 3, 5, 2],
+        sr_ratios=[4, 2, 1, 1],
+        **{**kwargs, **FP8_KWARGS},
     )
     model.default_cfg = _cfg()
     return model
