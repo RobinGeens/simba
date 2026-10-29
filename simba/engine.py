@@ -56,14 +56,17 @@ def train_one_epoch(
                     targets, num_classes=args.nb_classes, smoothing=args.smoothing, label_size=args.token_label_size
                 )
 
-        with torch.amp.autocast("cuda", dtype=model.AUTOCAST_T):
+        # Shipped SiMBA models have no AUTOCAST_T: torch's default autocast (FP16) with the loss inside, as shipped
+        autocast_t = getattr(model, "AUTOCAST_T", None)
+        with torch.amp.autocast("cuda", dtype=autocast_t):
             outputs = model(samples)
 
-        # Do not wrap in autocast!
-        if args.token_label:
-            loss = criterion(outputs, targets)
-        else:
-            loss = criterion(samples, outputs, targets)
+            # Do not wrap in autocast! (our models only)
+            with torch.amp.autocast("cuda", enabled=autocast_t is None):
+                if args.token_label:
+                    loss = criterion(outputs, targets)
+                else:
+                    loss = criterion(samples, outputs, targets)
 
         loss_value = loss.item()
 
@@ -76,10 +79,11 @@ def train_one_epoch(
         # this attribute is added by timm on one optimizer (adahessian)
         is_second_order = hasattr(optimizer, "is_second_order") and optimizer.is_second_order
         loss_scaler(loss, optimizer, clip_grad=max_norm, parameters=model.parameters(), create_graph=is_second_order)
-        with open("grad_stats.log", "a") as f:
-            for name, param in model.named_parameters():
-                if param.grad is not None:
-                    f.write(f"{name} grad mean: {param.grad.abs().mean().item():.3e}\n")
+        if args.grad_stats:
+            with open("grad_stats.log", "a") as f:
+                for name, param in model.named_parameters():
+                    if param.grad is not None:
+                        f.write(f"{name} grad mean: {param.grad.abs().mean().item():.3e}\n")
 
         torch.cuda.synchronize()
         if model_ema is not None:
@@ -109,7 +113,7 @@ def evaluate(data_loader, model, device, eval_one_sample=False):
         target = target.to(device, non_blocking=True)
 
         # compute output
-        with torch.amp.autocast("cuda", dtype=model.AUTOCAST_T):
+        with torch.amp.autocast("cuda", dtype=getattr(model, "AUTOCAST_T", None)):
             output = model(images)
         loss = criterion(output, target)
 

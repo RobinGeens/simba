@@ -12,6 +12,7 @@ from timm.models import create_model
 from simba_bf16 import SiMBA  # noqa: F401
 import simba_configs  # noqa: F401  - registers simba_l_bf16 etc. with timm
 from qlinear import replace_linear_with_qlinear  # noqa: F401
+from scan_exp import check_scan_exp
 
 if __name__ == "__main__":
     from datasets import build_dataset
@@ -19,15 +20,17 @@ if __name__ == "__main__":
 
 ################# CONFIG #################b
 
-MODEL_NAME = "simba_l_fp8"  # "simba_l_fp16"
-RUN_NAME = "simba_l_finetune_fp8"  # "simba_l_bf16_B"
-BEST_CHECKPOINT = 0
+MODEL_NAME = "simba_b_bf16"  # "simba_l_fp8"
+RUN_NAME = "simba_b_bf16_rms"  # "simba_l_finetune_fp8"
+BEST_CHECKPOINT = 346
 GPU_NODE = 0  # 　either 0 or 1 for which GPU to use on a node
 
 ############### CONFIG END ###############
 
 # Configuration constants
-DATA_PATH = "/volume1/users/rgeens/simba/dataset/ILSVRC2012"
+# First that exists: cassiopeia, VSC
+DATA_PATH = next(p for p in ("/volume1/users/rgeens/simba/dataset/ILSVRC2012",
+                             "/scratch/leuven/391/vsc39144/simba/dataset/ILSVRC2012") if os.path.isdir(p))
 BATCH_SIZE = 256
 NUM_WORKERS = 12
 PIN_MEMORY = True
@@ -95,6 +98,7 @@ def main():
 
     device = torch.device(f"cuda:{GPU_NODE}" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
+    check_scan_exp(getattr(model, "MAMBA_EXP", None), device=device, log=logging.info)
 
     # Create dataset and dataloader
     Args = type(
@@ -123,7 +127,7 @@ def main():
     test_stats = evaluate(data_loader, model, device, eval_one_sample=False)
 
     logging.info(
-        f"Accuracy of the network on the {len(dataset_val)} test images ({model.AUTOCAST_T}):"
+        f"Accuracy of the network on the {len(dataset_val)} test images ({getattr(model, 'AUTOCAST_T', 'default autocast')}):"
     )
     logging.info(f"Top-1 accuracy: {test_stats['acc1']:.1f}%")
     logging.info(f"Top-5 accuracy: {test_stats['acc5']:.1f}%")

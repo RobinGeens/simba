@@ -16,6 +16,7 @@ from pathlib import Path
 import numpy as np
 
 # import models
+import simba  # noqa: F401
 import simba_configs  # noqa: F401
 import timm
 import torch
@@ -28,6 +29,7 @@ from loss import TokenLabelCrossEntropy
 from losses import DistillationLoss
 from PIL import ImageFile
 from samplers import RASampler
+from scan_exp import check_scan_exp
 from timm.data import Mixup
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 from timm.models import create_model
@@ -89,7 +91,13 @@ def get_args_parser():
     parser.add_argument("--fp32-resume", action="store_true", default=False)
     parser.add_argument("--batch-size", default=128, type=int)
     parser.add_argument("--epochs", default=300, type=int)
+    parser.add_argument(
+        "--extra-epochs", default=0, type=int, help="epochs after the cosine schedule, at min-lr (original SiMBA: 20)"
+    )
     parser.add_argument("--config", required=True, type=str, help="config")
+    parser.add_argument(
+        "--no-grad-stats", action="store_false", dest="grad_stats", help="don't log grad means to grad_stats.log"
+    )
     parser.add_argument("--run-name", type=str, help="Name of the run for wandb logging")
 
     # Model parameters
@@ -679,6 +687,8 @@ def main(args):
         drop_block_rate=None,
         token_label=args.token_label,
     )
+    # Fail fast if the selective-scan kernel's exp is not the one this model expects
+    check_scan_exp(getattr(model, "MAMBA_EXP", None), log=_logger.info)
 
     if args.finetune:
         if args.finetune.startswith("https"):
@@ -704,7 +714,7 @@ def main(args):
     model.to(device)
     print(model)
 
-    with torch.amp.autocast("cuda", dtype=model.AUTOCAST_T):
+    with torch.amp.autocast("cuda", dtype=getattr(model, "AUTOCAST_T", None)):
         flops_count, params_count = get_model_complexity_info(
             model,
             (3, 224, 224),
@@ -717,7 +727,7 @@ def main(args):
     model_ema = None
     model_without_ddp = model
     if args.distributed:
-        AUTOCAST_T = model.AUTOCAST_T
+        AUTOCAST_T = getattr(model, "AUTOCAST_T", None)  # None: shipped SiMBA models, torch's default
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
         model.AUTOCAST_T = AUTOCAST_T
         model_without_ddp = model.module
@@ -807,7 +817,7 @@ def main(args):
     _logger.info(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
-    extra_epoch = 0
+    extra_epoch = args.extra_epochs
     print(f"Start training for extra_epoch{extra_epoch} epochs")
     for epoch in range(args.start_epoch, (args.epochs + extra_epoch)):
         if args.fp32_resume and epoch > args.start_epoch + 1:

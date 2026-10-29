@@ -724,6 +724,7 @@ class SiMBA(nn.Module):
         self.depths = depths
         self.num_stages = num_stages
         self.AUTOCAST_T: torch.dtype = kwargs["AUTOCAST_T"]
+        self.MAMBA_EXP: str = kwargs.get("MAMBA_EXP")  # expected kernel exp, checked by main.py
 
         # Resolve norm_layer (caller may either pass it directly or via NORM_TYPE in kwargs)
         norm_type = kwargs.pop("NORM_TYPE", None)

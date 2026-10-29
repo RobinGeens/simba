@@ -19,6 +19,7 @@ BF16_KWARGS = {
     "NORM_T": FP32,
     "NORM_TYPE": "rmsnorm",  # "layernorm" or "rmsnorm"
     "AUTOCAST_T": BF16,
+    "MAMBA_EXP": "approx",  # selective-scan kernel exp: "approx" (fp16 hardware model) or "exact"; checked by main.py
 }
 
 FP8_KWARGS = {

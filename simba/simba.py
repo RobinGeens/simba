@@ -1,5 +1,5 @@
 """
-Original (reference) implementation. Not used in this repo
+Original (reference) implementation
 """
 
 import math
@@ -715,10 +715,11 @@ def simba_s(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 6, 3],
         sr_ratios=[4, 2, 1, 1],
-        cm_type="mlp",
+        cm_type="EinFFT",  # the original repo builds "mlp" here
         **kwargs,
     )
     model.default_cfg = _cfg()
+    model.MAMBA_EXP = "exact"
     return model
 
 
@@ -731,10 +732,11 @@ def simba_b(pretrained=False, **kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3, 4, 12, 3],
         sr_ratios=[4, 2, 1, 1],
-        cm_type="mlp",
+        cm_type="EinFFT",  # the original repo builds "mlp" here
         **kwargs,
     )
     model.default_cfg = _cfg()
+    model.MAMBA_EXP = "exact"
     return model
 
 
@@ -751,4 +753,5 @@ def simba_l(pretrained=False, **kwargs):
         **kwargs,
     )
     model.default_cfg = _cfg()
+    model.MAMBA_EXP = "exact"
     return model
