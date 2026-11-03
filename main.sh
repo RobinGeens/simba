@@ -63,12 +63,12 @@ for p in "$DATA_PATH/train" "$DATA_PATH/val" "$TOKEN_LABEL_PATH"; do
     fi
 done
 
-# Self-resubmit chain
+# Self-resubmit chain; the next job may start in this job's last 24 h (1440 min) and then takes over
 OUTPUT_DIR="checkpoints/$RUN_NAME"
 if [ -f ../slurm_chain.sh ]; then
     export SBATCH_JOB_NAME="$RUN_NAME"
     source ../slurm_chain.sh
-    self_resubmit main.sh "$OUTPUT_DIR"
+    self_resubmit main.sh "$OUTPUT_DIR" 1440
 fi
 
 # Random port so concurrent runs on the same host don't collide on the rendezvous endpoint.
